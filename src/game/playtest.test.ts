@@ -34,3 +34,17 @@ describe('play-test 2026-11-17: stuck in mail', () => {
     expect(screenText(play(at(2), ['mail', 'P2']))).toContain('Received: from mx.jack-o-daemon.cloud')
   })
 })
+
+describe('play-test 2026-11-17: l versus 1 in Level 3', () => {
+  it('`ls -1` (digit one) explains the lowercase L', () => {
+    expect(hints(play(at(3), ['ls -1'])).at(-1)).toContain('lowercase L')
+  })
+
+  it('`ls-l` (no space) suggests `ls -l`', () => {
+    expect(hints(play(at(3), ['ls-l'])).at(-1)).toContain('`ls -l`')
+  })
+
+  it('`chmod` alone shows an example', () => {
+    expect(hints(play(at(3), ['chmod'])).at(-1)).toContain('chmod 644 README')
+  })
+})

@@ -160,7 +160,13 @@ function shellLine(state: GameState, text: string): GameState {
   const [only] = result.events
   const alreadyHinted = result.lines.some((l) => l.stream === 'hint')
   if (result.events.length === 1 && only.status !== 0 && lookup(only.name) === undefined && !alreadyHinted && !only.name.includes('/')) {
-    next = print(next, [['hint', 'That is not a command. To talk to Nell, type `write nell` first. `help` lists the commands.']])
+    // "ls-l": the space between a command and its options is missing.
+    const glued = /^([a-z]+)(-\S+)$/.exec(only.name)
+    const fixed = glued && lookup(glued[1]) ? [glued[1], glued[2], ...only.args].join(' ') : null
+    const tip = fixed
+      ? `Put a space between the command and its options: \`${fixed}\``
+      : 'That is not a command. To talk to Nell, type `write nell` first. `help` lists the commands.'
+    next = print(next, [['hint', tip]])
   }
 
   if (result.request === 'hint') next = story(next, { type: 'hint' })
