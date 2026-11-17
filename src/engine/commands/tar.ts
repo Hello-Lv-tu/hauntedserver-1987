@@ -1,5 +1,5 @@
 import type { Command, OutputLine } from '../shell/types.js'
-import { stderr, stdout } from '../shell/types.js'
+import { hint, stderr, stdout } from '../shell/types.js'
 import { canAccess } from '../vfs/Vfs.js'
 import type { VNode } from '../vfs/types.js'
 import { pathCtx } from './common.js'
@@ -12,7 +12,19 @@ export const TAPES = new Set(['/dev/rmt0', '/dev/rmt8', '/dev/mt0'])
  * tape and, with `v`, lists them as `a path N blocks`. Options are letters
  * with or without a dash; `f` takes the next operand as the archive.
  */
+const EXAMPLE = hint('Example: `tar cvf /dev/rmt0 ~nell`: four parts with spaces between them; rmt0 ends in the digit zero.')
+
+/** Add the example to any error, so a typo never leaves the player guessing. */
 export const tar: Command = (args, ctx) => {
+  const result = tarCore(args, ctx)
+  if (result.status === 0) return result
+  const [keys = ''] = args
+  const glued = /^-?([cvftx]+)(\/\S+)$/.exec(keys)
+  const extra = glued ? hint(`Put a space after the options: \`tar ${[glued[1], glued[2], ...args.slice(1)].join(' ')}\``) : EXAMPLE
+  return { ...result, lines: [...result.lines, extra] }
+}
+
+const tarCore: Command = (args, ctx) => {
   const [keys = '', ...rest] = args
   const letters = keys.replace(/^-/, '')
   if (letters === '' || /[^cvftx]/.test(letters)) return { lines: [stderr('tar: usage  tar -{txru}[cvfblmhopwBi] [tapefile] [blocksize] file1 file2...')], status: 1 }
