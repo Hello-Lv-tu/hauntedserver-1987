@@ -38,7 +38,7 @@ summary at the end.
 
 ## Status
 
-Playable now: the opening, five levels and the boss.
+Complete story: the opening, five levels, the boss and the endings.
 
 | Level | Jack's trick | Beaten with | Lesson |
 |---|---|---|---|
@@ -50,8 +50,13 @@ Playable now: the opening, five levels and the boss.
 | 5 | A rewritten system log | `diff` against `messages.0`, `last` | Records can be faked |
 | Boss | A root daemon that restarts itself | `su`, `kill`, `cron`, `rm` | Find the root cause |
 
+After the boss, Nell asks: come with you, or stay? Write her your answer.
+**Move**: pack her onto tape with `tar`; she wakes up in 2026 (and in your tab
+icon). **Stay**: vax3 turns amber and she is there on your next visit. There
+is also a hidden ending, and something odd in `ps` after the credits.
+
 Also: Nell's AI voice, Spellbook, three-level `hint`, autosave, a 60 s / 30 s
-popup timer. Endings, the machine-room scene and sound are next.
+popup timer. The machine-room scene and sound are next.
 
 ## Run locally
 

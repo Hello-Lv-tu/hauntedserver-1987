@@ -109,7 +109,7 @@ her own opinion, then asks. The player answers in write mode with words like
 |---|---|---|
 | **Move** | "come" | Nell: "pack me up then!" Player runs `tar cvf /dev/rmt0 ~nell`; files scroll by; the tape reel spins in the scene; the screen fades to white; the browser tab icon becomes a tiny ghost; Nell's last message arrives in a modern font she complains about ("why are all the buttons ROUND??"). Main ending for the demo video. |
 | **Stay** | "stay" | Nell guards vax3. The room light turns from green to warm amber. On later visits `write nell` reaches her and she remembers the player (localStorage). |
-| **Hidden: a piece of you** | Before choosing: read `~nell/.diary` as root, solved `/tmp/riddle` (answer "keyboard", written to Nell), and wrote your own `~/.plan` with `echo ... > ~/.plan` | After either ending: the player's `.plan` becomes the SOS the next visitor sees on a new game. Stored only in the player's browser. |
+| **Hidden: a piece of you** | Before choosing: read `~nell/.diary` as root and write the answer to `/tmp/riddle` ("keyboard") to Nell. Nell then asks for one line for the next visitor (written to her; the terminal has no `>` redirection) | The line is shown on the summary and greets the next visitor on a new game, as a write message from guest. Stored only in the player's browser, max 100 characters. |
 | **Post-credits tease** | `ps` after the credits | A tiny `pumpkin_seed` process flickers at the bottom of the list and is gone on the next `ps`. Never explained. |
 
 No "it was all a lie" twist in the main story.

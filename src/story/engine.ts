@@ -1,6 +1,7 @@
 import { endLevel } from './levels/end.js'
 import { level0 } from './levels/level0.js'
 import { boss } from './levels/boss.js'
+import { choice } from './levels/choice.js'
 import { level1 } from './levels/level1.js'
 import { level2 } from './levels/level2.js'
 import { level3 } from './levels/level3.js'
@@ -10,7 +11,7 @@ import { NELL } from './lines.js'
 import { looksLikeCommand, pick } from './matchers.js'
 import type { Effect, Flags, Level, StoryCtx, StoryInput, StoryState } from './types.js'
 
-export const LEVELS: readonly Level[] = [level0, level1, level2, level3, level4, level5, boss]
+export const LEVELS: readonly Level[] = [level0, level1, level2, level3, level4, level5, boss, choice]
 
 export function levelAt(id: number): Level {
   return LEVELS[id] ?? endLevel(id)

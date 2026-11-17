@@ -338,6 +338,22 @@ const PAGES: Record<string, Page> = {
     description: ['End the login session. After su, return to your own user.'],
     modern: ['Unchanged, though most people just close the window.'],
   },
+  tar: {
+    section: 1,
+    name: 'tar - tape archiver',
+    synopsis: 'tar [ cvf ] [ tapefile ] file ...',
+    description: [
+      'Copy files and whole directories onto a tape. c creates a new',
+      'archive, v lists each file as it is written, f names the tape',
+      '(on vax3 the first drive is /dev/rmt0).',
+      '',
+      'Example: tar cvf /dev/rmt0 ~nell',
+    ],
+    modern: [
+      'Still everywhere: `tar czf backup.tar.gz folder` packs a folder into',
+      'one file. Most software you download from Linux sites is a tarball.',
+    ],
+  },
   hint: {
     section: 1,
     name: 'hint - ask for a nudge',

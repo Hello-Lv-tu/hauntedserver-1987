@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useReducer, useRef } from 'react'
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { SAVE_KEY, serializeSave } from '../game/save.js'
 import { SETTINGS_KEY } from '../game/settings.js'
 import type { Card, GameInput, GameState } from '../game/types.js'
 import { Assistant } from './Assistant.js'
 import { CardView } from './Cards.js'
+import { EndScreen } from './EndScreen.js'
+import { adoptGhostIcon } from './favicon.js'
 import { GearIcon } from './icons.js'
 import { JackPopup } from './JackPopup.js'
 import { SettingsPanel, SpellbookPanel } from './Panels.js'
@@ -15,7 +17,7 @@ import './game.css'
 
 const cardKey = (card: Card) => (card.kind === 'spell' ? `spell:${card.spell.command}` : `lesson:${card.card.title}`)
 
-export function Game({ initial }: { initial: GameState }) {
+export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain: (legacy: string | null) => void }) {
   const [state, dispatch] = useReducer(terminalReducer, initial, initialTerminal)
   const { game } = state
   const inputRef = useRef<HTMLInputElement>(null)
@@ -28,6 +30,13 @@ export function Game({ initial }: { initial: GameState }) {
     const timer = window.setInterval(() => send({ type: 'tick' }), 1000)
     return () => window.clearInterval(timer)
   }, [hasPopup, send])
+
+  // The ending screen shows once per ending; "Back to the terminal" closes it.
+  const [endingClosed, setEndingClosed] = useState(false)
+  const showEnding = game.ending !== null && !endingClosed && game.cards.length === 0
+  useEffect(() => {
+    if (game.ending === 'move') adoptGhostIcon()
+  }, [game.ending])
 
   // Nell's AI voice: resolves pending replies one at a time.
   useNellVoice(game.pendingVoices[0], send)
@@ -61,7 +70,7 @@ export function Game({ initial }: { initial: GameState }) {
   const hasOverlay = showCard || showAssistant
 
   return (
-    <div className={hasOverlay ? 'game has-overlay' : 'game'}>
+    <div className={['game', hasOverlay ? 'has-overlay' : '', game.save.ending === 'stay' ? 'amber' : ''].filter(Boolean).join(' ')}>
       <div className="toolbar">
         <button type="button" className="tool" onClick={() => send({ type: 'panel', panel: 'spellbook' })}>
           Spellbook ({game.spells.length})
@@ -89,6 +98,17 @@ export function Game({ initial }: { initial: GameState }) {
 
       {/* Being eaten: a new key remounts the overlay, which replays its CSS animation once. */}
       {game.glitch > 0 ? <div key={game.glitch} className="glitch-overlay" aria-hidden="true" /> : null}
+
+      {showEnding ? (
+        <EndScreen
+          game={game}
+          onBack={() => {
+            setEndingClosed(true)
+            inputRef.current?.focus()
+          }}
+          onPlayAgain={() => onPlayAgain(game.legacy)}
+        />
+      ) : null}
 
       {game.panel === 'spellbook' ? <SpellbookPanel learned={game.spells} onClose={closePanel} /> : null}
       {game.panel === 'settings' ? (

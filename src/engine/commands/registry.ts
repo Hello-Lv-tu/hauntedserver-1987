@@ -7,6 +7,7 @@ import { mail } from './mail.js'
 import { clear, date, echo, history, whoami } from './misc.js'
 import { cd, pwd } from './navigation.js'
 import { hintCommand, kill, ps, spellbook, who, write } from './procs.js'
+import { tar } from './tar.js'
 import { cat, grep, head, more, tail, wc } from './text.js'
 import { exit, finger, last, su } from './users.js'
 
@@ -58,6 +59,7 @@ export const registry: Readonly<Record<string, Command>> = {
   spellbook,
   su,
   tail,
+  tar,
   wc,
   who,
   whoami,

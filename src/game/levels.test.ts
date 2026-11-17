@@ -136,7 +136,7 @@ describe('boss: the daemon that came back', () => {
     const g = play(at(6), ['su', 'tape3', 'rm /usr/lib/jack/jack-o-daemon', 'kill 6666', 'ls'])
     expect(jackAlive(g)).toBe(false)
     expect(g.story.level).toBe(7)
-    expect(g.finished).toBe(true)
+    expect(screenText(g)).toContain('`come with me`, or `stay`')
   })
 
   it('guest cannot remove his program', () => {
