@@ -209,7 +209,9 @@ export function normalDiff(a: string[], b: string[]): string[] {
 
 export const diff: Command = (args, ctx: CommandCtx) => {
   const files = args.filter((a) => !a.startsWith('-'))
-  if (files.length !== 2) return { lines: [stderr('diff: two filename arguments required')], status: 2 }
+  if (files.length !== 2) {
+    return { lines: [stderr('diff: two filename arguments required'), hint('diff compares TWO files, separated by a space: `diff oldfile newfile`')], status: 2 }
+  }
   const contents: string[][] = []
   for (const file of files) {
     const read = ctx.vfs.readFile(file, pathCtx(ctx))

@@ -159,14 +159,21 @@ function shellLine(state: GameState, text: string): GameState {
   // Typed a sentence (or a typo) at the shell: point to write and help.
   const [only] = result.events
   const alreadyHinted = result.lines.some((l) => l.stream === 'hint')
-  if (result.events.length === 1 && only.status !== 0 && lookup(only.name) === undefined && !alreadyHinted && !only.name.includes('/')) {
-    // "ls-l": the space between a command and its options is missing.
-    const glued = /^([a-z]+)(-\S+)$/.exec(only.name)
+  if (result.events.length === 1 && only.status !== 0 && lookup(only.name) === undefined && !alreadyHinted && !only.name.startsWith('/')) {
+    // "ls-l" or "diff/usr/...": the space after the command is missing.
+    const glued = /^([a-z]+)([-/~.]\S*)$/.exec(only.name)
     const fixed = glued && lookup(glued[1]) ? [glued[1], glued[2], ...only.args].join(' ') : null
     const tip = fixed
       ? `Put a space between the command and its options: \`${fixed}\``
       : 'That is not a command. To talk to Nell, type `write nell` first. `help` lists the commands.'
     next = print(next, [['hint', tip]])
+  }
+
+  // "/user" is the most common misspelling of /usr.
+  const misspelled = result.events.length > 0 && result.events.some((e) => e.status !== 0) && /(^|\s|\/)user(\/|\s|$)/.test(text)
+  if (misspelled) {
+    const fixed = text.replace(/(^|\s|\/)user(?=\/|\s|$)/g, '$1usr')
+    next = print(next, [['hint', `Unix spells it usr, without the e: \`${fixed}\``]])
   }
 
   if (result.request === 'hint') next = story(next, { type: 'hint' })

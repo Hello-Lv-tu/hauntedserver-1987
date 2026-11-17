@@ -72,3 +72,23 @@ describe('play-test 2026-11-17: AI Nell repeated old tasks in Level 4', () => {
     expect(g.chatLog.map((c) => c.text).join(' ')).not.toContain('what now?')
   })
 })
+
+describe('play-test 2026-11-17: /user and diff in Level 5', () => {
+  it('/user suggests /usr', () => {
+    expect(hints(play(at(5), ['cd /user'])).at(-1)).toBe('Unix spells it usr, without the e: `cd /usr`')
+    expect(hints(play(at(5), ['diff /user/adm/messages.0 /user/adm/messages'])).at(-1)).toContain('`diff /usr/adm/messages.0 /usr/adm/messages`')
+  })
+
+  it('diff with one file says it needs two', () => {
+    expect(hints(play(at(5), ['diff /usr/adm/messages.0'])).join(' ')).toContain('TWO files')
+  })
+
+  it('a command glued to a path suggests the space', () => {
+    expect(hints(play(at(5), ['diff/usr/adm/messages.0'])).join(' ')).toContain('`diff /usr/adm/messages.0`')
+  })
+
+  it('the exact steps the player typed, then the fix, complete the level', () => {
+    const g = play(at(5), ['hint', 'ls', 'cd /user', 'cd user', 'cd adm', 'hint', 'diff /user/adm/messages.0', 'diff/user/adm/messages.0.', 'diff /usr/adm/messages.0 /usr/adm/messages'])
+    expect(g.story.level).toBe(6)
+  })
+})
