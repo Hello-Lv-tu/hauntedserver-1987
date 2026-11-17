@@ -13,6 +13,8 @@ export interface StoryState {
   hintIndex: number
   /** Counts inputs; used to rotate between line variants deterministically. */
   turn: number
+  /** Messages the player has written to Nell in the current beat. */
+  chats: number
 }
 
 export type PopupAction = 'fix' | 'close' | 'timeout'
@@ -39,6 +41,8 @@ export interface LessonCard {
 
 export type Effect =
   | { type: 'nell'; lines: string[] }
+  /** A reply to the player's own words: the AI may reword it; `fallback` is used otherwise. */
+  | { type: 'nellVoice'; fallback: string[]; text: string }
   | { type: 'jack'; lines: string[] }
   | { type: 'hint'; text: string }
   | { type: 'say'; lines: string[] }

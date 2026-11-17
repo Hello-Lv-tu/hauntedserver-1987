@@ -15,7 +15,7 @@ export function levelAt(id: number): Level {
 export function levelEntry(level: number, flags: Flags = {}): { story: StoryState; effects: Effect[] } {
   const def = levelAt(level)
   return {
-    story: { level, beat: def.start, flags, hintIndex: 0, turn: 0 },
+    story: { level, beat: def.start, flags, hintIndex: 0, turn: 0, chats: 0 },
     effects: [{ type: 'levelStart', level }, ...def.enter],
   }
 }
@@ -32,7 +32,8 @@ export function isFinished(story: StoryState): boolean {
 export function storyStep(state: StoryState, input: StoryInput, ctx: StoryCtx): { story: StoryState; effects: Effect[] } {
   const level = levelAt(state.level)
   const beat = level.beats[state.beat] ?? level.beats[level.start]
-  const now: StoryState = { ...state, turn: state.turn + 1 }
+  const wroteToNell = input.type === 'wrote' && input.to === 'nell'
+  const now: StoryState = { ...state, turn: state.turn + 1, chats: state.chats + (wroteToNell ? 1 : 0) }
 
   const askedForHint = input.type === 'hint' || (input.type === 'wrote' && input.text.trim() === 'hint')
   if (askedForHint) {
@@ -46,14 +47,17 @@ export function storyStep(state: StoryState, input: StoryInput, ctx: StoryCtx): 
   // A beat that moves the story on (e.g. her first greeting) still wins.
   const movesOn = transition !== null && (transition.next !== undefined || transition.complete === true)
   if (input.type === 'wrote' && looksLikeCommand(input.text) && !movesOn) {
+    // Kept pre-written: it is an instruction, not small talk.
     transition = { effects: [{ type: 'nell', lines: [...pick(NELL.stillWriting, now.turn)] }] }
+  } else if (input.type === 'wrote' && wroteToNell && !movesOn) {
+    // Small talk: Nell's AI voice may answer the player's own words.
+    // Story-moving lines (greetings, reactions) always stay pre-written.
+    const chatter = transition?.effects?.filter((e) => e.type === 'nell') ?? []
+    const fallback = chatter.length > 0 && chatter[0].type === 'nell' ? chatter[0].lines : [...pick(NELL.chatter, now.turn)]
+    const others = transition?.effects?.filter((e) => e.type !== 'nell') ?? []
+    transition = { ...transition, effects: [...others, { type: 'nellVoice', fallback, text: input.text }] }
   }
-  if (transition === null) {
-    if (input.type === 'wrote' && input.to === 'nell') {
-      return { story: now, effects: [{ type: 'nell', lines: [...pick(NELL.chatter, now.turn)] }] }
-    }
-    return { story: now, effects: [] }
-  }
+  if (transition === null) return { story: now, effects: [] }
 
   const flags = transition.flags ? { ...now.flags, ...transition.flags } : now.flags
   const effects = transition.effects ?? []
@@ -63,7 +67,7 @@ export function storyStep(state: StoryState, input: StoryInput, ctx: StoryCtx): 
     return { story: next.story, effects: [...effects, ...next.effects] }
   }
   if (transition.next && transition.next !== now.beat) {
-    return { story: { ...now, flags, beat: transition.next, hintIndex: 0 }, effects }
+    return { story: { ...now, flags, beat: transition.next, hintIndex: 0, chats: 0 }, effects }
   }
   return { story: { ...now, flags }, effects }
 }

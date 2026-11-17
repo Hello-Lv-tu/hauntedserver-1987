@@ -75,7 +75,11 @@ export function Terminal({ game, input, dispatch, inputRef, onEscape }: Terminal
       <div className="terminal-input-row">
         <label htmlFor="terminal-input" className={writing ? 'prompt prompt-writing' : 'prompt'}>
           {/* Real write shows no prompt; this label is a UI aid so players know where their words go. */}
-          {writing && game.mode.kind === 'write' ? `(to ${game.mode.to}, Ctrl-D/EOF ends) ` : promptText}
+          {writing && game.mode.kind === 'write'
+            ? game.pendingVoices.length > 0
+              ? `(${game.mode.to} is writing...) `
+              : `(to ${game.mode.to}, Ctrl-D/EOF ends) `
+            : promptText}
         </label>
         <input
           id="terminal-input"

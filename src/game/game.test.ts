@@ -138,6 +138,47 @@ describe('level 1: the popup that would not close', () => {
   })
 })
 
+describe("Nell's AI voice", () => {
+  const chatting = () => play(newGame(), ['write nell', 'hi', 'what should i do next?'])
+
+  it('small talk creates a pending voice request with context, printing nothing yet', () => {
+    const game = chatting()
+    expect(game.pendingVoices).toHaveLength(1)
+    const [pending] = game.pendingVoices
+    expect(pending.request).toMatchObject({ level: 0, beat: 'hunt', chats: 1, text: 'what should i do next?' })
+    expect(pending.request.history.map((h) => h.from)).toEqual(['nell', 'player', 'nell']) // SOS, hi, greeting
+    expect(pending.fallback.length).toBeGreaterThan(0)
+    expect(screenText(game)).not.toContain(pending.fallback[0])
+  })
+
+  it('prints the AI lines when they arrive, or the fallback on failure', () => {
+    const game = chatting()
+    const id = game.pendingVoices[0].id
+    const answered = step(game, { type: 'voice', id, lines: ['the note is called .from_nell!'] })
+    expect(screenText(answered)).toContain('the note is called .from_nell!')
+    expect(answered.pendingVoices).toEqual([])
+    expect(answered.chatLog.at(-1)).toEqual({ from: 'nell', text: 'the note is called .from_nell!' })
+
+    const failed = step(game, { type: 'voice', id, lines: null })
+    expect(screenText(failed)).toContain(game.pendingVoices[0].fallback[0])
+  })
+
+  it('story-moving lines and the "still writing" nudge stay pre-written', () => {
+    expect(play(newGame(), ['write nell', 'hi']).pendingVoices).toEqual([])
+    expect(play(newGame(), ['write nell', 'hi', 'ls -a']).pendingVoices).toEqual([])
+  })
+
+  it('counts chats per beat so the AI may give the full answer after three asks', () => {
+    const game = play(newGame(), ['write nell', 'hi', 'help?', 'what?', 'please?'])
+    expect(game.pendingVoices.map((p) => p.request.chats)).toEqual([1, 2, 3])
+  })
+
+  it('ignores unknown voice ids', () => {
+    const game = chatting()
+    expect(step(game, { type: 'voice', id: 999, lines: ['x'] })).toBe(game)
+  })
+})
+
 describe('continuing from a save', () => {
   it('rebuilds the world for the saved level', () => {
     const game = newGame({ save: { version: 1, level: 1, spells: ['ls'], flags: {} } })
