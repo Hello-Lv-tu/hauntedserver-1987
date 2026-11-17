@@ -65,7 +65,7 @@ export function createHandler(deps: HandlerDeps) {
           model: deps.env.DEEPSEEK_MODEL || DEFAULT_MODEL,
           messages: buildMessages(voice, beat),
           max_tokens: 120,
-          temperature: 0.9,
+          temperature: 0.7,
           thinking: { type: 'disabled' },
           stream: false,
         }),

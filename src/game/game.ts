@@ -297,6 +297,8 @@ function applyEffects(state: GameState, effects: Effect[]): GameState {
       case 'levelStart':
         s = {
           ...s,
+          // Old levels' chat confused the AI (it repeated level 0 steps in level 4).
+          chatLog: [],
           checkpoint: { vfs: s.vfs, procs: s.procs, session: s.session, level: effect.level, flags: s.story.flags },
           save: { version: 1, level: effect.level, spells: s.spells, flags: { ...s.story.flags } },
         }

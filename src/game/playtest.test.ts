@@ -64,3 +64,11 @@ describe('play-test 2026-11-17: chmod in Level 3', () => {
     expect(g.story.level).toBe(4)
   })
 })
+
+describe('play-test 2026-11-17: AI Nell repeated old tasks in Level 4', () => {
+  it('chat context starts fresh at each level', () => {
+    const g = play(newGame(), ['write nell', 'hi', 'what now?', 'EOF', 'ls -a', 'cat .from_nell'])
+    expect(g.story.level).toBe(1)
+    expect(g.chatLog.map((c) => c.text).join(' ')).not.toContain('what now?')
+  })
+})
