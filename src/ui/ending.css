@@ -1,32 +1,270 @@
-/* Ending overlay. */
+/* ------------------------------------------------------------------ shared */
 .ending {
   position: fixed;
   inset: 0;
   z-index: 50;
   overflow-y: auto;
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem 3rem;
 }
 
 .ending-sheet {
-  max-width: 44rem;
+  max-width: 40rem;
   margin: 0 auto;
 }
 
-/* Stay: the amber terminal, calm. */
-.ending-stay {
-  background: rgba(10, 6, 0, 0.92);
-  color: #ffb000;
-  text-shadow: 0 0 4px rgba(255, 176, 0, 0.5);
-  animation: ending-fade 1.5s ease-out both;
+.ending p {
+  margin: 0;
 }
 
-/* Move: the CRT fades to white, then a modern page. */
+.tile {
+  padding: 1rem 1.1rem;
+  border-radius: 20px;
+}
+
+.tile-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+.tile-note {
+  margin-top: 0.6rem !important;
+  font-size: 0.85rem;
+  opacity: 0.65;
+}
+
+.section-title {
+  margin: 1.5rem 0 0.6rem !important;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+/* Chat with Nell */
+.chat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.chat-head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.4rem;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  animation: float 3s ease-in-out infinite;
+}
+
+.chat-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.chat-status {
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+.bubble {
+  max-width: 85%;
+  padding: 0.55rem 0.9rem;
+  border-radius: 20px 20px 20px 6px;
+  font-size: 1.05rem;
+  opacity: 0;
+  animation: pop-in 0.35s ease-out forwards;
+}
+
+.chat-typing {
+  display: flex;
+  gap: 4px;
+  padding: 0.7rem 0.9rem;
+  border-radius: 20px;
+  animation: typing-gone 0.1s 3.1s forwards;
+}
+
+.chat-typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+  animation: blink-dot 1s infinite;
+}
+
+.chat-typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.chat-typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Header */
+.ending-header {
+  margin: 0.5rem 0 1rem;
+}
+
+.ending-kicker {
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.ending-title {
+  margin: 0.1rem 0 0.3rem;
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  line-height: 1.1;
+}
+
+.ending-sub {
+  opacity: 0.75;
+}
+
+/* Stats */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.stat {
+  text-align: center;
+  padding: 0.9rem 0.4rem;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+/* Spell chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+}
+
+.chip code {
+  font-weight: 700;
+}
+
+.chip.retired {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+/* Lessons */
+.lessons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lesson {
+  position: relative;
+}
+
+.lesson-number {
+  display: inline-grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-bottom: 0.35rem;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.lesson-name {
+  font-weight: 700;
+  margin-bottom: 0.15rem !important;
+}
+
+.lesson-text {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Legacy line */
+.legacy {
+  margin: 1rem 0;
+}
+
+.legacy-text {
+  margin-top: 0.4rem !important;
+  font-size: 1.25rem;
+  font-style: italic;
+}
+
+/* Buttons */
+.ending-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.ending-button {
+  flex: 1;
+  min-width: 10rem;
+  padding: 0.85rem 1.2rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ending-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.ending-credits {
+  margin-top: 1.5rem !important;
+  font-size: 0.75rem;
+  text-align: center;
+  opacity: 0.5;
+}
+
+/* ---------------------------------------------------------------- Move: 2026 */
 .ending-move {
-  background: #f7f7f9;
-  color: #1d1d1f;
+  background:
+    radial-gradient(circle at 15% 0%, #ffe3f1 0%, transparent 45%),
+    radial-gradient(circle at 100% 30%, #dfe9ff 0%, transparent 50%),
+    linear-gradient(180deg, #fbf8ff 0%, #f3f6ff 100%);
+  color: #1d1d2b;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   text-shadow: none;
-  animation: ending-fade 0.4s 2.4s ease-out both;
+  animation: ending-fade 0.6s 2.4s ease-out both;
 }
 
 .ending-whiteout {
@@ -37,92 +275,106 @@
   animation: whiteout 2.8s ease-in both;
 }
 
-.modern-message {
-  max-width: 28rem;
-  margin: 1rem auto 2rem;
-  padding: 1rem 1.25rem;
-  border-radius: 22px;
+.ending-move .avatar {
+  background: linear-gradient(135deg, #ffffff, #ece6ff);
+  box-shadow: 0 8px 24px rgba(120, 90, 200, 0.25);
+}
+
+.ending-move .bubble,
+.ending-move .chat-typing {
   background: #ffffff;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-  font-size: 1.1rem;
+  box-shadow: 0 4px 14px rgba(40, 30, 90, 0.08);
 }
 
-.modern-message p {
-  margin: 0.25rem 0;
+.ending-move .tile {
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 6px 20px rgba(40, 30, 90, 0.07);
+  backdrop-filter: blur(6px);
 }
 
-.modern-from {
-  font-size: 0.8rem;
-  color: #8a8a8e;
+.ending-move .stat-number {
+  background: linear-gradient(135deg, #7b5cff, #ff6fb1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-.ending-title {
-  font-weight: normal;
-  font-size: 2rem;
+.ending-move .chip {
+  background: #f0ecff;
+  color: #3a2b80;
 }
 
-.ending-move .ending-title {
-  font-weight: 700;
-}
-
-.ending h2 {
-  font-size: 1.15rem;
-  font-weight: normal;
-  margin-top: 1.5rem;
-}
-
-.ending-spells {
-  columns: 2;
-  padding-left: 1.2rem;
-}
-
-.ending-spells code {
-  font-family: inherit;
-  font-weight: bold;
-}
-
-.ending-move .ending-spells code {
+.ending-move .chip code {
   font-family: ui-monospace, Menlo, Consolas, monospace;
 }
 
-.ending-legacy q {
-  font-style: italic;
+.ending-move .lesson-number {
+  background: linear-gradient(135deg, #7b5cff, #ff6fb1);
+  color: #ffffff;
 }
 
-.ending-stats,
-.ending-credits {
-  opacity: 0.75;
-}
-
-.ending-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-}
-
-.ending-button {
-  padding: 0.5rem 1rem;
-  border: 1px solid currentColor;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
+.ending-move .ending-title {
+  font-weight: 800;
 }
 
 /* In 2026 the buttons are round. Nell noticed. */
 .ending-move .ending-button {
   border: none;
   border-radius: 999px;
-  background: #0a84ff;
+  background: #ffffff;
+  color: #3a2b80;
+  box-shadow: 0 4px 14px rgba(40, 30, 90, 0.1);
+}
+
+.ending-move .ending-button.primary {
+  background: linear-gradient(135deg, #7b5cff, #ff6fb1);
   color: #ffffff;
 }
 
-.ending-button:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
+/* ---------------------------------------------------------- Stay: amber CRT */
+.ending-stay {
+  background: rgba(12, 7, 0, 0.94);
+  color: #ffb000;
+  text-shadow: 0 0 4px rgba(255, 176, 0, 0.45);
+  animation: ending-fade 1.5s ease-out both;
 }
 
+.ending-stay .avatar,
+.ending-stay .bubble,
+.ending-stay .chat-typing,
+.ending-stay .tile,
+.ending-stay .chip,
+.ending-stay .lesson-number {
+  border: 1px solid rgba(255, 176, 0, 0.55);
+  background: rgba(255, 176, 0, 0.06);
+}
+
+.ending-stay .tile,
+.ending-stay .bubble {
+  border-radius: 6px;
+}
+
+.ending-stay .ending-button {
+  border: 1px solid #ffb000;
+  background: transparent;
+  color: #ffb000;
+}
+
+.ending-stay .ending-button.primary {
+  background: #ffb000;
+  color: #1a1000;
+  text-shadow: none;
+}
+
+/* The terminal after the Stay ending: warm amber phosphor. */
+.game.amber {
+  --phosphor: #ffb000;
+  --phosphor-dim: #8a5f00;
+  color: var(--phosphor);
+  text-shadow: 0 0 4px var(--phosphor-dim);
+}
+
+/* -------------------------------------------------------------- animations */
 @keyframes ending-fade {
   from {
     opacity: 0;
@@ -138,23 +390,63 @@
   }
 }
 
-@media (max-width: 700px) {
-  .ending-spells {
-    columns: 1;
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes typing-gone {
+  to {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+}
+
+@keyframes blink-dot {
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@media (max-width: 560px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lessons {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ending-stay,
   .ending-move,
-  .ending-whiteout {
+  .ending-whiteout,
+  .avatar,
+  .chat-typing span {
     animation: none;
   }
-}
 
-.game.amber {
-  --phosphor: #ffb000;
-  --phosphor-dim: #8a5f00;
-  color: var(--phosphor);
-  text-shadow: 0 0 4px var(--phosphor-dim);
+  .bubble {
+    animation: none;
+    opacity: 1;
+  }
+
+  .chat-typing {
+    display: none;
+  }
 }

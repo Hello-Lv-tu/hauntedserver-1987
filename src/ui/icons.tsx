@@ -41,3 +41,16 @@ export function GearIcon({ size = 16, className }: IconProps) {
     </svg>
   )
 }
+
+export function GhostIcon({ size = 32, className }: IconProps) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M6 29V14a10 10 0 0 1 20 0v15l-3.3-2.8-3.4 2.8-3.3-2.8-3.3 2.8-3.4-2.8z" fill="#ffffff" stroke="#b9b0d9" strokeWidth="1" />
+      <circle cx="12.5" cy="14" r="2" fill="#2a2440" />
+      <circle cx="19.5" cy="14" r="2" fill="#2a2440" />
+      <ellipse cx="10.5" cy="18" rx="1.6" ry="1" fill="#ffb3cf" />
+      <ellipse cx="21.5" cy="18" rx="1.6" ry="1" fill="#ffb3cf" />
+      <path d="M13.5 19q2.5 2 5 0" stroke="#2a2440" fill="none" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  )
+}
