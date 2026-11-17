@@ -1,6 +1,8 @@
 /** Nell's limits from .kiro/steering/ghost-persona.md. */
 export const MAX_LINES = 3
 export const MAX_CHARS = 199
+/** Wrap like an 80-column terminal, with room for the left edge. */
+export const WRAP_COLUMNS = 72
 
 /** Emoji and their joiners; ™ © ® are allowed (every text font has them). */
 const EMOJI = /(?![\u2122\u00a9\u00ae])\p{Extended_Pictographic}|\u200d|\ufe0f/gu
@@ -30,6 +32,7 @@ export function sanitizeReply(raw: string): string[] | null {
         .trim(),
     )
     .filter((line) => line !== '')
+    .flatMap(wrap)
     .slice(0, MAX_LINES)
 
   const out: string[] = []
@@ -48,4 +51,25 @@ export function sanitizeReply(raw: string): string[] | null {
     break
   }
   return out.length > 0 ? out : null
+}
+
+/** Split a line at word boundaries so no piece exceeds WRAP_COLUMNS. */
+export function wrap(line: string): string[] {
+  const out: string[] = []
+  let current = ''
+  for (const word of line.split(' ')) {
+    const candidate = current === '' ? word : `${current} ${word}`
+    if (candidate.length <= WRAP_COLUMNS) {
+      current = candidate
+      continue
+    }
+    if (current !== '') out.push(current)
+    current = word
+    while (current.length > WRAP_COLUMNS) {
+      out.push(current.slice(0, WRAP_COLUMNS))
+      current = current.slice(WRAP_COLUMNS)
+    }
+  }
+  if (current !== '') out.push(current)
+  return out
 }

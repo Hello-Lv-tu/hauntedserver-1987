@@ -13,6 +13,7 @@ import type { Effect, StoryCtx, StoryInput } from '../story/types.js'
 import { createWorld } from '../story/world.js'
 import type { SaveData } from './save.js'
 import type { Settings } from './settings.js'
+import { normalizeInput } from './normalize.js'
 import { DEFAULT_SETTINGS } from './settings.js'
 import type { GameInput, GameState, LineKind } from './types.js'
 
@@ -74,18 +75,20 @@ export function newGame(options: { save?: SaveData | null; settings?: Settings }
 /** The whole game advances only through this pure function. */
 export function step(state: GameState, input: GameInput): GameState {
   switch (input.type) {
-    case 'line':
+    case 'line': {
+      const text = normalizeInput(input.text)
       switch (state.mode.kind) {
         case 'write':
-          return writeLine(state, input.text)
+          return writeLine(state, text)
         case 'mail':
-          return mailLine(state, input.text)
+          return mailLine(state, text)
         case 'password':
-          return passwordLine(state, input.text)
+          return passwordLine(state, text)
         case 'shell':
-          return shellLine(state, input.text)
+          return shellLine(state, text)
       }
       break
+    }
 
     case 'eof':
       if (state.mode.kind === 'write' || state.mode.kind === 'password') return { ...state, mode: { kind: 'shell' } }
@@ -141,6 +144,7 @@ function shellLine(state: GameState, text: string): GameState {
   next = { ...next, vfs: result.vfs, procs: result.procs, session: result.session }
   next = result.clear ? { ...next, screen: [] } : print(next, result.lines.map((l) => [l.stream, l.text]))
   if (result.mode) next = { ...next, mode: result.mode }
+  if (result.mode?.kind === 'mail') next = print(next, [['hint', MAIL_HELP]])
   if (result.request === 'spellbook') next = { ...next, panel: 'spellbook' }
 
   // Spells: the first successful use of each spell command.
@@ -177,11 +181,18 @@ function writeLine(state: GameState, text: string): GameState {
 /** The command Jack's assistant pushes in Level 4. */
 export const ASSISTANT_COMMAND = 'rm -rf ~'
 
+/** Shown on entering Mail, and when a command at the & prompt is not understood. */
+export const MAIL_HELP = 'You are in Mail now (the & prompt). Type a number to read a letter, `P 2` for letter 2 with ALL headers, `d 2` to delete it, `q` to quit. `?` lists everything.'
+
 function mailLine(state: GameState, text: string): GameState {
   if (state.mode.kind !== 'mail') return state
   const echoed = print(state, [['prompt', `& ${text}`]])
+  // Game commands work here too, so nobody is stuck at the & prompt.
+  if (text.trim() === 'hint') return story(echoed, { type: 'hint' })
   const result = mailCommand(state.mode.box, text)
   let next = print(echoed, result.lines.map((l) => ['stdout', l]))
+  const confused = result.lines.some((l) => l.startsWith('Unknown command') || l.startsWith('Sorry, sending mail'))
+  if (confused) next = print(next, [['hint', MAIL_HELP]])
   next = { ...next, mode: result.done ? { kind: 'shell' } : { kind: 'mail', box: result.box } }
   if (result.spool !== undefined) {
     const spool = next.vfs.stat(result.box.path, { cwd: '/', home: '/', user: 'root' })
