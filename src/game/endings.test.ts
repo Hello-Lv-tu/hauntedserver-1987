@@ -108,3 +108,12 @@ describe('save data with endings', () => {
     expect(parseSave(JSON.stringify({ ...save, legacy: 'a\nb' }))).toBeNull()
   })
 })
+
+describe('revisit after an ending', () => {
+  it('explains what you can do', () => {
+    const save = { version: 1 as const, level: 8, spells: [], flags: {}, ending: 'move' as const }
+    const hint = newGame({ save }).screen.filter((l) => l.kind === 'hint').at(-1)?.text
+    expect(hint).toContain('You finished the game')
+    expect(hint).toContain('`write nell`')
+  })
+})
