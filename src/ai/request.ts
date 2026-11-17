@@ -5,6 +5,8 @@ export interface ChatEntry {
 }
 
 export interface VoiceRequest {
+  /** Language Nell answers in. Optional for older clients; defaults to English. */
+  lang?: 'en' | 'zh'
   level: number
   beat: string
   /** Messages the player has written to Nell in this beat (incl. this one). */
@@ -21,7 +23,8 @@ export const LIMITS = { text: 200, history: 8, entry: 300, beat: 40, chats: 1000
 export function parseVoiceRequest(value: unknown): VoiceRequest | null {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return null
   const v = value as Record<string, unknown>
-  const { level, beat, chats, text, history } = v
+  const { level, beat, chats, text, history, lang } = v
+  if (lang !== undefined && lang !== 'en' && lang !== 'zh') return null
   if (typeof level !== 'number' || !Number.isInteger(level) || level < 0 || level > 100) return null
   if (typeof beat !== 'string' || beat.length === 0 || beat.length > LIMITS.beat) return null
   if (typeof chats !== 'number' || !Number.isInteger(chats) || chats < 0 || chats > LIMITS.chats) return null
@@ -35,5 +38,5 @@ export function parseVoiceRequest(value: unknown): VoiceRequest | null {
     if (typeof e.text !== 'string' || e.text.length > LIMITS.entry) return null
     entries.push({ from: e.from, text: e.text })
   }
-  return { level, beat, chats, text, history: entries }
+  return { ...(lang === 'zh' ? { lang } : {}), level, beat, chats, text, history: entries }
 }

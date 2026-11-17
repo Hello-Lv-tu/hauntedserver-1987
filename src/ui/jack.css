@@ -17,7 +17,7 @@
     0 24px 60px rgba(255, 106, 0, 0.35),
     0 2px 6px rgba(0, 0, 0, 0.4);
   color: #3b1d00;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', 'Fusion Pixel SC', sans-serif;
   font-size: 15px;
   line-height: 1.4;
   text-shadow: none;
@@ -141,7 +141,7 @@
   background: linear-gradient(160deg, #fff7ec 0%, #ffe2bf 100%);
   box-shadow: 0 18px 40px rgba(255, 106, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.4);
   color: #3b1d00;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', 'Fusion Pixel SC', sans-serif;
   font-size: 15px;
   line-height: 1.4;
   text-shadow: none;

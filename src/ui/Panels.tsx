@@ -2,6 +2,9 @@ import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import type { Settings } from '../game/settings.js'
 import { SPELLS } from '../story/spells.js'
+import { LANGS } from '../i18n/index.js'
+import { useT } from './useT.js'
+import { LineText } from './LineText.js'
 
 interface PanelProps {
   title: string
@@ -40,8 +43,9 @@ function Panel({ title, onClose, children }: PanelProps) {
 }
 
 export function SpellbookPanel({ learned, onClose }: { learned: string[]; onClose: () => void }) {
+  const { t, tr } = useT()
   return (
-    <Panel title={`Spellbook (${learned.length}/${SPELLS.length})`} onClose={onClose}>
+    <Panel title={`${t('Spellbook')} (${learned.length}/${SPELLS.length})`} onClose={onClose}>
       <ul className="spell-list">
         {SPELLS.map((spell) => {
           const known = learned.includes(spell.command)
@@ -49,20 +53,24 @@ export function SpellbookPanel({ learned, onClose }: { learned: string[]; onClos
             <li key={spell.command} className={known ? 'spell known' : 'spell unknown'}>
               {known ? (
                 <>
-                  <code>{spell.command}</code> <span className="spell-name">{spell.name}</span>
-                  <span className="spell-desc">{spell.description}</span>
+                  <code>{spell.command}</code> <span className="spell-name">{tr(spell.name)}</span>
+                  <span className="spell-desc">
+                    <LineText text={tr(spell.description)} commands />
+                  </span>
                 </>
               ) : (
                 <>
-                  <code>???</code> <span className="spell-name">not yet learned</span>
-                  {spell.tip ? <span className="spell-desc">Try: <code className="cmd">{spell.tip}</code></span> : null}
+                  <code>???</code> <span className="spell-name">{t('not yet learned')}</span>
+                  {spell.tip ? <span className="spell-desc">{t('Try:')} <code className="cmd">{spell.tip}</code></span> : null}
                 </>
               )}
             </li>
           )
         })}
       </ul>
-      <p className="panel-note">Type `man name` in the terminal to read about any spell you know.</p>
+      <p className="panel-note">
+        <LineText text={t('Type `man name` in the terminal to read about any spell you know.')} commands />
+      </p>
     </Panel>
   )
 }
@@ -76,10 +84,21 @@ export function SettingsPanel({
   onChange: (settings: Settings) => void
   onClose: () => void
 }) {
+  const { t } = useT()
   return (
-    <Panel title="Settings" onClose={onClose}>
+    <Panel title={t('Settings')} onClose={onClose}>
       <fieldset className="setting">
-        <legend>Jack's popup countdown</legend>
+        <legend>{t('Language')} / Language</legend>
+        {LANGS.map((lang) => (
+          <label key={lang} className="setting-option">
+            <input type="radio" name="lang" value={lang} checked={settings.lang === lang} onChange={() => onChange({ ...settings, lang })} />{' '}
+            {lang === 'en' ? 'English' : '中文'}
+          </label>
+        ))}
+        <p className="panel-note">{t('Commands and machine output stay in English, like a real 1987 terminal.')}</p>
+      </fieldset>
+      <fieldset className="setting">
+        <legend>{t("Jack's popup countdown")}</legend>
         {([60, 30] as const).map((seconds) => (
           <label key={seconds} className="setting-option">
             <input
@@ -89,10 +108,10 @@ export function SettingsPanel({
               checked={settings.popupSeconds === seconds}
               onChange={() => onChange({ ...settings, popupSeconds: seconds })}
             />{' '}
-            {seconds} seconds{seconds === 60 ? ' (relaxed, default)' : ' (tense)'}
+            {t(seconds === 60 ? '60 seconds (relaxed, default)' : '30 seconds (tense)')}
           </label>
         ))}
-        <p className="panel-note">Applies from the next countdown. The countdown pauses while panels and cards are open.</p>
+        <p className="panel-note">{t('Applies from the next countdown. The countdown pauses while panels and cards are open.')}</p>
       </fieldset>
     </Panel>
   )

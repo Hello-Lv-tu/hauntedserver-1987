@@ -12,6 +12,8 @@ import { SettingsPanel, SpellbookPanel } from './Panels.js'
 import { Terminal } from './Terminal.js'
 import { initialTerminal, terminalReducer } from './terminalState.js'
 import { useNellVoice } from './useNellVoice.js'
+import { LangProvider } from './lang.js'
+import { t } from '../i18n/index.js'
 import { writeStorage } from './storage.js'
 import './game.css'
 
@@ -73,17 +75,18 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
   const hasOverlay = showCard || showAssistant
 
   return (
+    <LangProvider lang={game.settings.lang}>
     <div className={['game', hasOverlay ? 'has-overlay' : '', game.save.ending === 'stay' ? 'amber' : ''].filter(Boolean).join(' ')}>
       <div className="toolbar">
         <button type="button" className="tool" onClick={() => send({ type: 'panel', panel: 'spellbook' })}>
-          Spellbook ({game.spells.length})
+          {t(game.settings.lang, 'Spellbook')} ({game.spells.length})
         </button>
         {endingKind ? (
           <button type="button" className="tool" onClick={() => setReopened(true)}>
-            Ending
+            {t(game.settings.lang, 'Ending')}
           </button>
         ) : null}
-        <button type="button" className="tool" onClick={() => send({ type: 'panel', panel: 'settings' })} aria-label="Settings">
+        <button type="button" className="tool" onClick={() => send({ type: 'panel', panel: 'settings' })} aria-label={t(game.settings.lang, 'Settings')}>
           <GearIcon size={16} />
         </button>
       </div>
@@ -125,5 +128,6 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
         <SettingsPanel settings={game.settings} onChange={(settings) => send({ type: 'settings', settings })} onClose={closePanel} />
       ) : null}
     </div>
+    </LangProvider>
   )
 }

@@ -11,11 +11,11 @@ import { tar } from './tar.js'
 import { cat, grep, head, more, tail, wc } from './text.js'
 import { exit, finger, last, su } from './users.js'
 
-const man: Command = (args) => {
+const man: Command = (args, ctx) => {
   const name = args[0]
   // period: the real 4.3BSD wording.
   if (name === undefined) return { lines: [stderr('What manual page do you want?')], status: 1 }
-  const page = manPage(name)
+  const page = manPage(name, ctx.lang ?? 'en')
   if (page === null) return { lines: [stderr(`No manual entry for ${name}.`)], status: 1 }
   return { lines: page.map(stdout), status: 0 }
 }

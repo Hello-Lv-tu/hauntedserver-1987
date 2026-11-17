@@ -7,6 +7,7 @@ import type { GameState } from './game/types.js'
 import { Game } from './ui/Game.js'
 import { restoreGhostIcon } from './ui/favicon.js'
 import { readStorage } from './ui/storage.js'
+import { defaultLang, t } from './i18n/index.js'
 
 const stored = () => parseSave(readStorage(SAVE_KEY))
 
@@ -20,7 +21,8 @@ restoreGhostIcon()
 
 function App() {
   const [save] = useState(savedProgress)
-  const settings = () => parseSettings(readStorage(SETTINGS_KEY))
+  const settings = () => parseSettings(readStorage(SETTINGS_KEY), defaultLang(navigator.language))
+  const lang = settings().lang
   // A new game keeps the hidden ending's line, so it greets the next visitor.
   const [game, setGame] = useState<GameState | null>(() =>
     save ? null : newGame({ settings: settings(), legacy: stored()?.legacy ?? null, now: Date.now() }),
@@ -43,13 +45,13 @@ function App() {
       ) : (
         <div className="start" role="dialog" aria-labelledby="start-title">
           <h1 id="start-title">vax3.cs.ravenmoor.edu</h1>
-          <p>The terminal remembers you.</p>
+          <p>{t(lang, 'The terminal remembers you.')}</p>
           <div className="start-buttons">
             <button type="button" className="tool" autoFocus onClick={() => start(save)}>
-              {save?.ending ? 'Visit Nell' : `Continue (level ${save?.level ?? 0})`}
+              {save?.ending ? t(lang, 'Visit Nell') : lang === 'zh' ? `继续（第 ${save?.level ?? 0} 关）` : `Continue (level ${save?.level ?? 0})`}
             </button>
             <button type="button" className="tool" onClick={() => start(null)}>
-              New game
+              {t(lang, 'New game')}
             </button>
           </div>
         </div>

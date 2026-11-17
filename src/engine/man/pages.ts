@@ -1,3 +1,5 @@
+import type { Lang } from '../../i18n/index.js'
+import { MODERN_ZH } from './modern-zh.js'
 /**
  * Manual pages, in the 4.3BSD layout, with one extra MODERN NOTE section
  * that relates each command to today's Linux and macOS.
@@ -380,7 +382,7 @@ const PAGES: Record<string, Page> = {
   },
 }
 
-export function manPage(name: string): string[] | null {
+export function manPage(name: string, lang: Lang = 'en'): string[] | null {
   const page = Object.hasOwn(PAGES, name) ? PAGES[name] : undefined
   if (page === undefined) return null
   const title = `${name.toUpperCase()}(${page.section})`
@@ -400,8 +402,8 @@ export function manPage(name: string): string[] | null {
     'DESCRIPTION',
     ...indent(page.description),
     '',
-    'MODERN NOTE',
-    ...indent(page.modern),
+    lang === 'zh' ? 'MODERN NOTE (现代说明)' : 'MODERN NOTE',
+    ...indent(lang === 'zh' && Object.hasOwn(MODERN_ZH, name) ? [...MODERN_ZH[name]] : page.modern),
   ]
 }
 

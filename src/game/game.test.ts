@@ -114,7 +114,7 @@ describe('level 1: the popup that would not close', () => {
   })
 
   it('the countdown eats you when it reaches zero, using the 30 s setting', () => {
-    let game = play(newGame({ settings: { version: 1, popupSeconds: 30 } }), LEVEL0)
+    let game = play(newGame({ settings: { version: 1, popupSeconds: 30, lang: 'en' } }), LEVEL0)
     game = { ...game, cards: [] }
     expect(game.popup?.secondsLeft).toBe(30)
     game = ticks(game, 29)

@@ -1,3 +1,4 @@
+import type { Lang } from '../../i18n/index.js'
 import type { LoginHistory } from '../logins.js'
 import type { Mailbox } from '../mail/mailbox.js'
 import type { ProcTable } from '../procs/types.js'
@@ -84,6 +85,8 @@ export interface CommandCtx {
   vfs: Vfs
   procs: ProcTable
   logins: LoginHistory
+  /** Player language, only for the man page MODERN NOTE. */
+  lang?: Lang
   session: Session
   /** Lines from the previous pipeline stage, or null when not piped. */
   stdin: string[] | null
