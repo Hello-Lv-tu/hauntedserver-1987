@@ -18,6 +18,7 @@ const STAY_MESSAGES = ["i'll keep vax3 company.", 'no pumpkins on my watch ;-)',
 
 interface EndScreenProps {
   game: GameState
+  kind: 'move' | 'stay'
   onBack: () => void
   onPlayAgain: () => void
 }
@@ -30,21 +31,21 @@ function minutes(ms: number): number {
  * The ending. Move: the CRT fades to white and Nell, now a little ghost in a
  * 2026 chat app, types her first messages. Stay: the same layout in amber.
  */
-export function EndScreen({ game, onBack, onPlayAgain }: EndScreenProps) {
+export function EndScreen({ game, kind, onBack, onPlayAgain }: EndScreenProps) {
   const backRef = useRef<HTMLButtonElement>(null)
   const [now] = useState(() => Date.now())
   useEffect(() => {
     backRef.current?.focus({ preventScroll: true })
   }, [])
 
-  const move = game.ending === 'move'
+  const move = kind === 'move'
   const messages = move ? MOVE_MESSAGES : STAY_MESSAGES
   const learned = SPELLS.filter((s) => game.spells.includes(s.command))
   const today = learned.filter((s) => s.today).length
   const time = minutes(now - game.startedAt)
 
   return (
-    <div className={`ending ending-${game.ending}`} role="dialog" aria-modal="true" aria-labelledby="ending-title">
+    <div className={`ending ending-${kind}`} role="dialog" aria-modal="true" aria-labelledby="ending-title">
       {move ? <div className="ending-whiteout" aria-hidden="true" /> : null}
       <div className="ending-sheet">
         <section className="chat" aria-label="Messages from Nell">
@@ -94,14 +95,19 @@ export function EndScreen({ game, onBack, onPlayAgain }: EndScreenProps) {
             <p className="stat-number">{today}</p>
             <p className="tile-label">still work today</p>
           </div>
-          <div className="tile stat">
-            <p className="stat-number">{time}</p>
-            <p className="tile-label">{time === 1 ? 'minute' : 'minutes'}</p>
-          </div>
-          <div className="tile stat">
-            <p className="stat-number">{game.glitch}</p>
-            <p className="tile-label">times eaten</p>
-          </div>
+          {/* Time and times eaten belong to the run that just ended, not a later visit. */}
+          {game.ending !== null ? (
+            <>
+              <div className="tile stat">
+                <p className="stat-number">{time}</p>
+                <p className="tile-label">{time === 1 ? 'minute' : 'minutes'}</p>
+              </div>
+              <div className="tile stat">
+                <p className="stat-number">{game.glitch}</p>
+                <p className="tile-label">times eaten</p>
+              </div>
+            </>
+          ) : null}
         </section>
 
         <section className="tile" aria-label="Spells">
