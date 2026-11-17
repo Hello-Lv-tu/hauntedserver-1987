@@ -51,9 +51,28 @@ export function killed(event: CommandEvent, ctx: StoryCtx, pid: number): boolean
   return event.name === 'kill' && event.args.includes(String(pid)) && findProc(ctx.procs, pid) === undefined
 }
 
-/** Text written to Nell that is clearly a command typed in the wrong mode. */
+const COMMAND_WORDS = new Set(['ls', 'cat', 'cd', 'ps', 'kill', 'more', 'grep', 'man', 'pwd', 'head', 'tail', 'help', 'hint', 'who', 'whoami', 'write', 'clear', 'history', 'spellbook', 'date'])
+
+/**
+ * Text written to Nell that is clearly a command typed in the wrong mode.
+ * Must not fire on ordinary sentences that happen to start with a command
+ * word, like "who are you?" or "more please".
+ */
 export function looksLikeCommand(text: string): boolean {
-  return /^\s*(ls|cat|cd|ps|kill|more|grep|man|pwd|head|tail|help|who|write)(\s|$)/.test(text)
+  const words = text.trim().split(/\s+/)
+  const [first, ...rest] = words
+  if (first === undefined || !COMMAND_WORDS.has(first)) return false
+  if (/[?!,]/.test(text)) return false // sentences, not commands
+  if (rest.length === 0) return true // "ls", "who", "help"
+  return rest.every(
+    (w) =>
+      w.startsWith('-') || // flags: -a, -la
+      /[/~.]/.test(w) || // paths: /tmp, ~nell, .from_nell
+      /^\d+$/.test(w) || // PIDs: kill 6667
+      (first === 'ps' && /^[aux]+$/.test(w)) || // ps aux
+      (first === 'man' && COMMAND_WORDS.has(w)) || // man kill
+      (first === 'write' && rest.length <= 2), // write nell
+  )
 }
 
 /** Pick a line variant deterministically. */

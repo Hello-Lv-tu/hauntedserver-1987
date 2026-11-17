@@ -24,7 +24,7 @@ export const NELL = {
 
   // Level 0
   greet: [
-    ["hi!! you came :-) i'm nell.", 'the pumpkin watches normal files, so i hid a note for you.', 'its name starts with a dot. dot-files only show with `ls -a`.'],
+    ["hi!! you came :-) i'm nell.", 'the pumpkin skips dot-files, so i hid a note in one.', 'stop writing (ctrl-d or EOF), then try `ls -a`!'],
     ["a real person!! hi, i'm nell :-O", 'jack (the pumpkin) reads every normal file but skips dot-files.', 'i left you one. leave write mode, then try `ls -a`.'],
   ],
   huntChatter: [['`ls -a`!! the a means ALL. even the sneaky ones.'], ['psst. dot-files. `ls -a`. go go go ;-)']],

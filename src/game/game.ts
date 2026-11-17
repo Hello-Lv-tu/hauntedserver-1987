@@ -1,3 +1,4 @@
+import { lookup } from '../engine/commands/registry'
 import { execute } from '../engine/shell/execute'
 import { findProc, withProc, withoutProc } from '../engine/procs/types'
 import { tildify } from '../engine/vfs/path'
@@ -109,6 +110,13 @@ function shellLine(state: GameState, text: string): GameState {
       const spells = [...next.spells, spell.command]
       next = { ...next, spells, cards: [...next.cards, { kind: 'spell', spell }], save: { ...next.save, spells } }
     }
+  }
+
+  // Typed a sentence (or a typo) at the shell: point to write and help.
+  const [only] = result.events
+  const alreadyHinted = result.lines.some((l) => l.stream === 'hint')
+  if (result.events.length === 1 && only.status !== 0 && lookup(only.name) === undefined && !alreadyHinted && !only.name.includes('/')) {
+    next = print(next, [['hint', 'That is not a command. To talk to Nell, type `write nell` first. `help` lists the commands.']])
   }
 
   if (result.request === 'hint') next = story(next, { type: 'hint' })

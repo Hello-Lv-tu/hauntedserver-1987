@@ -40,12 +40,14 @@ export function storyStep(state: StoryState, input: StoryInput, ctx: StoryCtx): 
     return { story: { ...now, hintIndex: now.hintIndex + 1 }, effects: [{ type: 'hint', text }] }
   }
 
-  // Typing a command into write mode is a common slip; Nell points it out.
-  if (input.type === 'wrote' && looksLikeCommand(input.text)) {
-    return { story: now, effects: [{ type: 'nell', lines: [...pick(NELL.stillWriting, now.turn)] }] }
-  }
+  let transition = beat.on(input, ctx, now) ?? level.on?.(input, ctx, now) ?? null
 
-  const transition = beat.on(input, ctx, now) ?? level.on?.(input, ctx, now) ?? null
+  // Typing a command into write mode is a common slip; Nell points it out.
+  // A beat that moves the story on (e.g. her first greeting) still wins.
+  const movesOn = transition !== null && (transition.next !== undefined || transition.complete === true)
+  if (input.type === 'wrote' && looksLikeCommand(input.text) && !movesOn) {
+    transition = { effects: [{ type: 'nell', lines: [...pick(NELL.stillWriting, now.turn)] }] }
+  }
   if (transition === null) {
     if (input.type === 'wrote' && input.to === 'nell') {
       return { story: now, effects: [{ type: 'nell', lines: [...pick(NELL.chatter, now.turn)] }] }
