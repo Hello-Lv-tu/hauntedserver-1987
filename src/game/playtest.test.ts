@@ -92,3 +92,19 @@ describe('play-test 2026-11-17: /user and diff in Level 5', () => {
     expect(g.story.level).toBe(6)
   })
 })
+
+describe('play-test 2026-11-17: typo in the boss fight', () => {
+  it('a near-miss file name gets a "did you mean"', () => {
+    const g = play(at(6), ['su', 'tape3', 'cd /usr/lib/jack', 'rm jack-o-daekon'])
+    expect(hints(g).at(-1)).toBe('Did you mean `rm jack-o-daemon`?')
+  })
+
+  it('su when already root says so instead of doing nothing visible', () => {
+    expect(hints(play(at(6), ['su', 'tape3', 'su'])).at(-1)).toContain('already root')
+  })
+
+  it('the exact steps the player typed, then the fix, win the fight', () => {
+    const g = play(at(6), ['su', 'tape3', 'kill 6666', 'ls', 'cat /usr/lib/crontab', 'hint', 'hint', 'cd /usr/lib/jack', 'rm jack-o-daekon', 'ls -a', 'su', 'su', 'rm jack-o-daemon', 'kill 6666'])
+    expect(g.story.level).toBe(7)
+  })
+})

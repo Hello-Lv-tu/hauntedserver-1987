@@ -14,6 +14,7 @@ import { createWorld } from '../story/world.js'
 import type { SaveData } from './save.js'
 import type { Settings } from './settings.js'
 import { normalizeInput } from './normalize.js'
+import { suggestFix } from './suggest.js'
 import { DEFAULT_SETTINGS } from './settings.js'
 import type { GameInput, GameState, LineKind } from './types.js'
 
@@ -167,6 +168,12 @@ function shellLine(state: GameState, text: string): GameState {
       ? `Put a space between the command and its options: \`${fixed}\``
       : 'That is not a command. To talk to Nell, type `write nell` first. `help` lists the commands.'
     next = print(next, [['hint', tip]])
+  }
+
+  // A near-miss file name (e.g. a phone typo): suggest the exact one.
+  if (result.events.length === 1 && lookup(only.name) !== undefined && !/(^|\s|\/)user(\/|\s|$)/.test(text)) {
+    const fixed = suggestFix(only, next.vfs, next.session)
+    if (fixed) next = print(next, [['hint', `Did you mean \`${fixed}\`?`]])
   }
 
   // "/user" is the most common misspelling of /usr.

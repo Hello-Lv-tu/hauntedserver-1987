@@ -65,6 +65,9 @@ export const last: Command = (args, ctx) => {
 export const su: Command = (args, ctx) => {
   const user = args.find((a) => !a.startsWith('-')) ?? 'root'
   if (!ctx.vfs.users.has(user)) return { lines: [stderr(`Unknown login: ${user}`)], status: 1 }
+  if (ctx.session.user === 'root' && user === 'root') {
+    return { lines: [hint('You are already root (that is what the # prompt means).')], status: 0 }
+  }
   if (ctx.session.user === 'root') {
     // Root becomes anyone without a password.
     const home = ctx.vfs.homeOf(user) ?? '/'
