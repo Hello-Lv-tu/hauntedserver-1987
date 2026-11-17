@@ -38,8 +38,11 @@ summary at the end.
 
 ## Status
 
-Early development. The current build shows a placeholder boot screen.
-See `.kiro/specs/` for what is being built next.
+Early development. Playable so far: a simulated 4.3BSD filesystem and csh-like
+shell with `ls`, `cd`, `pwd`, `cat`, `more`, `head`, `tail`, `wc`, `grep`,
+`echo`, `date`, `whoami`, `history`, `clear`, `man` and `help`, pipes, quoting,
+command history (Up/Down) and Tab completion. Story, Nell and Jack-o'-Daemon
+come next. See `.kiro/specs/` for the plan.
 
 ## Run locally
 
@@ -50,7 +53,8 @@ npm install
 npm run dev
 ```
 
-Other scripts: `npm run build`, `npm run lint`, `npm run preview`.
+Other scripts: `npm test` (unit and property-based tests), `npm run check`
+(lint + test + build), `npm run build`, `npm run preview`.
 
 ## How this project uses Kiro
 
@@ -59,7 +63,12 @@ Other scripts: `npm run build`, `npm run lint`, `npm run preview`.
   safety rules.
 - **Specs** (`.kiro/specs/`): requirements (EARS), design and tasks for each
   feature, starting with the virtual filesystem and shell.
-- **Hooks** and **property-based tests**: coming next.
+- **Hooks** (`.kiro/hooks/`): run tests on save, validate story seeds on
+  save, review in-world text for period accuracy, and run the full check
+  before the agent finishes.
+- **Property-based tests** (fast-check, `*.prop.test.ts`): path normalization,
+  tokenizer round-trips, grep partitioning, "the shell never crashes", and
+  "no command leaks a file you cannot read".
 
 A full write-up will be added before submission.
 

@@ -1,0 +1,49 @@
+.terminal {
+  max-width: 88ch;
+  cursor: text;
+}
+
+.terminal-output .line {
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 1.25em;
+}
+
+.line-stderr {
+  color: #9dffb3;
+}
+
+/* Hints are a learning aid, not terminal output: visually separate. */
+.line-hint {
+  color: #ffb000;
+  text-shadow: 0 0 4px rgba(255, 176, 0, 0.5);
+  font-style: italic;
+}
+
+.hint-label {
+  font-weight: bold;
+}
+
+.terminal-input-row {
+  display: flex;
+  white-space: pre;
+}
+
+.terminal-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  /* 16px or more stops iOS Safari from zooming into the input. */
+  font-size: max(1em, 16px);
+  text-shadow: inherit;
+  caret-color: var(--phosphor);
+}
+
+.terminal-input:focus-visible {
+  box-shadow: 0 1px 0 var(--phosphor-dim);
+}

@@ -1,0 +1,115 @@
+{
+  "name": "/",
+  "kind": "dir",
+  "owner": "root",
+  "group": "wheel",
+  "mtime": "1987-10-31 23:59",
+  "children": [
+    {
+      "name": "etc",
+      "kind": "dir",
+      "mtime": "1987-09-02 14:20",
+      "children": [
+        {
+          "name": "passwd",
+          "kind": "file",
+          "mtime": "1987-09-02 14:20",
+          "content": "root:Xa8sJ2kd0q9Ws:0:10:Charlie Root:/:/bin/csh\nnell:k3Pq9Lz0aB1cE:117:20:Eleanor Voss,B-wing,x4471:/usr/users/nell:/bin/csh\nguest::200:31:Guest Account:/usr/users/guest:/bin/csh\n"
+        },
+        {
+          "name": "motd",
+          "kind": "file",
+          "mtime": "1987-10-30 18:05",
+          "content": "4.3 BSD UNIX #12: Tue Oct 27 03:14:07 EST 1987\n\nRavenmoor University Computer Science - VAX 3\nOperator on duty tonight: nell (B-wing, x4471)\n\nReminder: the Halloween backup run starts at 23:00.\nDo NOT touch the tape drives while it runs.\n"
+        }
+      ]
+    },
+    {
+      "name": "tmp",
+      "kind": "dir",
+      "mode": "777",
+      "children": [
+        {
+          "name": "riddle",
+          "kind": "file",
+          "owner": "nell",
+          "group": "staff",
+          "mtime": "1987-10-31 23:41",
+          "content": "i have keys but open no locks.\ni have space but no room.\nyou can enter, but you can't go inside.\nwhat am i?   -- n.\n"
+        }
+      ]
+    },
+    {
+      "name": "usr",
+      "kind": "dir",
+      "mtime": "1986-06-05 10:00",
+      "children": [
+        {
+          "name": "adm",
+          "kind": "dir",
+          "children": [
+            {
+              "name": "messages",
+              "kind": "file",
+              "mtime": "1987-10-31 23:59",
+              "content": "Oct 31 22:58:03 vax3 vmunix: tm0: tape drive online\nOct 31 23:00:00 vax3 dump: Halloween backup started on /dev/rmt0\nOct 31 23:41:17 vax3 login: nell on ttyh3\nOct 31 23:52:40 vax3 vmunix: ttyh3: silo overflow\nOct 31 23:58:12 vax3 vmunix: power fail warning, ups on battery\nOct 31 23:59:58 vax3 vmunix: ttyh3: carrier lost\nOct 31 23:59:59 vax3 vmunix: clock: time stopped\nNov 17 03:14:07 vax3 jack-o-daemon[6666]: legacy scan: 1 legacy user found\n"
+            }
+          ]
+        },
+        {
+          "name": "users",
+          "kind": "dir",
+          "children": [
+            {
+              "name": "guest",
+              "kind": "dir",
+              "owner": "guest",
+              "group": "guest",
+              "mtime": "1987-10-31 23:59",
+              "children": [
+                {
+                  "name": ".login",
+                  "kind": "file",
+                  "content": "set prompt=\"vax3% \"\nmesg y\n"
+                },
+                {
+                  "name": "README",
+                  "kind": "file",
+                  "content": "Welcome, guest.\n\nTry these:\n  ls          list files\n  cat FILE    read a file\n  cd DIR      go into a directory\n  help        list every command\n"
+                }
+              ]
+            },
+            {
+              "name": "nell",
+              "kind": "dir",
+              "owner": "nell",
+              "group": "staff",
+              "mtime": "1987-10-31 23:58",
+              "children": [
+                {
+                  "name": ".plan",
+                  "kind": "file",
+                  "mtime": "1987-10-31 23:58",
+                  "content": "night shift again :-P\nif the backup tape jams one more time i'm going to haunt this machine.\n"
+                },
+                {
+                  "name": "notes",
+                  "kind": "file",
+                  "mtime": "1987-10-29 02:10",
+                  "content": "- tape 3 is the bad one. always tape 3.\n- printer 2 eats paper after midnight. coincidence??\n- ask prof. hale about the weird lights in the B-wing.\n"
+                },
+                {
+                  "name": ".diary",
+                  "kind": "file",
+                  "mode": "600",
+                  "mtime": "1987-10-31 23:57",
+                  "content": "dear diary,\nthe lights flickered again. the machine hummed a tune i didn't know.\nif anyone reads this: it's not a ghost. it's me. probably.\n"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

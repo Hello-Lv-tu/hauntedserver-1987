@@ -1,0 +1,52 @@
+import { manPage } from '../man/pages'
+import type { Command } from '../shell/types'
+import { stderr, stdout } from '../shell/types'
+import { columns, ls } from './ls'
+import { clear, date, echo, history, whoami } from './misc'
+import { cd, pwd } from './navigation'
+import { cat, grep, head, more, tail, wc } from './text'
+
+const man: Command = (args) => {
+  const name = args[0]
+  // period: the real 4.3BSD wording.
+  if (name === undefined) return { lines: [stderr('What manual page do you want?')], status: 1 }
+  const page = manPage(name)
+  if (page === null) return { lines: [stderr(`No manual entry for ${name}.`)], status: 1 }
+  return { lines: page.map(stdout), status: 0 }
+}
+
+const help: Command = () => ({
+  lines: [
+    stdout('Commands on this terminal:'),
+    stdout(''),
+    ...columns(COMMAND_NAMES, 72).map((l) => stdout(`  ${l}`)),
+    stdout(''),
+    stdout('Type `man name` to learn about a command, e.g. `man ls`.'),
+  ],
+  status: 0,
+})
+
+export const registry: Readonly<Record<string, Command>> = {
+  cat,
+  cd,
+  clear,
+  date,
+  echo,
+  grep,
+  head,
+  help,
+  history,
+  ls,
+  man,
+  more,
+  pwd,
+  tail,
+  wc,
+  whoami,
+}
+
+export const COMMAND_NAMES = Object.keys(registry).sort()
+
+export function lookup(name: string): Command | undefined {
+  return Object.hasOwn(registry, name) ? registry[name] : undefined
+}

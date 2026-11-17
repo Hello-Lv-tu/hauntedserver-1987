@@ -3,7 +3,8 @@
   --phosphor-dim: #1a8033;
   --background: #050805;
   color-scheme: dark;
-  font-family: 'IBM Plex Mono', 'Courier New', ui-monospace, monospace;
+  /* VT323 recreates the DEC VT320 terminal font (SIL OFL 1.1). */
+  font-family: 'VT323', 'Courier New', ui-monospace, monospace;
 }
 
 * {
@@ -41,26 +42,8 @@ body,
   );
 }
 
-.screen {
-  margin: 0;
-  font: inherit;
-  font-size: 1rem;
-  line-height: 1.4;
-  white-space: pre-wrap;
-}
-
-.cursor {
-  animation: blink 1s steps(1) infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cursor {
-    animation: none;
-  }
+.crt {
+  /* VT323 runs small; 1.375rem is about 22px, comfortable to read. */
+  font-size: 1.375rem;
+  line-height: 1.25;
 }

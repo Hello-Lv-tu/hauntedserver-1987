@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Period-accuracy review for in-world text",
+      "description": "When story files, seeds or man pages change, asks the agent to review them against the 4.3BSD period-accuracy and story rules.",
+      "trigger": "PostFileSave",
+      "matcher": "src/(story|engine/man|engine/commands)/.*",
+      "action": {
+        "type": "agent",
+        "prompt": "A file with in-world content was just saved. Before continuing, review the change against .kiro/steering/period-accuracy.md and .kiro/steering/story.md: (1) no anachronisms in Nell's world (no web, cloud, emoji, sudo, less, /home), unless the text belongs to Jack-o'-Daemon; (2) command output and error formats match 4.3BSD as documented; (3) lines are 80 columns or fewer; (4) tone is spooky-cute and safe for all ages. Fix any problems you find and say briefly what you changed."
+      }
+    }
+  ]
+}

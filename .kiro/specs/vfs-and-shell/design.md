@@ -198,3 +198,30 @@ registry key has a page (Requirement 7.1).
   8. `vfs.write` never changes the original instance.
 - Seed validation test for the real story seed, so a bad seed fails CI
   before it reaches players.
+
+## Implementation notes (deviations from the plan above)
+
+- **Seed format.** Seeds use `children: SeedNode[]` (an array), not a record,
+  because JSON objects silently drop duplicate keys and Requirement 1.2 needs
+  duplicates reported. `owner`, `group`, `mtime` inherit from the parent;
+  `mode` is an octal string (`"600"`). See `src/engine/vfs/seed.ts`.
+- **mtime** is stored as `"YYYY-MM-DD HH:MM"` in machine-local time instead of
+  ISO 8601, so `ls -l` never depends on the player's time zone.
+- **Command output** is one ordered `lines` array mixing stdout, stderr and
+  hints, so `cat missing present` prints the error in the right place. The
+  pipeline passes only the stdout lines to the next stage.
+- **`isTty`** is passed to commands: `ls` prints columns on screen and one name
+  per line in a pipe, like real BSD `ls`.
+- **`ls` on an unreadable directory** prints `dir unreadable` (4.3BSD wording).
+- **`ls -l` dates** show the year instead of the time for files six or more
+  months older than the frozen clock (4.3BSD behavior).
+- **Prompt** is `vax3:<cwd>% ` with the home directory shown as `~`.
+- **Font.** VT323 (SIL OFL 1.1, via `@fontsource/vt323`) recreates the DEC
+  terminal look.
+
+## Hooks used while building this spec
+
+- `.kiro/hooks/test-on-save.json`: run the test suite on every `src/**/*.ts(x)` save.
+- `.kiro/hooks/seed-check.json`: validate story seeds on save.
+- `.kiro/hooks/period-accuracy-review.json`: agent review of in-world text.
+- `.kiro/hooks/check-before-stop.json`: lint + test + build before finishing a turn.

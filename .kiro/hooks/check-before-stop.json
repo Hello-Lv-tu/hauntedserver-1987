@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Lint, test and build before finishing",
+      "description": "Runs the full check (oxlint, Vitest, TypeScript build) when the agent finishes a turn, so work is never handed back in a broken state.",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "npm run check --silent 2>&1 | tail -15"
+      }
+    }
+  ]
+}
