@@ -22,7 +22,7 @@ export function sanitizeReply(raw: string): string[] | null {
   text = text.replace(/[“”]/g, '"').replace(/[‘’]/g, "'")
   if (FORBIDDEN.test(text)) return null
 
-  const lines = text
+  const wrapped = text
     .split('\n')
     .map((line) =>
       line
@@ -33,7 +33,7 @@ export function sanitizeReply(raw: string): string[] | null {
     )
     .filter((line) => line !== '')
     .flatMap(wrap)
-    .slice(0, MAX_LINES)
+  const lines = endAtSentence(wrapped)
 
   const out: string[] = []
   let used = 0
@@ -53,11 +53,31 @@ export function sanitizeReply(raw: string): string[] | null {
   return out.length > 0 ? out : null
 }
 
+/**
+ * Keep at most MAX_LINES lines. If text had to be dropped, end at the last
+ * finished sentence instead of mid-phrase ("then peek at").
+ */
+export function endAtSentence(lines: string[]): string[] {
+  if (lines.length <= MAX_LINES) return lines
+  const kept = lines.slice(0, MAX_LINES)
+  for (let i = kept.length - 1; i >= 0; i--) {
+    const end = Math.max(kept[i].lastIndexOf('. '), kept[i].lastIndexOf('! '), kept[i].lastIndexOf('? '), kept[i].lastIndexOf(') '))
+    if (/[.!?)]$/.test(kept[i])) return kept.slice(0, i + 1)
+    if (end > 0) return [...kept.slice(0, i), kept[i].slice(0, end + 1)]
+  }
+  return [...kept.slice(0, -1), kept[kept.length - 1].replace(/\s*\S*$/, '...')]
+}
+
+/** Split into words, keeping each `backtick command` as one unbreakable word. */
+function words(line: string): string[] {
+  return line.match(/`[^`]*`[^\s]*|\S+/g) ?? []
+}
+
 /** Split a line at word boundaries so no piece exceeds WRAP_COLUMNS. */
 export function wrap(line: string): string[] {
   const out: string[] = []
   let current = ''
-  for (const word of line.split(' ')) {
+  for (const word of words(line)) {
     const candidate = current === '' ? word : `${current} ${word}`
     if (candidate.length <= WRAP_COLUMNS) {
       current = candidate
