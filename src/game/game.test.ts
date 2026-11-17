@@ -91,8 +91,7 @@ describe('level 1: the popup that would not close', () => {
     game = play(game, ['kill 6667'])
     expect(game.popup).toBeNull()
     expect(game.cards.some((c) => c.kind === 'lesson')).toBe(true)
-    expect(game.finished).toBe(true)
-    expect(screenText(game)).toContain('(to be continued)')
+    expect(game.story.level).toBe(2)
   })
 
   it('closing the popup brings it back after a few seconds with a new message', () => {
@@ -134,7 +133,7 @@ describe('level 1: the popup that would not close', () => {
   })
 
   it('killing the popup before running ps also works', () => {
-    expect(play(atLevel1(), ['kill 6667']).finished).toBe(true)
+    expect(play(atLevel1(), ['kill 6667']).story.level).toBe(2)
   })
 })
 
@@ -190,7 +189,7 @@ describe('continuing from a save', () => {
 
   it('a full play-through of levels 0 and 1', () => {
     const game = play(newGame(), [...LEVEL0, ...LEVEL1])
-    expect(game.finished).toBe(true)
+    expect(game.story.level).toBe(2)
     expect(game.save.level).toBe(2)
     expect(game.spells).toEqual(['write', 'ls', 'cat', 'ps', 'kill'])
   })

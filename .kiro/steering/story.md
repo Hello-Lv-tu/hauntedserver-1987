@@ -82,31 +82,53 @@ learning-progress screen).
 - Nothing is really destructive. Dangerous commands are simulated; at worst
   Jack "eats" the player and the level restarts.
 
-## Levels
+## Levels (final design)
 
-| # | Jack-o'-Daemon's trick | How the player sees through it | Real-world lesson |
-|---|---|---|---|
-| 0 | (Opening) Nell's SOS on the glowing terminal | `write nell`, `ls`, `cat` | First steps |
-| 1 | Fake "System warning! Click to fix" popup | Don't click; `ps aux` to find it, `kill` it | Scareware |
-| 2 | Mail pretending to be from Nell | `mail`, read headers, the sender path does not match | Phishing |
-| 3 | Files locked, "subscribe to unlock" | `ls -l` shows only the permissions changed; `chmod` back | Ransomware |
-| 4 | "Smart assistant" tells the player to run a command that deletes everything | `man` the command, refuse to run it | Don't blindly trust AI |
-| 5 | Tampered logs hiding the truth | `grep` timestamps, they don't line up | Records can be faked |
-| Boss | Jack-o'-Daemon keeps coming back after `kill` | Nell hints at `cron`; remove its entry in `/usr/lib/crontab`, then `kill` for good | Find the root cause |
+Each level: one Jack trick, one or two new spells, one real-world lesson
+card. Every level is always solvable (property-tested).
 
-Target play time: 15–20 minutes. Build order: commands and levels playable
-end to end first, then scene animation and sound.
+| # | Title | Jack's trick | How the player sees through it | New spells | Lesson |
+|---|---|---|---|---|---|
+| 0 | The note with a dot | (Opening) Nell's SOS | `write nell`, `ls -a`, `cat .from_nell` | write, ls, cat | First steps |
+| 1 | The popup that would not close | Fake virus popup with countdown | Don't click; `ps aux`, `kill 6667` | ps, kill | Scareware |
+| 2 | The letter that lied | Mail "from Nell" asking for your password | Nell hides instructions in her `.plan` (`finger nell`); `mail`, `P 2` shows the real headers (sent from a 2026 cloud domain, "Sent from my iPhone"), `d 2` deletes it | finger, mail | Phishing |
+| 3 | Files held for ransom | `README` and `.login` "encrypted", ransom note asks $9.99/month | `ls -l`: sizes unchanged, only permission bits removed; `chmod 644` restores them | chmod | Ransomware |
+| 4 | The assistant that lied | Jack's "Smart Assistant" says `rm -rf ~` will free Nell | `man rm` shows it deletes your whole home; decline. Running it gets you eaten | rm (by reading `man rm`) | AI can be confidently wrong |
+| 5 | The log that lied | Jack rewrote `/usr/adm/messages`: "nell logged out, deleted her account" | `diff /usr/adm/messages.0 /usr/adm/messages` shows his edits; the original reveals a power surge and "tape 3 write of /usr/users/nell" | diff, last | Records can be faked |
+| Boss | The daemon that came back | `jack-o-daemon` (PID 6666, root) | `su` (password: the bad tape, `tape3`, from Nell's notes); `kill 6666` and he respawns via `/usr/lib/crontab`; `rm /usr/lib/jack/jack-o-daemon`, then `kill 6666` for good | su | Find the root cause (persistence) |
 
-## Endings
+Target play time: 15-20 minutes.
 
-After the boss, the player **asks Nell** what she wants. She gives her own
-opinion first, then the player decides.
+## Endings (final design)
 
-| Ending | Trigger | Content |
+After the boss, Nell is free but still in the machine. She writes first, gives
+her own opinion, then asks. The player answers in write mode with words like
+"come with me" or "stay" (keyword match, deterministic; the AI never decides).
+
+| Ending | Trigger | What happens |
 |---|---|---|
-| **Move** | Player chooses "come with me" | `tar` packs Nell onto tape and "uploads" her to the new world. Afterwards the browser tab icon becomes a tiny ghost and Nell comments on 2026 web pages ("why are all the buttons ROUND??"). Main ending for the demo video. |
-| **Stay** | Player chooses "stay here" | Nell guards the old machine. The room light turns from green to warm amber. On later visits the player can `talk nell` and she remembers them (saved in localStorage). |
-| **Hidden: a piece of you** | All hidden clues found and the player wrote their own `.plan` | The player becomes part of the machine: their `.plan` becomes the message the next visitor sees. Loops back to the opening. Stored only in the player's own browser; never shown to other players. |
-| **Post-credits tease** | Run `ps` again after the credits | A tiny new pumpkin process flickers at the bottom of the list and vanishes. Never explained. |
+| **Move** | "come" | Nell: "pack me up then!" Player runs `tar cvf /dev/rmt0 ~nell`; files scroll by; the tape reel spins in the scene; the screen fades to white; the browser tab icon becomes a tiny ghost; Nell's last message arrives in a modern font she complains about ("why are all the buttons ROUND??"). Main ending for the demo video. |
+| **Stay** | "stay" | Nell guards vax3. The room light turns from green to warm amber. On later visits `write nell` reaches her and she remembers the player (localStorage). |
+| **Hidden: a piece of you** | Before choosing: read `~nell/.diary` as root, solved `/tmp/riddle` (answer "keyboard", written to Nell), and wrote your own `~/.plan` with `echo ... > ~/.plan` | After either ending: the player's `.plan` becomes the SOS the next visitor sees on a new game. Stored only in the player's browser. |
+| **Post-credits tease** | `ps` after the credits | A tiny `pumpkin_seed` process flickers at the bottom of the list and is gone on the next `ps`. Never explained. |
 
 No "it was all a lie" twist in the main story.
+
+## Final presentation (what judges see)
+
+1. **Start**: the machine-room pixel art fills the screen (door ajar, VAX
+   cabinets, tape drives, line printer, one glowing terminal with a faint
+   ghost reflection). "Press Enter to step inside."
+2. **Zoom**: the camera pushes into the terminal; the CRT bezel frames the
+   game; the room stays visible, dimmed, around it.
+3. **Living room**: the scene reacts: lights flicker when Jack appears, the
+   room tints orange during his tricks, the printer spits a page when Nell
+   pranks, the tape reel spins in the Move ending, amber light in Stay.
+4. **Sound** (off until enabled): CRT hum, key clicks, three BEL chimes when a
+   `write` message arrives (as real `write` rang the bell), a synth sting for
+   Jack.
+5. **End screen**: Spellbook summary ("you learned 17 spells; 15 of them work
+   on your laptop today"), the six lessons, credits.
+
+Build order: levels 2-5 and boss, then endings, then scene/sound, then
+submission material (README, Kiro write-up, 3-minute video).

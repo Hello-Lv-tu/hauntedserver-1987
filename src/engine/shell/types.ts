@@ -1,3 +1,5 @@
+import type { LoginHistory } from '../logins.js'
+import type { Mailbox } from '../mail/mailbox.js'
 import type { ProcTable } from '../procs/types.js'
 import type { Vfs } from '../vfs/Vfs.js'
 
@@ -11,6 +13,15 @@ export interface Session {
   history: string[]
   /** Next command-event sequence number. */
   seq: number
+  /** The session `exit` returns to (set by `su`). */
+  parent?: ParentSession
+}
+
+export interface ParentSession {
+  user: string
+  home: string
+  cwd: string
+  parent?: ParentSession
 }
 
 /**
@@ -41,6 +52,20 @@ export interface WriteMode {
   to: string
 }
 
+/** Berkeley Mail's `&` prompt. */
+export interface MailMode {
+  kind: 'mail'
+  box: Mailbox
+}
+
+/** `su` asking for a password (input hidden). */
+export interface PasswordMode {
+  kind: 'password'
+  user: string
+}
+
+export type TerminalMode = WriteMode | MailMode | PasswordMode
+
 export interface ExecResult {
   lines: OutputLine[]
   session: Session
@@ -51,13 +76,14 @@ export interface ExecResult {
   procs: ProcTable
   /** Set by `clear`: the UI should wipe the scrollback. */
   clear?: boolean
-  mode?: WriteMode
+  mode?: TerminalMode
   request?: GameRequest
 }
 
 export interface CommandCtx {
   vfs: Vfs
   procs: ProcTable
+  logins: LoginHistory
   session: Session
   /** Lines from the previous pipeline stage, or null when not piped. */
   stdin: string[] | null
@@ -73,7 +99,7 @@ export interface CommandOutput {
   vfs?: Vfs
   procs?: ProcTable
   clear?: boolean
-  mode?: WriteMode
+  mode?: TerminalMode
   request?: GameRequest
 }
 

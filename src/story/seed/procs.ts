@@ -14,6 +14,22 @@ const sys = (pid: number, command: string, extra: Partial<Proc> = {}): Proc => (
   ...extra,
 })
 
+export const JACK_PID = 6666
+
+/** Jack-o'-Daemon himself: root-owned, so only root can stop him (the boss). */
+export const JACK_PROC: Proc = {
+  pid: JACK_PID,
+  user: 'root',
+  tty: '?',
+  stat: 'R',
+  time: '66:66',
+  command: '/usr/lib/jack/jack-o-daemon --modernize',
+  cpu: 6.6,
+  mem: 6.6,
+  sz: 6666,
+  rss: 666,
+}
+
 /**
  * period: a plausible 4.3BSD process table at 23:59 on Oct 31 1987.
  * PIDs 0-2 are kernel processes; the rest are typical daemons.
@@ -27,6 +43,7 @@ export const SEED_PROCS: ProcTable = [
   sys(61, 'inetd', { stat: 'I', sz: 64, rss: 32 }),
   sys(77, '/usr/lib/lpd', { stat: 'I', user: 'daemon', sz: 76, rss: 36 }),
   sys(91, '- std.9600 ttyh0 (getty)', { stat: 'I', tty: 'ttyh0', sz: 40, rss: 16 }),
+  JACK_PROC,
   {
     pid: 1171,
     user: 'nell',

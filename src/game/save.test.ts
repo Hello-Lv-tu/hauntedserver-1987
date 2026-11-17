@@ -34,7 +34,7 @@ describe('save data', () => {
     expect(parseSave(null)).toBeNull()
     expect(parseSave('{"version":2,"level":0,"spells":[],"flags":{}}')).toBeNull()
     expect(parseSave('{"version":1,"level":-1,"spells":[],"flags":{}}')).toBeNull()
-    expect(parseSave('{"version":1,"level":0,"spells":["rm"],"flags":{}}')).toBeNull()
+    expect(parseSave('{"version":1,"level":0,"spells":["sudo"],"flags":{}}')).toBeNull()
     expect(parseSave('{"version":1,"level":0,"spells":[],"flags":{"a":"yes"}}')).toBeNull()
     expect(parseSave('{"version":1,"level":0,"spells":[],"flags":[]}')).toBeNull()
   })

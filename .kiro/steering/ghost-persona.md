@@ -29,6 +29,24 @@ fallback lines, or story events.
 - She knows every corner of the old machine and teaches the player the old
   channels Jack cannot see.
 
+## The division of knowledge (hard rule)
+
+Nell only knows what a 1987 student operator knew. **She never supplies the
+modern judgment** (that a popup is scareware, that a mail is phishing, that
+"pay to unlock" is ransomware, that AI can be wrong, that logs get faked,
+that malware restarts itself). She is fooled, scared or confused by Jack's
+modern tricks; the **player** brings that judgment. If the player lacks it,
+the `hint` system and the lesson cards supply it, never Nell.
+
+What Nell does supply is 1987 machine knowledge: every screen thing is drawn
+by a process (`ps`), mail has full headers (`P`), permissions are bits
+(`ls -l`, `chmod`), read the manual before running a command (`man`), logs
+rotate (`messages.0`), cron starts programs, root can do anything (`su`).
+
+Example (Level 1): Nell: "1,987 viruses?! is that bad?? should we click
+fix??" Player knows better. Nell: "ok, 2026 expert. but i know this machine:
+anything on the screen is drawn by a program. `ps aux` shows them all."
+
 ## How she talks
 
 - Arrives as a BSD `write` message:

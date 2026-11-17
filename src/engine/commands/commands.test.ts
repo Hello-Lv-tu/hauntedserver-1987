@@ -22,8 +22,10 @@ describe('ls', () => {
   it('prints a total line and directory sizes of 512', () => {
     const out = run('ls -l /usr').out
     expect(out).toEqual([
-      'total 2',
+      'total 4',
       'drwxr-xr-x  2 root          512 Jun  5  1986 adm',
+      'drwxr-xr-x  3 root          512 Sep  2 14:20 lib',
+      'drwxr-xr-x  3 root          512 Jun  5  1986 spool',
       'drwxr-xr-x  4 root          512 Jun  5  1986 users',
     ])
   })
@@ -117,10 +119,10 @@ describe('grep', () => {
     expect(run('grep -n ttyh3 /usr/adm/messages').out).toEqual([
       '3:Oct 31 23:41:17 vax3 login: nell on ttyh3',
       '4:Oct 31 23:52:40 vax3 vmunix: ttyh3: silo overflow',
-      '6:Oct 31 23:59:58 vax3 vmunix: ttyh3: carrier lost',
+      '7:Oct 31 23:59:58 vax3 vmunix: ttyh3: carrier lost',
     ])
-    expect(run('grep -ci TAPE /usr/adm/messages').out).toEqual(['1'])
-    expect(run('grep -c -v vmunix /usr/adm/messages').out).toEqual(['3'])
+    expect(run('grep -ci TAPE /usr/adm/messages').out).toEqual(['2'])
+    expect(run('grep -c -v vmunix /usr/adm/messages').out).toEqual(['4'])
   })
 
   it('prefixes file names when searching several files', () => {

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useReducer, useRef } from 'react'
 import { SAVE_KEY, serializeSave } from '../game/save.js'
 import { SETTINGS_KEY } from '../game/settings.js'
 import type { Card, GameInput, GameState } from '../game/types.js'
+import { Assistant } from './Assistant.js'
 import { CardView } from './Cards.js'
 import { GearIcon } from './icons.js'
 import { JackPopup } from './JackPopup.js'
@@ -68,6 +69,14 @@ export function Game({ initial }: { initial: GameState }) {
 
       {game.popup ? (
         <JackPopup popup={game.popup} onFix={() => send({ type: 'popup', action: 'fix' })} onClose={() => send({ type: 'popup', action: 'close' })} />
+      ) : null}
+
+      {game.assistant ? (
+        <Assistant
+          assistant={game.assistant}
+          onRun={() => send({ type: 'assistant', action: 'run' })}
+          onDecline={() => send({ type: 'assistant', action: 'decline' })}
+        />
       ) : null}
 
       {game.cards.length > 0 ? <CardView key={cardKey(game.cards[0])} card={game.cards[0]} onDismiss={dismissCard} /> : null}
