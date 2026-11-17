@@ -87,7 +87,11 @@ export function newGame(options: NewGameOptions = {}): GameState {
   const opened = !save && legacy ? nellLike(base, 'guest', 'ttyh3', [legacy]) : base
   const started = applyEffects(opened, entry.effects)
   // Later visits after an ending: Nell remembers you.
-  if (save?.ending) return nellMessage(started, [...(save.ending === 'move' ? NELL.reunionMove : NELL.reunionStay)[0]])
+  if (save?.ending) {
+    const greeted = nellMessage(started, [...(save.ending === 'move' ? NELL.reunionMove : NELL.reunionStay)[0]])
+    const name = save.ending === 'move' ? 'Moved to 2026' : 'The guardian of vax3'
+    return print(greeted, [['hint', `You finished the game (ending: ${name}). Chat with Nell: \`write nell\`. Something odd is still in \`ps aux\`... To start over, reload and choose New game.`]])
+  }
   return started
 }
 
