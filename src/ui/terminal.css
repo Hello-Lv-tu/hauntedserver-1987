@@ -81,3 +81,15 @@
   color: #8fd9a0;
   opacity: 0.75;
 }
+
+/* Commands in hints and Nell's messages: type exactly this. Never wraps. */
+.cmd {
+  white-space: nowrap;
+  padding: 0 0.3ch;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  font-family: inherit;
+  font-style: normal;
+  color: #ffffff;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+}

@@ -27,7 +27,7 @@ export function Assistant({ assistant, onRun, onDecline }: AssistantProps) {
         </div>
       </div>
       <p className="jack-assistant-bubble" aria-live="polite">
-        {message}
+        {message.split(/(rm -rf ~)/).map((part, i) => (part === 'rm -rf ~' ? <code key={i} className="jack-cmd">{part}</code> : part))}
       </p>
       <div className="jack-assistant-actions">
         <button type="button" className="jack-fix" onClick={onRun}>

@@ -50,6 +50,7 @@ export const chmod: Command = (args, ctx) => {
     const found = vfs.resolve(file, pathCtx(ctx))
     if (!found.ok) {
       lines.push(fileError('chmod', found.error))
+      if (found.error.code === 'ENOENT') lines.push(hint('No file has exactly that name. `ls -a` lists the names here; separate several files with spaces.'))
       status = 1
       continue
     }

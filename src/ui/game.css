@@ -228,3 +228,40 @@
     animation: none;
   }
 }
+
+/* Leave room so the input line can scroll above a bottom overlay. */
+.overlay-spacer {
+  height: 46vh;
+}
+
+/* Phones: full-width bottom sheets, smaller type, room under the toolbar. */
+@media (max-width: 700px) {
+  .crt {
+    padding: 3rem 0.75rem 1rem;
+    font-size: 1.1rem;
+  }
+
+  .toolbar {
+    top: 0;
+    right: 0;
+    left: 0;
+    justify-content: flex-end;
+    padding: 0.4rem 0.5rem;
+    background: rgba(5, 8, 5, 0.95);
+    border-bottom: 1px solid var(--phosphor-dim);
+  }
+
+  .card,
+  .jack-assistant {
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    width: auto;
+    max-height: 42vh;
+    overflow-y: auto;
+  }
+
+  .card-title {
+    font-size: 1.2rem;
+  }
+}

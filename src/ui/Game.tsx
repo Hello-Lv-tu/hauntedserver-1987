@@ -54,8 +54,14 @@ export function Game({ initial }: { initial: GameState }) {
     else if (game.popup && game.popup.hiddenFor === 0) send({ type: 'popup', action: 'close' })
   }
 
+  // One bottom overlay at a time: a card first, then the assistant.
+  // On phones two overlays covered the terminal input (play-test).
+  const showCard = game.cards.length > 0
+  const showAssistant = game.assistant !== null && !showCard
+  const hasOverlay = showCard || showAssistant
+
   return (
-    <div className="game">
+    <div className={hasOverlay ? 'game has-overlay' : 'game'}>
       <div className="toolbar">
         <button type="button" className="tool" onClick={() => send({ type: 'panel', panel: 'spellbook' })}>
           Spellbook ({game.spells.length})
@@ -65,13 +71,13 @@ export function Game({ initial }: { initial: GameState }) {
         </button>
       </div>
 
-      <Terminal game={game} input={state.input} dispatch={dispatch} inputRef={inputRef} onEscape={onEscape} />
+      <Terminal game={game} input={state.input} dispatch={dispatch} inputRef={inputRef} onEscape={onEscape} overlay={hasOverlay} />
 
       {game.popup ? (
         <JackPopup popup={game.popup} onFix={() => send({ type: 'popup', action: 'fix' })} onClose={() => send({ type: 'popup', action: 'close' })} />
       ) : null}
 
-      {game.assistant ? (
+      {showAssistant && game.assistant ? (
         <Assistant
           assistant={game.assistant}
           onRun={() => send({ type: 'assistant', action: 'run' })}
@@ -79,7 +85,7 @@ export function Game({ initial }: { initial: GameState }) {
         />
       ) : null}
 
-      {game.cards.length > 0 ? <CardView key={cardKey(game.cards[0])} card={game.cards[0]} onDismiss={dismissCard} /> : null}
+      {showCard ? <CardView key={cardKey(game.cards[0])} card={game.cards[0]} onDismiss={dismissCard} /> : null}
 
       {/* Being eaten: a new key remounts the overlay, which replays its CSS animation once. */}
       {game.glitch > 0 ? <div key={game.glitch} className="glitch-overlay" aria-hidden="true" /> : null}

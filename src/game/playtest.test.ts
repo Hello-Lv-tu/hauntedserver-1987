@@ -48,3 +48,19 @@ describe('play-test 2026-11-17: l versus 1 in Level 3', () => {
     expect(hints(play(at(3), ['chmod'])).at(-1)).toContain('chmod 644 README')
   })
 })
+
+describe('play-test 2026-11-17: chmod in Level 3', () => {
+  it('a wrong file name explains ls -a and spaces', () => {
+    expect(hints(play(at(3), ['chmod 644 README.logon'])).join(' ')).toContain('`ls -a`')
+  })
+
+  it('after a chmod that leaves files locked, the hint names exactly what is left', () => {
+    expect(hints(play(at(3), ['chmod 134 README'])).at(-1)).toBe('Still locked: README and .login. Type `chmod 644 README`, then `chmod 644 .login`. (644 means you can read it again.)')
+    expect(hints(play(at(3), ['chmod 644 README'])).at(-1)).toContain('Still locked: .login.')
+  })
+
+  it('recovers from the exact sequence the player typed', () => {
+    const g = play(at(3), ['chmod 644 README.logon', 'chmod 134 README.longin', 'chmod', 'chmod 134 README', '.login', 'chmod 644 README', 'chmod 644 .login'])
+    expect(g.story.level).toBe(4)
+  })
+})

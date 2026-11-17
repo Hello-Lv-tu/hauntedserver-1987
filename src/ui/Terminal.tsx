@@ -4,6 +4,7 @@ import { prompt } from '../game/game.js'
 import type { GameState } from '../game/types.js'
 import type { TerminalAction } from './terminalState.js'
 import { PumpkinIcon } from './icons.js'
+import { LineText } from './LineText.js'
 import './terminal.css'
 
 interface TerminalProps {
@@ -13,14 +14,16 @@ interface TerminalProps {
   inputRef: RefObject<HTMLInputElement | null>
   /** Escape: dismiss a card or close Jack's popup. */
   onEscape: () => void
+  /** A bottom overlay (card, assistant) is open: keep the input above it. */
+  overlay: boolean
 }
 
-export function Terminal({ game, input, dispatch, inputRef, onEscape }: TerminalProps) {
+export function Terminal({ game, input, dispatch, inputRef, onEscape, overlay }: TerminalProps) {
   const endRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: 'end' })
-  }, [game.screen.length])
+  }, [game.screen.length, overlay])
 
   const focusInput = () => {
     // Don't steal focus while the player is selecting text to copy.
@@ -68,7 +71,7 @@ export function Terminal({ game, input, dispatch, inputRef, onEscape }: Terminal
           <div key={line.id} className={`line line-${line.kind}`}>
             {line.kind === 'hint' ? <span className="hint-label">hint: </span> : null}
             {line.kind === 'jack' && line.text ? <PumpkinIcon size={14} className="line-icon" /> : null}
-            {line.text || '\u00a0'}
+            <LineText text={line.text} commands={line.kind === 'hint' || line.kind === 'nell'} />
           </div>
         ))}
       </div>
@@ -96,6 +99,7 @@ export function Terminal({ game, input, dispatch, inputRef, onEscape }: Terminal
           spellCheck={false}
         />
       </div>
+      {overlay ? <div className="overlay-spacer" aria-hidden="true" /> : null}
       <div ref={endRef} />
     </div>
   )

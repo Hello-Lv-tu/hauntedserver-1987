@@ -18,9 +18,24 @@ function allUnlocked(ctx: StoryCtx): boolean {
   })
 }
 
+/** Locked files the player still cannot read, by name. */
+function stillLocked(ctx: StoryCtx): string[] {
+  return LOCKED.filter((path) => {
+    const node = ctx.vfs.stat(path, { cwd: '/', home: '/', user: 'root' })
+    return !(node.ok && canAccess(node.value, 'guest', 'r'))
+  }).map((path) => path.slice(path.lastIndexOf('/') + 1))
+}
+
 function unlock(input: StoryInput, ctx: StoryCtx, state: StoryState): Transition | null {
   if (input.type === 'command' && allUnlocked(ctx)) {
     return { complete: true, effects: [nell(NELL.l3Done, state), { type: 'lesson', card: RANSOMWARE_LESSON }] }
+  }
+  // After a chmod that did not unlock everything, say exactly what is left.
+  if (input.type === 'command' && input.event.name === 'chmod') {
+    const left = stillLocked(ctx)
+    if (left.length > 0) {
+      return { effects: [{ type: 'hint', text: `Still locked: ${left.join(' and ')}. Type ${left.map((f) => `\`chmod 644 ${f}\``).join(', then ')}. (644 means you can read it again.)` }] }
+    }
   }
   return null
 }
@@ -30,7 +45,7 @@ const locked: Beat = {
   hints: [
     '"Pay to unlock" is the ransomware playbook. Never pay first: check what really happened to the files.',
     '`ls -l` (a lowercase L, as in "list") shows each file\'s size and permission bits. Are the files really scrambled, or just locked?',
-    'Type `ls -l` (lowercase L, not the digit 1), then `chmod 644 README .login`.',
+    'Type `ls -l` (lowercase L, not the digit 1). Then two commands, one per line: `chmod 644 README` and `chmod 644 .login`.',
   ],
   on(input, ctx, state) {
     const event = commandEvent(input)
@@ -47,7 +62,7 @@ const unlock_: Beat = {
   hints: [
     'The bytes are intact; only the permission bits changed.',
     '`chmod 644 file` gives you read and write again (see `man chmod`).',
-    'Type `chmod 644 README .login`.',
+    'Two commands, one per line: `chmod 644 README`, then `chmod 644 .login` (the second file name starts with a dot).',
   ],
   on(input, ctx, state) {
     if (input.type === 'wrote' && input.to === 'nell') return { effects: [nell(NELL.l3Chatter, state)] }
