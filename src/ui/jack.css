@@ -213,3 +213,9 @@
   border-radius: 50%;
   background: #2e9e4f;
 }
+
+.jack-cmd {
+  white-space: nowrap;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-weight: 600;
+}

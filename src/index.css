@@ -25,7 +25,8 @@ body,
   padding: 2rem;
   color: var(--phosphor);
   text-shadow: 0 0 4px var(--phosphor-dim);
-  overflow: hidden;
+  /* clip, not hidden: hidden makes this a scroll container and scrollIntoView scrolls it instead of the page */
+  overflow: clip;
 }
 
 /* Scanlines */

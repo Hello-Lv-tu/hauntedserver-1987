@@ -14,14 +14,16 @@ interface TerminalProps {
   inputRef: RefObject<HTMLInputElement | null>
   /** Escape: dismiss a card or close Jack's popup. */
   onEscape: () => void
+  /** A bottom overlay (card, assistant) is open: keep the input above it. */
+  overlay: boolean
 }
 
-export function Terminal({ game, input, dispatch, inputRef, onEscape }: TerminalProps) {
+export function Terminal({ game, input, dispatch, inputRef, onEscape, overlay }: TerminalProps) {
   const endRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: 'end' })
-  }, [game.screen.length])
+  }, [game.screen.length, overlay])
 
   const focusInput = () => {
     // Don't steal focus while the player is selecting text to copy.
@@ -97,6 +99,7 @@ export function Terminal({ game, input, dispatch, inputRef, onEscape }: Terminal
           spellCheck={false}
         />
       </div>
+      {overlay ? <div className="overlay-spacer" aria-hidden="true" /> : null}
       <div ref={endRef} />
     </div>
   )
