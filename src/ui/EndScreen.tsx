@@ -1,16 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import type { GameState } from '../game/types.js'
 import { SPELLS } from '../story/spells.js'
+import { GhostIcon } from './icons.js'
 import './ending.css'
 
 const LESSONS = [
   ['Scareware', "Real warnings don't count down or beg you to click."],
-  ['Phishing', 'Check the real sender; nobody needs your password by mail.'],
+  ['Phishing', 'Check the real sender. Nobody needs your password by mail.'],
   ['Ransomware', "Don't pay first. Look at what really happened, and keep backups."],
   ['AI can be wrong', "Don't run advice you don't understand. Check the manual."],
   ['Faked records', 'Compare with an independent copy before you believe it.'],
   ['Persistence', 'If it keeps coming back, find what restarts it.'],
 ] as const
+
+const MOVE_MESSAGES = ['whoa. am i in 2026??', 'why are all the buttons ROUND??', 'and this font is so... soft :-P', 'thank you, partner.']
+const STAY_MESSAGES = ["i'll keep vax3 company.", 'no pumpkins on my watch ;-)', 'come back anytime: write nell']
 
 interface EndScreenProps {
   game: GameState
@@ -18,93 +22,124 @@ interface EndScreenProps {
   onPlayAgain: () => void
 }
 
-function duration(ms: number): string {
-  const minutes = Math.max(1, Math.round(ms / 60000))
-  return minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)} h ${minutes % 60} min`
+function minutes(ms: number): number {
+  return Math.max(1, Math.round(ms / 60000))
 }
 
 /**
- * The ending: Move fades the CRT to white and shows Nell's first message in
- * a modern UI; Stay keeps the amber terminal. Then the summary.
+ * The ending. Move: the CRT fades to white and Nell, now a little ghost in a
+ * 2026 chat app, types her first messages. Stay: the same layout in amber.
  */
 export function EndScreen({ game, onBack, onPlayAgain }: EndScreenProps) {
   const backRef = useRef<HTMLButtonElement>(null)
-  // Captured once, when the ending appears.
   const [now] = useState(() => Date.now())
   useEffect(() => {
-    // Keep Nell's message at the top in view; focus without scrolling to the buttons.
     backRef.current?.focus({ preventScroll: true })
   }, [])
 
+  const move = game.ending === 'move'
+  const messages = move ? MOVE_MESSAGES : STAY_MESSAGES
   const learned = SPELLS.filter((s) => game.spells.includes(s.command))
   const today = learned.filter((s) => s.today).length
-  const move = game.ending === 'move'
+  const time = minutes(now - game.startedAt)
 
   return (
     <div className={`ending ending-${game.ending}`} role="dialog" aria-modal="true" aria-labelledby="ending-title">
       {move ? <div className="ending-whiteout" aria-hidden="true" /> : null}
       <div className="ending-sheet">
-        {move ? (
-          <div className="modern-message">
-            <p className="modern-from">Nell · just now</p>
-            <p>whoa. am i in 2026?? why are all the buttons ROUND??</p>
-            <p>and this font is so... soft :-P</p>
-            <p>thank you, partner.</p>
+        <section className="chat" aria-label="Messages from Nell">
+          <div className="chat-head">
+            <span className="avatar">
+              <GhostIcon size={44} />
+            </span>
+            <div>
+              <p className="chat-name">Nell</p>
+              <p className="chat-status">{move ? 'online · from 1987' : 'on vax3 · ttyp0'}</p>
+            </div>
           </div>
-        ) : null}
+          <div className="chat-typing" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          {messages.map((m, i) => (
+            <p key={m} className="bubble" style={{ animationDelay: `${3.2 + i * 0.7}s` }}>
+              {m}
+            </p>
+          ))}
+        </section>
 
-        <h1 id="ending-title" className="ending-title">
-          {move ? 'Ending: Moved to 2026' : 'Ending: The guardian of vax3'}
-        </h1>
+        <header className="ending-header">
+          <p className="ending-kicker">Ending</p>
+          <h1 id="ending-title" className="ending-title">
+            {move ? 'Moved to 2026' : 'The guardian of vax3'}
+          </h1>
+          <p className="ending-sub">{move ? 'Nell rode a tape into the future, and into your browser tab.' : 'Nell stayed home. vax3 glows amber now.'}</p>
+        </header>
 
         {game.legacy ? (
-          <p className="ending-legacy">
-            Your words are now part of vax3. The next person who sneaks in will see them:
-            <br />
-            <q>{game.legacy}</q>
-          </p>
+          <section className="tile legacy">
+            <p className="tile-label">Your words, left inside vax3</p>
+            <p className="legacy-text">“{game.legacy}”</p>
+            <p className="tile-note">The next person who sneaks in will see them.</p>
+          </section>
         ) : null}
 
-        <section aria-label="Spells">
-          <h2>
-            You learned {learned.length} spells. {today} of them still work on a Mac or Linux machine today.
-          </h2>
-          <ul className="ending-spells">
+        <section className="stats" aria-label="Your run">
+          <div className="tile stat">
+            <p className="stat-number">{learned.length}</p>
+            <p className="tile-label">spells learned</p>
+          </div>
+          <div className="tile stat">
+            <p className="stat-number">{today}</p>
+            <p className="tile-label">still work today</p>
+          </div>
+          <div className="tile stat">
+            <p className="stat-number">{time}</p>
+            <p className="tile-label">{time === 1 ? 'minute' : 'minutes'}</p>
+          </div>
+          <div className="tile stat">
+            <p className="stat-number">{game.glitch}</p>
+            <p className="tile-label">times eaten</p>
+          </div>
+        </section>
+
+        <section className="tile" aria-label="Spells">
+          <p className="tile-label">Your spellbook</p>
+          <ul className="chips">
             {learned.map((s) => (
-              <li key={s.command}>
-                <code>{s.command}</code> {s.name}
-                {s.today ? '' : ' (retired)'}
+              <li key={s.command} className={s.today ? 'chip' : 'chip retired'} title={s.today ? s.name : `${s.name} (retired)`}>
+                <code>{s.command}</code>
+                <span>{s.name}</span>
               </li>
             ))}
           </ul>
+          <p className="tile-note">Grey ones are retired. The rest work in any Mac or Linux terminal today.</p>
         </section>
 
         <section aria-label="Lessons">
-          <h2>You saw through 6 tricks</h2>
-          <ul className="ending-lessons">
-            {LESSONS.map(([name, lesson]) => (
-              <li key={name}>
-                <strong>{name}:</strong> {lesson}
+          <p className="section-title">You saw through 6 tricks</p>
+          <ol className="lessons">
+            {LESSONS.map(([name, lesson], i) => (
+              <li key={name} className="tile lesson">
+                <span className="lesson-number">{i + 1}</span>
+                <p className="lesson-name">{name}</p>
+                <p className="lesson-text">{lesson}</p>
               </li>
             ))}
-          </ul>
+          </ol>
         </section>
 
-        <p className="ending-stats">
-          Time: {duration(now - game.startedAt)} · Eaten by Jack: {game.glitch} time{game.glitch === 1 ? '' : 's'}
-        </p>
-        <p className="ending-credits">
-          hauntedserver-1987 · made for Kiroween 2026 with Kiro · Nell's voice: DeepSeek · font: VT323 (OFL)
-        </p>
-
         <div className="ending-buttons">
-          <button type="button" ref={backRef} className="ending-button" onClick={onBack}>
+          <button type="button" ref={backRef} className="ending-button primary" onClick={onBack}>
             Back to the terminal
           </button>
           <button type="button" className="ending-button" onClick={onPlayAgain}>
             Play again
           </button>
         </div>
+
+        <p className="ending-credits">hauntedserver-1987 · made for Kiroween 2026 with Kiro · Nell's voice: DeepSeek · VT323 font (OFL)</p>
       </div>
     </div>
   )
