@@ -3,7 +3,7 @@ import type { ProcTable } from '../engine/procs/types.js'
 import type { Session, Stream, TerminalMode } from '../engine/shell/types.js'
 import type { Vfs } from '../engine/vfs/Vfs.js'
 import type { Spell } from '../story/spells.js'
-import type { Flags, LessonCard, StoryState } from '../story/types.js'
+import type { EndingKind, Flags, LessonCard, StoryState } from '../story/types.js'
 import type { SaveData } from './save.js'
 import type { Settings } from './settings.js'
 
@@ -81,6 +81,12 @@ export interface GameState {
   nextVoiceId: number
   /** Recent conversation with Nell (last 8 messages), sent as AI context. */
   chatLog: ChatEntry[]
+  /** The ending reached in this session (shows the ending screen). */
+  ending: EndingKind | null
+  /** The visitor line from the hidden ending, kept across games. */
+  legacy: string | null
+  /** When this session started (ms), for the summary. */
+  startedAt: number
 }
 
 export type GameInput =

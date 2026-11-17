@@ -5,7 +5,7 @@ import { execute } from '../engine/shell/execute.js'
 import { findProc, withProc, withoutProc } from '../engine/procs/types.js'
 import { tildify } from '../engine/vfs/path.js'
 import { levelEntry, storyStep } from '../story/engine.js'
-import { ASSISTANT_MESSAGES, POPUP_MESSAGES } from '../story/lines.js'
+import { ASSISTANT_MESSAGES, NELL, POPUP_MESSAGES } from '../story/lines.js'
 import { checkPassword } from '../story/secrets.js'
 import { LOGINS } from '../story/seed/logins.js'
 import { spellFor } from '../story/spells.js'
@@ -42,12 +42,21 @@ export function prompt(state: GameState): string {
   return `vax3:${tildify(state.session.cwd, state.session.home)}${sign} `
 }
 
+export interface NewGameOptions {
+  save?: SaveData | null
+  settings?: Settings
+  /** A line left by a previous visitor (hidden ending), shown before the SOS. */
+  legacy?: string | null
+  now?: number
+}
+
 /** A fresh game, or one continued from a save. */
-export function newGame(options: { save?: SaveData | null; settings?: Settings } = {}): GameState {
+export function newGame(options: NewGameOptions = {}): GameState {
   const world = createWorld()
   const save = options.save ?? null
   const entry = levelEntry(save?.level ?? 0, save?.flags ?? {})
-  const boot = save ? [...BOOT_LINES, '', `(continuing from level ${save.level})`] : BOOT_LINES
+  const legacy = save?.legacy ?? options.legacy ?? null
+  const boot = save && !save.ending ? [...BOOT_LINES, '', `(continuing from level ${save.level})`] : BOOT_LINES
   const base: GameState = {
     vfs: world.vfs,
     procs: world.procs,
@@ -69,8 +78,22 @@ export function newGame(options: { save?: SaveData | null; settings?: Settings }
     pendingVoices: [],
     nextVoiceId: 1,
     chatLog: [],
+    ending: null,
+    legacy,
+    startedAt: options.now ?? 0,
   }
-  return applyEffects(base, entry.effects)
+  base.save = withKeepsakes(base.save, save?.ending ?? null, legacy)
+  // The hidden ending: the last visitor's line greets the next one.
+  const opened = !save && legacy ? nellLike(base, 'guest', 'ttyh3', [legacy]) : base
+  const started = applyEffects(opened, entry.effects)
+  // Later visits after an ending: Nell remembers you.
+  if (save?.ending) return nellMessage(started, [...(save.ending === 'move' ? NELL.reunionMove : NELL.reunionStay)[0]])
+  return started
+}
+
+/** Ending and visitor line survive level saves and new games. */
+function withKeepsakes(save: SaveData, ending: SaveData['ending'] | null, legacy: string | null): SaveData {
+  return { ...save, ...(ending ? { ending } : {}), ...(legacy ? { legacy } : {}) }
 }
 
 /** The whole game advances only through this pure function. */
@@ -314,8 +337,14 @@ function applyEffects(state: GameState, effects: Effect[]): GameState {
           // Old levels' chat confused the AI (it repeated level 0 steps in level 4).
           chatLog: [],
           checkpoint: { vfs: s.vfs, procs: s.procs, session: s.session, level: effect.level, flags: s.story.flags },
-          save: { version: 1, level: effect.level, spells: s.spells, flags: { ...s.story.flags } },
+          save: withKeepsakes({ version: 1, level: effect.level, spells: s.spells, flags: { ...s.story.flags } }, s.save.ending ?? null, s.legacy),
         }
+        break
+      case 'ending':
+        s = { ...s, ending: effect.kind, save: withKeepsakes(s.save, effect.kind, s.legacy) }
+        break
+      case 'legacy':
+        s = { ...s, legacy: effect.text, save: withKeepsakes(s.save, s.save.ending ?? null, effect.text) }
         break
       case 'eaten':
         s = restoreCheckpoint(s)
@@ -370,10 +399,15 @@ function remember(log: GameState['chatLog'], entry: GameState['chatLog'][number]
   return [...log, { ...entry, text: entry.text.slice(0, 300) }].slice(-CHAT_LOG_SIZE)
 }
 
-/** Print a message from Nell in BSD write format and remember it as context. */
-function nellMessage(state: GameState, lines: string[]): GameState {
+/** Print a write message from any user in the BSD format. */
+function nellLike(state: GameState, user: string, tty: string, lines: string[]): GameState {
   // period: the banner BSD write prints on the recipient's terminal.
-  const printed = print(state, [['nell', ''], ['nell', 'Message from nell@vax3 on ttyp0 at 23:59 ...'], ...lines.map((t) => ['nell', t] as const), ['nell', 'EOF']])
+  return print(state, [['nell', ''], ['nell', `Message from ${user}@vax3 on ${tty} at 23:59 ...`], ...lines.map((t) => ['nell', t] as const), ['nell', 'EOF']])
+}
+
+/** Print a message from Nell and remember it as AI context. */
+function nellMessage(state: GameState, lines: string[]): GameState {
+  const printed = nellLike(state, 'nell', 'ttyp0', lines)
   return { ...printed, chatLog: remember(printed.chatLog, { from: 'nell', text: lines.join(' ') }) }
 }
 

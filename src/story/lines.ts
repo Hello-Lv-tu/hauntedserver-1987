@@ -102,11 +102,26 @@ export const NELL = {
   bossCronChatter: [['cron runs his program from /usr/lib/jack. remove it.'], ['`rm /usr/lib/jack/jack-o-daemon` then kill him again!']],
   bossDone: [["HE'S GONE!!! for real this time!!", "i'm... free? i think? :-O"]],
 
-  // End of this slice
-  toBeContinued: [
-    ["he's gone... and i'm still in here. inside vax3.", 'i need a moment to think about what comes next.', '(the ending is coming soon)'],
+  // The choice. Nell gives both of her own wishes; the player decides.
+  choose: [
+    ["he's gone... but i'm still in here. and you're moving vax3's data out.", 'part of me wants to come and see 2026. part of me wants to guard home.', 'what do you say? tell me: `come with me`, or `stay`.'],
   ],
-  endChatter: [['rest a bit, partner. come back soon :-)'], ["i'll be here. i'm always here. ;-)"]],
+  chooseChatter: [['so... `come with me`, or `stay`? your call, partner.'], ["i can't decide alone. `come with me` or `stay`?"]],
+  pack: [['YES!! ok, pack me up the old way. onto tape:', '`tar cvf /dev/rmt0 ~nell`', '(stop writing first: ctrl-d or EOF)']],
+  packChatter: [['tape! `tar cvf /dev/rmt0 ~nell` ;-)'], ["i'm ready. stop writing, then `tar cvf /dev/rmt0 ~nell`"]],
+  packed: [["ugh, it's dark in here... wiggle... ok! i'm on tape.", "it's tape 3. of course it's tape 3 :-P"]],
+  stayed: [["ok. i'll stay and keep vax3 company.", "if a pumpkin ever pops up again, i'll write you ;-)", 'come back anytime: `write nell`']],
+
+  // Hidden ending: diary, riddle, a line for the next visitor.
+  readDiary: [["HEY!! that's my DIARY :-O", '...ok fine. you did save me. you can read it.']],
+  riddleSolved: [['KEYBOARD! keys, space, enter. you got it :-O', 'nobody ever solves my riddles.']],
+  askLegacy: [['you read my diary AND solved my riddle...', 'write one line for the next person who sneaks in here.', "i'll keep it inside the machine for them."]],
+  legacySaved: [["saved. it'll be waiting for them ;-)", 'now... `come with me`, or `stay`?']],
+
+  // After the ending (and on later visits).
+  reunionMove: [['hi from 2026!! i still cannot get over the round buttons :-P', 'thanks for bringing me, partner.']],
+  reunionStay: [["you're back!! i knew it :-)", 'vax3 and i are fine. no pumpkins. well. one tiny seed, maybe.']],
+  endChatter: [['rest a bit, partner :-)'], ["i'll be here. i'm always here. ;-)"]],
 } satisfies Record<string, Variants>
 
 export const JACK = {
@@ -209,4 +224,3 @@ export const SCAREWARE_LESSON: LessonCard = {
   ],
 }
 
-export const DEMO_END_LINE = '*** You beat Jack-o\'-Daemon! The endings are coming in the next update. ***'

@@ -19,6 +19,8 @@ const SOLUTIONS: Record<number, Item[][]> = {
   4: [['man rm'], [{ type: 'assistant', action: 'decline' }]],
   5: [['diff /usr/adm/messages.0 /usr/adm/messages']],
   6: [['su', 'tape3'], ['kill 6666'], ['ls'], ['cat /usr/lib/crontab'], ['rm /usr/lib/jack/jack-o-daemon'], ['kill 6666']],
+  // From the legacy beat, the first 'stay' is saved as the visitor line; the second decides.
+  7: [['write nell', 'stay', 'stay', 'EOF']],
 }
 
 /**

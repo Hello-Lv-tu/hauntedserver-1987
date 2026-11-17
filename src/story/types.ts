@@ -5,6 +5,8 @@ import type { VNode } from '../engine/vfs/types.js'
 
 export type Flags = Readonly<Record<string, boolean>>
 
+export type EndingKind = 'move' | 'stay'
+
 export interface StoryState {
   level: number
   beat: string
@@ -59,6 +61,10 @@ export type Effect =
   | { type: 'levelStart'; level: number }
   | { type: 'eaten' }
   | { type: 'finished' }
+  /** A main ending was reached. */
+  | { type: 'ending'; kind: EndingKind }
+  /** The player's line for the next visitor (hidden ending). */
+  | { type: 'legacy'; text: string }
 
 export interface Transition {
   /** Next beat in the same level. */

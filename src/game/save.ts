@@ -1,4 +1,6 @@
+import { LEGACY_MAX, isControl } from '../story/levels/choice.js'
 import { SPELLS } from '../story/spells.js'
+import type { EndingKind } from '../story/types.js'
 
 /**
  * What is stored between visits. No filesystem snapshot and no player-typed
@@ -9,6 +11,10 @@ export interface SaveData {
   level: number
   spells: string[]
   flags: Record<string, boolean>
+  /** Which ending the player reached, if any. */
+  ending?: EndingKind
+  /** The hidden ending's line for the next visitor (only in this browser). */
+  legacy?: string
 }
 
 export const SAVE_KEY = 'hauntedserver:save'
@@ -36,7 +42,16 @@ export function parseSave(raw: string | null): SaveData | null {
     if (typeof flag !== 'boolean' || key.length > 40) return null
     flags[key] = flag
   }
-  return { version: 1, level: v.level, spells: [...new Set(v.spells as string[])], flags }
+  if (v.ending !== undefined && v.ending !== 'move' && v.ending !== 'stay') return null
+  if (v.legacy !== undefined && (typeof v.legacy !== 'string' || v.legacy.length > LEGACY_MAX || [...v.legacy].some(isControl))) return null
+  return {
+    version: 1,
+    level: v.level,
+    spells: [...new Set(v.spells as string[])],
+    flags,
+    ...(v.ending ? { ending: v.ending } : {}),
+    ...(v.legacy ? { legacy: v.legacy } : {}),
+  }
 }
 
 export function serializeSave(save: SaveData): string {
