@@ -125,8 +125,19 @@ resolves the argument paths against the event's `cwd`.
 | any | popup `fix` or `timeout` | `eaten`: restart Level 1 from checkpoint |
 | any | popup `close` | popup comes back after 3 s with a new message |
 
-The popup countdown is 60 s and pauses while a card or the Spellbook is open,
-so slow readers are never punished for reading.
+The popup countdown is 60 s or 30 s (player setting, default 60) and pauses
+while a card, the Spellbook or the settings panel is open, so slow readers
+are never punished for reading.
+
+## Settings — `src/game/settings.ts`
+
+`{ version: 1, popupSeconds: 60 | 30 }` in
+`localStorage["hauntedserver:settings"]`, validated on load (anything else
+falls back to the default). `GameState` carries `settings`; a
+`{ type: 'settings'; settings }` input changes them. `Settings.tsx` is a
+small gear button in the top-right corner that opens a panel with a
+two-option radio group. Getting eaten restarts the level from its
+checkpoint and keeps spells and flags (Requirement 8.4).
 
 ## Write mode
 

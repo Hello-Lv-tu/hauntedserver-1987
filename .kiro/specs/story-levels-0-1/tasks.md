@@ -27,7 +27,7 @@
   - [ ] 5.1 Beats, popup state, countdown, close-and-return, eaten/restart.
   - [ ] 5.2 Scareware lesson card and "to be continued".
   - [ ] 5.3 Beat unit tests.
-  - _Requirements: 5.1–5.6, 8.1_
+  - _Requirements: 5.1–5.6, 8.4, 9.1_
 
 - [ ] 6. Game glue `src/game/`
   - [ ] 6.1 `GameState`, `step`, effect application.
@@ -42,7 +42,9 @@
   - [ ] 7.2 `JackPopup` (accessible, deliberately modern style).
   - [ ] 7.3 Cards, Spellbook panel, `spellbook` command.
   - [ ] 7.4 Continue / new game screen; remove the dev-build line.
-  - _Requirements: 4.1, 5.1, 5.7, 6.1–6.3, 7.2, 8.2_
+  - [ ] 7.5 Settings button and panel (popup countdown 60 s / 30 s), saved
+    to localStorage, with tests for load validation.
+  - _Requirements: 4.1, 5.1, 5.7, 6.1–6.3, 7.2, 8.1–8.4, 9.2_
 
 - [ ] 8. Checkpoint
   - `npm run check` passes.

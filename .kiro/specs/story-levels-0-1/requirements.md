@@ -146,7 +146,21 @@ that I can come back later.
    explicitly stores, and SHALL be validated on load; invalid data SHALL be
    ignored.
 
-## Requirement 8: End of this slice
+## Requirement 8: Settings
+
+**User story:** As a player, I want to choose how much time Jack's popup
+gives me, so that the game is tense or relaxed as I like.
+
+1. THE UI SHALL show a small settings button in a corner of the screen,
+   reachable by keyboard and labelled for screen readers.
+2. THE settings panel SHALL offer a popup countdown of **60 seconds**
+   (default) or **30 seconds**.
+3. WHEN the setting changes, THE system SHALL apply it from the next popup
+   countdown and SHALL store it in `localStorage` (separate from save data).
+4. Being "eaten" SHALL only restart the current level from its checkpoint;
+   it SHALL NOT remove spells, flags or any other progress.
+
+## Requirement 9: End of this slice
 
 1. WHEN Level 1 is complete, THE system SHALL show a short "to be continued"
    message from Nell that points toward Level 2 (mail), so playtesters have
