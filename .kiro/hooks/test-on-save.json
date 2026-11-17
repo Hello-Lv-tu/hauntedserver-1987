@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Run tests when engine or UI code is saved",
+      "description": "Runs the Vitest + fast-check suite after any TypeScript file under src/ is saved, so a broken command or property shows up immediately.",
+      "trigger": "PostFileSave",
+      "matcher": "src/.*\\.tsx?$",
+      "action": {
+        "type": "command",
+        "command": "npm test --silent 2>&1 | tail -25"
+      }
+    }
+  ]
+}

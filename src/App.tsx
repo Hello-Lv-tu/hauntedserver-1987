@@ -1,5 +1,6 @@
-// Placeholder screen. The real terminal (virtual filesystem + command parser)
-// is specified in .kiro/specs/vfs-and-shell/ and will replace this component.
+import { useState } from 'react'
+import { createWorld } from './story/world'
+import { Terminal } from './ui/Terminal'
 
 const BOOT_LINES = [
   '4.3 BSD UNIX #12: Tue Oct 27 03:14:07 EST 1987',
@@ -14,18 +15,16 @@ const BOOT_LINES = [
   'is someone there?? please. the pumpkin thing locked me in.',
   "type: write nell   (it can't hear us that way)",
   'EOF',
+  '',
+  '[dev build: `write` arrives in a later update. For now try `ls -a`, `cat README`, `help`.]',
+  '',
 ]
 
 function App() {
+  const [world] = useState(createWorld)
   return (
-    <main className="crt" aria-label="Terminal">
-      <pre className="screen">
-        {BOOT_LINES.join('\n')}
-        {'\n% '}
-        <span className="cursor" aria-hidden="true">
-          _
-        </span>
-      </pre>
+    <main className="crt">
+      <Terminal vfs={world.vfs} session={world.session} intro={BOOT_LINES} />
     </main>
   )
 }

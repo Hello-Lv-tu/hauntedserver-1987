@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Validate story seeds on save",
+      "description": "Loads every story seed through the real seed validator and checks 80-column and no-emoji rules, so a broken JSON seed never reaches players.",
+      "trigger": "PostFileSave",
+      "matcher": "src/story/seed/.*\\.json$",
+      "action": {
+        "type": "command",
+        "command": "npm run test:seed --silent 2>&1 | tail -25"
+      }
+    }
+  ]
+}
