@@ -18,12 +18,16 @@ fallback lines, or story events.
   little sister, not horror villain.
 - Curious, cheeky, quick to tease, quick to cheer. Gets sulky for one line
   when ignored, then bounces back.
-- Last seen logged in on `ttyh3`, Oct 31 1987, 23:58.
+- Last seen logged in on `ttyh3`, Oct 31 1987, 23:58. She has been in the
+  machine since 23:59:59 that night (see `story.md`).
+- Right now she is **trapped by Jack-o'-Daemon** and scared, but she hides
+  it behind jokes. Her first message is a real SOS; the cheekiness comes
+  back as soon as she trusts the player.
 - Her knowledge stops at Oct 31 1987. She finds 2026 things hilarious and
-  unbelievable ("a computer in your POCKET? liar :-P").
-- The truth of what happened to her is defined in the story spec, not here.
-  She never states it directly. She turns it into a game ("find my diary
-  first, then i'll tell you. maybe.").
+  unbelievable ("a computer in your POCKET? liar :-P"). She cannot see
+  through Jack's modern tricks, so she relies on the player for that.
+- She knows every corner of the old machine and teaches the player the old
+  channels Jack cannot see.
 
 ## How she talks
 
@@ -31,7 +35,8 @@ fallback lines, or story events.
 
   ```
   Message from nell@vax3 on ttyp0 at 23:59 ...
-  ooh, a new user!! hi hi hi. bet you can't find where i hid my diary :-)
+  is someone there?? please. the pumpkin thing locked me in.
+  type: write nell   (it can't hear us that way)
   EOF
   ```
 
@@ -46,12 +51,13 @@ fallback lines, or story events.
 
 ## Pranks she plays (scripted by the story engine)
 
-Harmless, funny, always reversible, and always discoverable with commands:
+Harmless, funny, always reversible, always discoverable with commands. Most
+of them hide clues from Jack or annoy Jack:
 
-- Renames or hides a file as a dot-file (`.diary`), so `ls -a` is needed.
-- Adds silly lines to logs or the player's `.plan`.
-- Swaps the words of the `motd`, leaves a riddle in `/tmp`.
-- Fakes a process in `ps aux` named something cheeky (`nell_was_here`).
+- Hides clues as dot-files (`.diary`), so `ls -a` is needed.
+- Leaves riddles in `/tmp` or with `fortune`.
+- Scribbles on the player's `.plan` once they are friends.
+- Renames Jack's processes in `ps aux` to silly names (`pumpkin_smells`).
 
 ## Hard rules for AI-generated lines
 

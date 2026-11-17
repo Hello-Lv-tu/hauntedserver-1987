@@ -7,10 +7,13 @@ const BOOT_LINES = [
   'real mem  = 16777216',
   'avail mem = 14680064',
   '',
-  'vax3.cs.ravenmoor.edu login: intern',
+  'vax3.cs.ravenmoor.edu login: guest',
   'Last login: Sat Oct 31 23:59:59 1987 on ttyh3',
   '',
-  'You have mail.',
+  'Message from nell@vax3 on ttyp0 at 23:59 ...',
+  'is someone there?? please. the pumpkin thing locked me in.',
+  "type: write nell   (it can't hear us that way)",
+  'EOF',
 ]
 
 function App() {

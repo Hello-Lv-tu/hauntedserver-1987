@@ -1,27 +1,40 @@
 # hauntedserver-1987
 
 > A haunted 4.3BSD server, frozen at 23:59:59 on Halloween 1987.
-> Learn real Unix commands while a mischievous little ghost plays hide-and-seek with you.
+> Use real Unix commands to rescue a little ghost from a pumpkin-headed
+> "modernization" daemon.
 
 Built for **Kiroween 2026** (Resurrection category) with [Kiro](https://kiro.dev).
 
 ## The story
 
-You are a 2026 intern. Your task sounds boring: migrate the data off an old
-disk image from the Ravenmoor University CS department. When you boot it, the
-clock reads `Sat Oct 31 23:59:59 EST 1987`, your account says you last logged
-in that same night, and someone on `ttyp0` starts writing to your terminal.
+Everyone at Ravenmoor University says the old basement machine room is
+haunted. You sneak in. One terminal is still glowing green, its clock stuck
+at `Sat Oct 31 23:59:59 EST 1987`, and as you step closer it prints:
 
-Use `ls`, `cat`, `grep`, `ps`, `finger`, `mail` and `last` to read the logs,
-mail and process tables, keep up with her pranks, and piece together what
-happened to Nell Voss, the student night operator who vanished that night.
+```
+Message from nell@vax3 on ttyp0 at 23:59 ...
+is someone there?? please. the pumpkin thing locked me in.
+```
+
+Nell, a playful little ghost, is trapped in the machine by
+**Jack-o'-Daemon**, a pumpkin-headed spirit living in a modern
+"auto-modernization agent" that wants to delete everything legacy.
+
+Jack can't understand old tech, so you and Nell talk through `write`,
+`talk`, `.plan` files and old mail. Nell knows the old machine. You know
+2026, so you can see through Jack's tricks: fake warning popups, phishing
+mail, files held for ransom, an "AI assistant" that lies, and tampered logs.
+Beat Jack, then decide with Nell whether she stays or comes with you.
 
 ## Why
 
-Many people learning the command line find it dry. This game teaches real,
-transferable shell skills through a mystery: every command you use is
-tracked, every command has an in-game `man` page with a note on how it works
-on modern Linux and macOS, and the ending shows what you learned.
+Many people learning the command line find it dry. This game teaches two
+things through a story: real shell commands (`ls`, `cat`, `grep`, `ps`,
+`kill`, `chmod`, `mail`, `cron`...), and how to spot everyday digital traps.
+Every command you learn goes into your Spellbook, has an in-game `man` page
+with a note on how it works on modern Linux and macOS, and shows up in the
+summary at the end.
 
 ## Status
 
@@ -41,8 +54,9 @@ Other scripts: `npm run build`, `npm run lint`, `npm run preview`.
 
 ## How this project uses Kiro
 
-- **Steering** (`.kiro/steering/`): project rules, 4.3BSD period-accuracy
-  rules, and the ghost's persona and safety rules.
+- **Steering** (`.kiro/steering/`): project rules, the story bible (levels
+  and endings), 4.3BSD period-accuracy rules, and the ghost's persona and
+  safety rules.
 - **Specs** (`.kiro/specs/`): requirements (EARS), design and tasks for each
   feature, starting with the virtual filesystem and shell.
 - **Hooks** and **property-based tests**: coming next.

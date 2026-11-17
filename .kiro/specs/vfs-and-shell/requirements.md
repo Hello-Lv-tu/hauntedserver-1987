@@ -30,8 +30,11 @@ built from a seed file, so that I can author the server's contents as data.
    it and SHALL reject seeds with duplicate names in one directory or invalid
    modes, reporting the offending path.
 3. THE system SHALL compute file size as the byte length of the content.
-4. THE system SHALL expose a write API (create, overwrite, delete) for the
-   story engine. Player commands in this spec SHALL NOT modify the VFS.
+4. THE system SHALL expose a write API (create, overwrite, delete, change
+   mode) used by the story engine and by later player commands (`chmod`,
+   `kill`, editing `/usr/lib/crontab`, the player's `.plan`). The commands
+   in this spec are read-only; WHEN later commands write, THE system SHALL
+   apply the same permission checks as for reads, using write bits.
 
 ## Requirement 2: Path resolution
 

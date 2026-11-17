@@ -8,25 +8,30 @@ inclusion: always
 
 A browser game for the **Kiroween 2026** hackathon, **Resurrection** category.
 
-The player is a 2026 intern asked to migrate data off a preserved disk image of
-`vax3.cs.ravenmoor.edu`, a VAX running **4.3BSD** at the (fictional) Ravenmoor
-University CS department. The machine's clock is frozen at
-**Sat Oct 31 1987 23:59:59**, the night its student night operator,
-Nell Voss (`nell`), disappeared. Her ghost is still in the machine: a
-playful, mischievous little ghost who treats the player as a new playmate.
+A 2026 student sneaks into a haunted basement machine room at the (fictional)
+Ravenmoor University and finds one terminal still glowing: `vax3`, a VAX
+running **4.3BSD**, clock frozen at **Sat Oct 31 1987 23:59:59**. Nell, a
+playful little ghost trapped inside, is calling for help. She has been
+trapped by **Jack-o'-Daemon**, a pumpkin-headed spirit living in a modern
+"auto-modernization agent" that wants to delete everything legacy.
 
-The player investigates using real Unix commands (`ls`, `cat`, `grep`, `ps`,
-`finger`, `mail`, `last`, ...) to read logs, mail and process tables and work
-out what happened. The ghost sends `write` messages, plays pranks on the
-filesystem, sets riddles, and both helps and teases.
+The player talks to Nell through old Unix channels Jack cannot see (`write`,
+`talk`, `.plan`, mail, `cron`) and uses real commands plus their 2026
+know-how to see through Jack's modern tricks and defeat it.
+
+The full story, levels and endings are in `story.md`. Follow it.
 
 ## Who it is for and why it matters
 
 Target user: people learning the command line (students, bootcamp learners,
-new developers). The game teaches real, transferable shell skills through a
-mystery. Every feature should make that learning value visible: a command
-progress tracker, an in-game `man`, and an end-of-game summary of commands
-learned.
+new developers). The game teaches two things through a story:
+
+1. Real, transferable shell commands.
+2. Spotting everyday digital traps: scareware, phishing, ransomware, AI that
+   makes things up, tampered records.
+
+Every feature should make that learning value visible: the Spellbook
+(command progress), an in-game `man`, and an end-of-game summary.
 
 ## Judging criteria (each 20%) — keep these in mind
 
@@ -34,8 +39,9 @@ learned.
 2. Technological Implementation: deep, deliberate use of Kiro (specs,
    steering, hooks, property-based tests, MCP/powers where useful).
 3. Design: a finished product, not a tech demo.
-4. Innovation/Idea: period-accurate 4.3BSD details set us apart from generic
-   "haunted terminal" projects.
+4. Innovation/Idea: period-accurate 4.3BSD details, "old tech as the secret
+   channel vs. modern dark patterns", and digital-safety lessons set us
+   apart from generic "haunted terminal" projects.
 5. Presentation: a 3-minute demo video must show a full play-through.
 
 Submission must be in **English**: UI text, README, code comments.
@@ -56,6 +62,9 @@ Submission must be in **English**: UI text, README, code comments.
   Never execute user input anywhere.
 - **The game engine is pure TypeScript with no React imports.** Put it under
   `src/engine/` (vfs, shell, commands). React lives only in `src/ui/`.
+- **Persistence is local only.** Endings, Spellbook progress and the
+  player's `.plan` are stored in `localStorage`. Never send player-written
+  text to other players.
 - **Story is deterministic.** Clues, file changes and ghost events are driven
   by a scripted state machine (`src/story/`). The AI only writes the ghost's
   *wording*. It never decides game state, never reveals clues the script has

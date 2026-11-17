@@ -9,6 +9,10 @@ writing commands, output formats, file contents or story text, follow these
 rules. If a detail is uncertain, prefer the 4.3BSD behavior and leave a short
 `// period:` comment explaining the choice.
 
+**Exception:** Jack-o'-Daemon (the villain) and everything it produces
+(popups, its agent process, its "smart assistant", its files) are
+deliberately modern. These rules do not apply to it. See `story.md`.
+
 ## The machine
 
 - Hardware: DEC VAX-11/785. OS: 4.3BSD (released 1986).
