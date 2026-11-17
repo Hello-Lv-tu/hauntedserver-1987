@@ -51,6 +51,14 @@ export function buildMessages(request: VoiceRequest, beat: BeatInfo): ChatMessag
   for (const entry of request.history) {
     messages.push({ role: entry.from === 'player' ? 'user' : 'assistant', content: entry.text })
   }
+  // Repeat the task after the history: models follow the most recent
+  // instruction, and old chat must not pull Nell back to finished tasks.
+  if (!beat.isEnd) {
+    messages.push({
+      role: 'system',
+      content: `Reminder: the ONLY current task is: ${direction} Earlier tasks (hidden notes, popups, mail...) are finished; never send the player back to them. Point only toward: ${nudge} Do not tell the player whether something is safe, fake or should be refused; say how to check, and let them decide.`,
+    })
+  }
   messages.push({ role: 'user', content: request.text })
   return messages
 }

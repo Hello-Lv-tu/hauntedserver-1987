@@ -14,6 +14,7 @@ import { createWorld } from '../story/world.js'
 import type { SaveData } from './save.js'
 import type { Settings } from './settings.js'
 import { normalizeInput } from './normalize.js'
+import { suggestFix } from './suggest.js'
 import { DEFAULT_SETTINGS } from './settings.js'
 import type { GameInput, GameState, LineKind } from './types.js'
 
@@ -159,14 +160,27 @@ function shellLine(state: GameState, text: string): GameState {
   // Typed a sentence (or a typo) at the shell: point to write and help.
   const [only] = result.events
   const alreadyHinted = result.lines.some((l) => l.stream === 'hint')
-  if (result.events.length === 1 && only.status !== 0 && lookup(only.name) === undefined && !alreadyHinted && !only.name.includes('/')) {
-    // "ls-l": the space between a command and its options is missing.
-    const glued = /^([a-z]+)(-\S+)$/.exec(only.name)
+  if (result.events.length === 1 && only.status !== 0 && lookup(only.name) === undefined && !alreadyHinted && !only.name.startsWith('/')) {
+    // "ls-l" or "diff/usr/...": the space after the command is missing.
+    const glued = /^([a-z]+)([-/~.]\S*)$/.exec(only.name)
     const fixed = glued && lookup(glued[1]) ? [glued[1], glued[2], ...only.args].join(' ') : null
     const tip = fixed
       ? `Put a space between the command and its options: \`${fixed}\``
       : 'That is not a command. To talk to Nell, type `write nell` first. `help` lists the commands.'
     next = print(next, [['hint', tip]])
+  }
+
+  // A near-miss file name (e.g. a phone typo): suggest the exact one.
+  if (result.events.length === 1 && lookup(only.name) !== undefined && !/(^|\s|\/)user(\/|\s|$)/.test(text)) {
+    const fixed = suggestFix(only, next.vfs, next.session)
+    if (fixed) next = print(next, [['hint', `Did you mean \`${fixed}\`?`]])
+  }
+
+  // "/user" is the most common misspelling of /usr.
+  const misspelled = result.events.length > 0 && result.events.some((e) => e.status !== 0) && /(^|\s|\/)user(\/|\s|$)/.test(text)
+  if (misspelled) {
+    const fixed = text.replace(/(^|\s|\/)user(?=\/|\s|$)/g, '$1usr')
+    next = print(next, [['hint', `Unix spells it usr, without the e: \`${fixed}\``]])
   }
 
   if (result.request === 'hint') next = story(next, { type: 'hint' })
@@ -297,6 +311,8 @@ function applyEffects(state: GameState, effects: Effect[]): GameState {
       case 'levelStart':
         s = {
           ...s,
+          // Old levels' chat confused the AI (it repeated level 0 steps in level 4).
+          chatLog: [],
           checkpoint: { vfs: s.vfs, procs: s.procs, session: s.session, level: effect.level, flags: s.story.flags },
           save: { version: 1, level: effect.level, spells: s.spells, flags: { ...s.story.flags } },
         }

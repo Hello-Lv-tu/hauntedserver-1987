@@ -11,8 +11,8 @@ const lies: Beat = {
   id: 'lies',
   hints: [
     "A log that looks official isn't proof. Compare it with an independent copy that Jack didn't touch.",
-    'The previous log is kept as /usr/adm/messages.0. `diff` shows what changed between two files.',
-    'Type `diff /usr/adm/messages.0 /usr/adm/messages`.',
+    'The old copy is /usr/adm/messages.0, the current one is /usr/adm/messages. `diff` compares two files: give it both.',
+    'Type `diff /usr/adm/messages.0 /usr/adm/messages` (usr has no e; two file names separated by a space).',
   ],
   on(input, ctx, state) {
     const event = commandEvent(input)

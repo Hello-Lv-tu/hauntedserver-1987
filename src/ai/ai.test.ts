@@ -107,7 +107,8 @@ describe('beatInfo and buildMessages', () => {
 
   it('maps history to user/assistant turns and ends with the player text', () => {
     const messages = buildMessages(request({ history: [{ from: 'player', text: 'hi' }, { from: 'nell', text: 'hello!' }] }), beatInfo(0, 'hunt')!)
-    expect(messages.map((m) => m.role)).toEqual(['system', 'user', 'assistant', 'user'])
+    expect(messages.map((m) => m.role)).toEqual(['system', 'user', 'assistant', 'system', 'user'])
+    expect(messages.at(-2)?.content).toContain('ONLY current task')
     expect(messages.at(-1)?.content).toBe('what should i do next?')
   })
 })
