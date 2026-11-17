@@ -75,7 +75,7 @@ describe('a full play-through in Chinese', () => {
     'su', 'tape3', 'kill 6666', 'ls', 'cat /usr/lib/crontab', 'rm /usr/lib/jack/jack-o-daemn', 'rm /usr/lib/jack/jack-o-daemon', 'kill 6666',
     'write nell', 'come with me', 'EOF', 'tar cvf /dev/rmt', 'tar cvf /dev/rmt0 ~nell',
   ]
-  const zh: GameState = newGame({ settings: { version: 1, popupSeconds: 60, lang: 'zh' } })
+  const zh: GameState = newGame({ settings: { version: 1, popupSeconds: 60, lang: 'zh', typewriter: false } })
   const end = play(zh, SCRIPT)
 
   it('reaches the Move ending', () => {
@@ -160,7 +160,7 @@ describe('English mode is pure English', () => {
     'man rm', 'man ls', 'sudo ls', 'cd /user',
   ]
   it('no Chinese character appears anywhere on screen during a play-through', () => {
-    const en = play(newGame({ settings: { version: 1, popupSeconds: 60, lang: 'en' } }), SCRIPT)
+    const en = play(newGame({ settings: { version: 1, popupSeconds: 60, lang: 'en', typewriter: false } }), SCRIPT)
     const chinese = en.screen.filter((l) => hasCjk(l.text)).map((l) => `${l.kind}: ${l.text}`)
     expect(chinese).toEqual([])
   })

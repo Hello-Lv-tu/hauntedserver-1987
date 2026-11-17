@@ -5,6 +5,7 @@ import { SAVE_KEY, parseSave } from './game/save.js'
 import { SETTINGS_KEY, parseSettings } from './game/settings.js'
 import type { GameState } from './game/types.js'
 import { Game } from './ui/Game.js'
+import { Intro } from './ui/Intro.js'
 import { restoreGhostIcon } from './ui/favicon.js'
 import { readStorage } from './ui/storage.js'
 import { defaultLang, t } from './i18n/index.js'
@@ -21,13 +22,17 @@ restoreGhostIcon()
 
 function App() {
   const [save] = useState(savedProgress)
-  const settings = () => parseSettings(readStorage(SETTINGS_KEY), defaultLang(navigator.language))
+  // Reduced-motion players get instant text by default.
+  const calm = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+  const settings = () => parseSettings(readStorage(SETTINGS_KEY), defaultLang(navigator.language), !calm)
   const lang = settings().lang
   // A new game keeps the hidden ending's line, so it greets the next visitor.
   const [game, setGame] = useState<GameState | null>(() =>
     save ? null : newGame({ settings: settings(), legacy: stored()?.legacy ?? null, now: Date.now() }),
   )
   const [round, setRound] = useState(0)
+  // The machine-room intro plays once per page load.
+  const [entered, setEntered] = useState(false)
 
   const start = (fromSave: SaveData | null) => {
     setGame(newGame({ save: fromSave, settings: settings(), legacy: fromSave ? null : (save?.legacy ?? null), now: Date.now() }))
@@ -37,6 +42,8 @@ function App() {
     setGame(newGame({ settings: settings(), legacy, now: Date.now() }))
     setRound((r) => r + 1)
   }
+
+  if (!entered) return <Intro lang={lang} onEnter={() => setEntered(true)} />
 
   return (
     <main className="crt">

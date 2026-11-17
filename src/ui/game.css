@@ -230,8 +230,15 @@
 }
 
 /* Leave room so the input line can scroll above a bottom overlay. */
+/* Phones: cards cover the bottom of the screen, so keep the input above them. */
 .overlay-spacer {
   height: 46vh;
+}
+
+@media (min-width: 900px) {
+  .overlay-spacer {
+    display: none;
+  }
 }
 
 /* Phones: full-width bottom sheets, smaller type, room under the toolbar. */
@@ -263,5 +270,25 @@
 
   .card-title {
     font-size: 1.2rem;
+  }
+}
+
+/* The Spellbook button glows once when a spell is learned. */
+.glow-once {
+  display: inline-block;
+  animation: glow-once 1.2s ease-out;
+}
+
+@keyframes glow-once {
+  0%,
+  30% {
+    text-shadow: 0 0 10px #fff, 0 0 20px var(--phosphor);
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-once {
+    animation: none;
   }
 }

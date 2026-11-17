@@ -57,7 +57,15 @@ is also a hidden ending, and something odd in `ps` after the credits.
 
 Also: English and 简体中文 (characters, hints and UI; the 1987 machine itself
 always answers in English), Nell's AI voice, Spellbook, three-level `hint`, autosave, a 60 s / 30 s
-popup timer. The machine-room scene and sound are next.
+popup timer, and slow 1987 text that types out letter by letter (any key
+skips; off in settings or with reduced motion).
+
+**Look:** the game opens in the machine room; Enter (or a tap) pushes the
+camera into the glowing terminal. On wide screens you play inside a VT100
+bezel with the room behind it, which turns orange when Jack attacks and amber
+if Nell stays. Nell is pixel art drawn in code with moods from her smileys;
+Jack is a glossy, app-mascot pumpkin on purpose, and shatters when beaten.
+Sound is next.
 
 ## Run locally
 
@@ -95,6 +103,12 @@ Other scripts: `npm test` (unit and property-based tests), `npm run check`
   "no command leaks a file you cannot read".
 
 A full write-up will be added before submission.
+
+## Credits
+
+- Machine-room artwork: generated with ChatGPT (OpenAI) for this project.
+- Fonts: VT323 and Fusion Pixel 12px SC, both SIL Open Font License 1.1.
+- Nell and Jack: drawn in code (SVG) in `src/ui/characters/`.
 
 ## License
 

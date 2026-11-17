@@ -93,3 +93,85 @@
   color: #ffffff;
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
 }
+
+/* ------------------------------------------------------- input feedback */
+.terminal-input {
+  caret-shape: block; /* an old-terminal block cursor where supported */
+}
+
+.terminal-input-row {
+  position: relative;
+}
+
+/* Each key press: the phosphor flares a little. */
+.key-glow {
+  position: absolute;
+  inset: -2px -6px;
+  pointer-events: none;
+  border-radius: 4px;
+  background: radial-gradient(ellipse at 20% 50%, rgba(51, 255, 102, 0.18), transparent 70%);
+  opacity: 0;
+  animation: key-glow 0.25s ease-out;
+}
+
+@keyframes key-glow {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Errors give a tiny nudge; hints slide in. */
+.line-stderr {
+  animation: nudge 0.25s ease-out;
+}
+
+.line-hint {
+  animation: hint-in 0.3s ease-out;
+}
+
+@keyframes nudge {
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes hint-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+}
+
+/* The line being typed out: a solid block cursor at its end. */
+.type-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 1px;
+  vertical-align: -0.12em;
+  background: currentColor;
+  opacity: 0.85;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .key-glow,
+  .line-stderr,
+  .line-hint {
+    animation: none;
+  }
+}
