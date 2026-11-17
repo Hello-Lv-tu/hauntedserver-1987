@@ -108,3 +108,17 @@ describe('play-test 2026-11-17: typo in the boss fight', () => {
     expect(g.story.level).toBe(7)
   })
 })
+
+describe('play-test 2026-11-17: tar in the Move ending', () => {
+  const choice = () => ({ ...newGame({ save: { version: 1, level: 7, spells: [], flags: {} } }), cards: [] })
+  it('a truncated device shows the full example', () => {
+    expect(hints(play(choice(), ['tar cvf /dev/rmt'])).at(-1)).toContain('`tar cvf /dev/rmt0 ~nell`')
+  })
+  it('options glued to the device suggest the space', () => {
+    expect(hints(play(choice(), ['tar cvf/dev/rmt0 ~nell'])).at(-1)).toBe('Put a space after the options: `tar cvf /dev/rmt0 ~nell`')
+  })
+  it("the player's steps, then the fix, reach the Move ending", () => {
+    const g = play(choice(), ['come with me', 'write nell', 'come with me', 'EOF', 'tar cvf /dev/rmt', 'tar cvf/dev/rmt0 ~nell', 'tar cvf /dev/rmt0 ~nell'])
+    expect(g.ending).toBe('move')
+  })
+})
