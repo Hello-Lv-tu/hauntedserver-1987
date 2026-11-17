@@ -29,8 +29,8 @@ const locked: Beat = {
   id: 'locked',
   hints: [
     '"Pay to unlock" is the ransomware playbook. Never pay first: check what really happened to the files.',
-    '`ls -l` shows each file\'s size and permission bits. Are the files really scrambled, or just locked?',
-    'Type `ls -l`, then `chmod 644 README .login`.',
+    '`ls -l` (a lowercase L, as in "list") shows each file\'s size and permission bits. Are the files really scrambled, or just locked?',
+    'Type `ls -l` (lowercase L, not the digit 1), then `chmod 644 README .login`.',
   ],
   on(input, ctx, state) {
     const event = commandEvent(input)

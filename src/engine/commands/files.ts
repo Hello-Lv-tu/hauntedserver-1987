@@ -1,6 +1,6 @@
 import { parseFlags } from '../shell/flags.js'
 import type { Command, CommandCtx, OutputLine } from '../shell/types.js'
-import { stderr, stdout } from '../shell/types.js'
+import { hint, stderr, stdout } from '../shell/types.js'
 import { dirname } from '../vfs/path.js'
 import type { Vfs } from '../vfs/Vfs.js'
 import { canAccess } from '../vfs/Vfs.js'
@@ -39,7 +39,9 @@ export function applyMode(mode: number, spec: string): number | null {
 
 export const chmod: Command = (args, ctx) => {
   const [spec, ...files] = args
-  if (spec === undefined || files.length === 0) return { lines: [stderr('Usage: chmod [-R] mode file ...')], status: 1 }
+  if (spec === undefined || files.length === 0) {
+    return { lines: [stderr('Usage: chmod [-R] mode file ...'), hint('Example: `chmod 644 README` (mode first, then one or more files).')], status: 1 }
+  }
 
   let vfs = ctx.vfs
   const lines: OutputLine[] = []

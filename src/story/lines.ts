@@ -67,7 +67,7 @@ export const NELL = {
   l2Done: [['gone! good call, 2026 person.', "i'd have believed it. it had my NAME on it :-("], ['deleted!! i never would have spotted that.', 'nell 2, pumpkin 0. well. YOU 2.']],
 
   // Level 3: ransomware. Nell knows ls -l and chmod, not ransomware.
-  l3Start: [['NO. my README... your files... are they gone forever?? :-(', 'he says we have to PAY. what is "per month"??', 'wait. before anything: `ls -l` and look closely.']],
+  l3Start: [['NO. my README... your files... are they gone forever?? :-(', 'he says we have to PAY. what is "per month"??', 'wait. first: `ls -l` (little L, as in list). look closely.']],
   l3Looked: [
     ['look! the size column: the bytes are all still there.', 'and ---------- in front means nobody may read them.', 'that is just permission bits. `man chmod` ;-)'],
     ["ha! the files aren't empty, look at the sizes.", 'he only flipped the permission bits to ---------.', 'bits can be flipped back. `man chmod`'],

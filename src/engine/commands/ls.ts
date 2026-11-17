@@ -1,6 +1,6 @@
 import { parseFlags } from '../shell/flags.js'
 import type { Command, CommandCtx, OutputLine } from '../shell/types.js'
-import { stderr, stdout } from '../shell/types.js'
+import { hint, stderr, stdout } from '../shell/types.js'
 import { DIR_SIZE } from '../vfs/Vfs.js'
 import type { DirNode, VNode } from '../vfs/types.js'
 import { FROZEN_NOW, MONTHS, fileError, parseMtime, pathCtx } from './common.js'
@@ -10,7 +10,14 @@ const TERMINAL_WIDTH = 80
 
 export const ls: Command = (args, ctx) => {
   const parsed = parseFlags(args, { boolean: 'agl' })
-  if (!parsed.ok) return { lines: [stderr(USAGE)], status: 1 }
+  if (!parsed.ok) {
+    const lines = [stderr(USAGE)]
+    // In the terminal font, the letter l and the digit 1 look alike.
+    if (parsed.bad === '1' || parsed.bad === 'I') {
+      lines.push(hint('That was the digit 1 (or a capital I). The long listing uses a lowercase L, as in "list": `ls -l`'))
+    }
+    return { lines, status: 1 }
+  }
   const { flags, operands } = parsed.value
   const opts = { all: flags.has('a'), long: flags.has('l'), group: flags.has('g') }
   const targets = operands.length > 0 ? operands : ['.']
