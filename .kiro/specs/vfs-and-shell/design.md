@@ -148,8 +148,8 @@ supports combined short flags (`-la`) and `-n 5` / `-5` for head/tail.
 All formats follow `.kiro/steering/period-accuracy.md`. `ls -l` example:
 
 ```
--rw-r--r--  1 evoss        1234 Oct 31 23:58 notes
-drwxr-xr-x  2 evoss         512 Oct 12 09:01 bin
+-rw-r--r--  1 nell         1234 Oct 31 23:58 notes
+drwxr-xr-x  2 nell          512 Oct 12 09:01 bin
 ```
 
 Columns: mode (10), link count (always 1 for files, 2 for dirs), owner

@@ -13,7 +13,7 @@ rules. If a detail is uncertain, prefer the 4.3BSD behavior and leave a short
 
 - Hardware: DEC VAX-11/785. OS: 4.3BSD (released 1986).
 - Hostname: `vax3.cs.ravenmoor.edu`. Short name `vax3`.
-- UUCP path also works in mail headers: `...!seismo!ravenmoor!evoss`.
+- UUCP path also works in mail headers: `...!seismo!ravenmoor!nell`.
 - System clock is frozen at `Sat Oct 31 23:59:59 EST 1987`. `date` prints
   that format.
 - Login shell is `csh`. Prompt is `% ` for users and `# ` for root.
@@ -25,7 +25,7 @@ rules. If a detail is uncertain, prefer the 4.3BSD behavior and leave a short
   `write`, `wall`, `man`, `su`, `vi`, `history` (csh builtin), `clear`.
 - `ps` uses BSD flags: `ps aux`, no dash required.
 - `ls -l` in 4.3BSD shows **owner but not group** (group needs `-g`):
-  `-rw-r--r--  1 evoss        1234 Oct 31 23:58 notes`
+  `-rw-r--r--  1 nell         1234 Oct 31 23:58 notes`
 - Important paths: `/etc/passwd` (password hashes are visible, no shadow
   file), `/usr/spool/mail/<user>`, `/usr/adm/messages`, `/usr/adm/wtmp`
   (read via `last`), `/usr/lib/crontab` (a single system crontab),

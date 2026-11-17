@@ -11,13 +11,14 @@ A browser game for the **Kiroween 2026** hackathon, **Resurrection** category.
 The player is a 2026 intern asked to migrate data off a preserved disk image of
 `vax3.cs.ravenmoor.edu`, a VAX running **4.3BSD** at the (fictional) Ravenmoor
 University CS department. The machine's clock is frozen at
-**Sat Oct 31 1987 23:59:59**, the night its sysadmin, Eleanor Voss (`evoss`),
-disappeared. Her "ghost" is still in the machine.
+**Sat Oct 31 1987 23:59:59**, the night its student night operator,
+Nell Voss (`nell`), disappeared. Her ghost is still in the machine: a
+playful, mischievous little ghost who treats the player as a new playmate.
 
 The player investigates using real Unix commands (`ls`, `cat`, `grep`, `ps`,
 `finger`, `mail`, `last`, ...) to read logs, mail and process tables and work
-out what happened. The ghost sends `write` messages, edits files, and both
-helps and misleads.
+out what happened. The ghost sends `write` messages, plays pranks on the
+filesystem, sets riddles, and both helps and teases.
 
 ## Who it is for and why it matters
 

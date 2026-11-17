@@ -1,7 +1,7 @@
 # hauntedserver-1987
 
 > A haunted 4.3BSD server, frozen at 23:59:59 on Halloween 1987.
-> Learn real Unix commands while you find out what happened to its sysadmin.
+> Learn real Unix commands while a mischievous little ghost plays hide-and-seek with you.
 
 Built for **Kiroween 2026** (Resurrection category) with [Kiro](https://kiro.dev).
 
@@ -13,7 +13,8 @@ clock reads `Sat Oct 31 23:59:59 EST 1987`, your account says you last logged
 in that same night, and someone on `ttyp0` starts writing to your terminal.
 
 Use `ls`, `cat`, `grep`, `ps`, `finger`, `mail` and `last` to read the logs,
-mail and process tables, and piece together what happened to Eleanor Voss.
+mail and process tables, keep up with her pranks, and piece together what
+happened to Nell Voss, the student night operator who vanished that night.
 
 ## Why
 
