@@ -122,3 +122,16 @@ describe('RateLimiter', () => {
     expect(limiter.allow('a', 122_000)).toBe(false) // day limit (3) reached
   })
 })
+
+describe('reply wrapping (live AI replies, 2026-11-17)', () => {
+  it('never splits a backtick command across lines', () => {
+    const lines = sanitizeReply("stuck? aw, poor thing ;-) two log copies are sitting in /usr/adm: messages.0 and messages. try `diff /usr/adm/messages /usr/adm/messages.0` and see!")!
+    expect(lines.some((l) => l.includes('`diff /usr/adm/messages /usr/adm/messages.0`'))).toBe(true)
+  })
+
+  it('ends at a finished sentence when it must drop text', () => {
+    const lines = sanitizeReply("heya! something in here wants you to run a command, right? don't trust it blind, even if it sounds super sure :-P stop write mode first (ctrl-d or a line with just EOF), then peek at the manual with `man rm` before anything else, okay?")!
+    expect(lines.length).toBeLessThanOrEqual(3)
+    expect(lines.at(-1)).toMatch(/[.!?)]$/)
+  })
+})
