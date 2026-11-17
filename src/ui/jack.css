@@ -101,7 +101,7 @@
 
 .jack-fineprint {
   margin: 0.5rem 0 0;
-  font-size: 11px;
+  font-size: 12px; /* the Chinese pixel font needs at least 12px */
   color: #9a7650;
   text-align: center;
 }
@@ -161,7 +161,7 @@
 
 .jack-assistant-status {
   margin: 0;
-  font-size: 11px;
+  font-size: 12px; /* the Chinese pixel font needs at least 12px */
   color: #2e9e4f;
 }
 

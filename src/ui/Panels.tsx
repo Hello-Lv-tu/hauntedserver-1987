@@ -84,15 +84,16 @@ export function SettingsPanel({
   onChange: (settings: Settings) => void
   onClose: () => void
 }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   return (
     <Panel title={t('Settings')} onClose={onClose}>
       <fieldset className="setting">
-        <legend>{t('Language')} / Language</legend>
-        {LANGS.map((lang) => (
-          <label key={lang} className="setting-option">
-            <input type="radio" name="lang" value={lang} checked={settings.lang === lang} onChange={() => onChange({ ...settings, lang })} />{' '}
-            {lang === 'en' ? 'English' : '中文'}
+        <legend>{lang === 'zh' ? '语言 / Language' : 'Language'}</legend>
+        {LANGS.map((option) => (
+          <label key={option} className="setting-option">
+            <input type="radio" name="lang" value={option} checked={settings.lang === option} onChange={() => onChange({ ...settings, lang: option })} />{' '}
+            {/* Language names are shown in their own language, so each player can find theirs. */}
+            {option === 'en' ? 'English' : '中文'}
           </label>
         ))}
         <p className="panel-note">{t('Commands and machine output stay in English, like a real 1987 terminal.')}</p>

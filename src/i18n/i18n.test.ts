@@ -152,3 +152,24 @@ describe('language setting', () => {
     expect(parseSettings('{"lang":"klingon"}', 'en').lang).toBe('en')
   })
 })
+
+describe('English mode is pure English', () => {
+  const SCRIPT = [
+    'write nell', 'hi', 'EOF', 'ls -a', 'cat .from_nell', 'hint', 'ps aux', 'kill 6667',
+    'finger nell', 'mail', 'P 2', 'd 2', 'q', 'ls -1', 'ls-l', 'chmod 134 README', 'chmod 644 README', 'chmod 644 .login',
+    'man rm', 'man ls', 'sudo ls', 'cd /user',
+  ]
+  it('no Chinese character appears anywhere on screen during a play-through', () => {
+    const en = play(newGame({ settings: { version: 1, popupSeconds: 60, lang: 'en' } }), SCRIPT)
+    const chinese = en.screen.filter((l) => hasCjk(l.text)).map((l) => `${l.kind}: ${l.text}`)
+    expect(chinese).toEqual([])
+  })
+
+  it('every UI label is English in English mode', () => {
+    for (const [english] of Object.entries(UI_ZH)) expect(hasCjk(translate(english, 'en'))).toBe(false)
+  })
+
+  it('man pages have no Chinese in English mode', () => {
+    for (const name of MAN_PAGE_NAMES) expect((manPage(name, 'en') ?? []).some(hasCjk), name).toBe(false)
+  })
+})
