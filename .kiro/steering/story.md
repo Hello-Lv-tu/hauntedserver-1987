@@ -57,6 +57,7 @@ learning-progress screen).
 | Command | In-world meaning |
 |---|---|
 | `ls` | Flashlight: light up the room |
+| `cd` | Doorway: step into another directory |
 | `cat` / `more` | Open a notebook |
 | `grep` | Follow a scent |
 | `ps` | Scan who is here (Jack-o'-Daemon's shadow appears) |

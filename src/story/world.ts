@@ -1,13 +1,17 @@
+import type { ProcTable } from '../engine/procs/types'
 import { newSession } from '../engine/shell/types'
 import type { Session } from '../engine/shell/types'
 import { loadSeed } from '../engine/vfs/seed'
 import { Vfs } from '../engine/vfs/Vfs'
 import devSeed from './seed/dev.json'
+import { SEED_PROCS } from './seed/procs'
 
 export const PLAYER = 'guest'
+export const PLAYER_TTY = 'ttyh3'
 
 export interface World {
   vfs: Vfs
+  procs: ProcTable
   session: Session
 }
 
@@ -20,5 +24,5 @@ export function createWorld(seed: unknown = devSeed): World {
   }
   const vfs = new Vfs(root.value)
   const home = vfs.homeOf(PLAYER) ?? '/'
-  return { vfs, session: newSession(PLAYER, home) }
+  return { vfs, procs: SEED_PROCS, session: newSession(PLAYER, home, PLAYER_TTY) }
 }

@@ -38,11 +38,17 @@ summary at the end.
 
 ## Status
 
-Early development. Playable so far: a simulated 4.3BSD filesystem and csh-like
-shell with `ls`, `cd`, `pwd`, `cat`, `more`, `head`, `tail`, `wc`, `grep`,
-`echo`, `date`, `whoami`, `history`, `clear`, `man` and `help`, pipes, quoting,
-command history (Up/Down) and Tab completion. Story, Nell and Jack-o'-Daemon
-come next. See `.kiro/specs/` for the plan.
+Playable now: the opening and Level 1.
+
+- `write nell` to talk to Nell (Ctrl-D or `EOF` to stop), find her hidden note
+  with `ls -a`, then beat Jack-o'-Daemon's fake virus popup with `ps aux` and
+  `kill`, without ever clicking it.
+- Spellbook, three-level `hint`, autosave (continue or new game), a 60 s / 30 s
+  popup timer setting.
+- 22 commands with 4.3BSD output, pipes, quoting, history and Tab completion.
+
+Levels 2-5, the boss, the endings, the machine-room scene and Nell's AI voice
+are next. See `.kiro/specs/` for the plan.
 
 ## Run locally
 

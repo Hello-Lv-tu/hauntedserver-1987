@@ -76,6 +76,14 @@
                   "name": "README",
                   "kind": "file",
                   "content": "Welcome, guest.\n\nTry these:\n  ls          list files\n  cat FILE    read a file\n  cd DIR      go into a directory\n  help        list every command\n"
+                },
+                {
+                  "name": ".from_nell",
+                  "kind": "file",
+                  "owner": "nell",
+                  "group": "staff",
+                  "mtime": "1987-10-31 23:59",
+                  "content": "you found a dot-file!! jack skips these. lazy pumpkin :-P\n\nthings i know:\n- jack is NOT a ghost. he's a program. programs can be stopped.\n- `ps` shows what's running. `ps aux` shows EVERYTHING.\n- if something yells CLICK ME, don't. look first.\n\n-- n.   (write me anytime: write nell)\n"
                 }
               ]
             },

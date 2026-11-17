@@ -4,6 +4,7 @@ import { stderr, stdout } from '../shell/types'
 import { columns, ls } from './ls'
 import { clear, date, echo, history, whoami } from './misc'
 import { cd, pwd } from './navigation'
+import { hintCommand, kill, ps, spellbook, who, write } from './procs'
 import { cat, grep, head, more, tail, wc } from './text'
 
 const man: Command = (args) => {
@@ -35,14 +36,20 @@ export const registry: Readonly<Record<string, Command>> = {
   grep,
   head,
   help,
+  hint: hintCommand,
   history,
+  kill,
   ls,
   man,
   more,
+  ps,
   pwd,
+  spellbook,
   tail,
   wc,
+  who,
   whoami,
+  write,
 }
 
 export const COMMAND_NAMES = Object.keys(registry).sort()
