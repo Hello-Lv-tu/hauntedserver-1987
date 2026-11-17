@@ -55,6 +55,7 @@ export function SpellbookPanel({ learned, onClose }: { learned: string[]; onClos
               ) : (
                 <>
                   <code>???</code> <span className="spell-name">not yet learned</span>
+                  {spell.tip ? <span className="spell-desc">Try: `{spell.tip}`</span> : null}
                 </>
               )}
             </li>
