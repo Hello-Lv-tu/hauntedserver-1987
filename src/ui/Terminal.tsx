@@ -4,6 +4,7 @@ import { prompt } from '../game/game.js'
 import type { GameState } from '../game/types.js'
 import type { TerminalAction } from './terminalState.js'
 import { PumpkinIcon } from './icons.js'
+import { LineText } from './LineText.js'
 import './terminal.css'
 
 interface TerminalProps {
@@ -68,7 +69,7 @@ export function Terminal({ game, input, dispatch, inputRef, onEscape }: Terminal
           <div key={line.id} className={`line line-${line.kind}`}>
             {line.kind === 'hint' ? <span className="hint-label">hint: </span> : null}
             {line.kind === 'jack' && line.text ? <PumpkinIcon size={14} className="line-icon" /> : null}
-            {line.text || '\u00a0'}
+            <LineText text={line.text} commands={line.kind === 'hint' || line.kind === 'nell'} />
           </div>
         ))}
       </div>
