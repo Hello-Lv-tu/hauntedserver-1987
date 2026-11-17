@@ -41,7 +41,7 @@ function killPopup(input: StoryInput, ctx: StoryCtx, state: StoryState): Transit
 const popup: Beat = {
   id: 'popup',
   hints: [
-    'The popup is drawn by a program. Programs can be found.',
+    "Real system warnings don't count down or beg you to click. This is scareware: don't press FIX NOW. Nell knows how to find what draws it.",
     'Use `ps aux` to list every running program, and look for the odd one.',
     'Run `ps aux`, find the PID of pumpkin_upd8r (6667), then type `kill 6667`.',
   ],

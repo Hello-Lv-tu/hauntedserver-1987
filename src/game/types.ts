@@ -1,6 +1,6 @@
 import type { ChatEntry, VoiceRequest } from '../ai/request.js'
 import type { ProcTable } from '../engine/procs/types.js'
-import type { Session, Stream, WriteMode } from '../engine/shell/types.js'
+import type { Session, Stream, TerminalMode } from '../engine/shell/types.js'
 import type { Vfs } from '../engine/vfs/Vfs.js'
 import type { Spell } from '../story/spells.js'
 import type { Flags, LessonCard, StoryState } from '../story/types.js'
@@ -44,7 +44,13 @@ export interface PendingVoice {
   fallback: string[]
 }
 
-export type Mode = { kind: 'shell' } | WriteMode
+export type Mode = { kind: 'shell' } | TerminalMode
+
+/** Jack's "Smart Assistant" bubble (Level 4). */
+export interface AssistantState {
+  /** Index into ASSISTANT_MESSAGES. */
+  message: number
+}
 
 export type Panel = 'spellbook' | 'settings' | null
 
@@ -57,6 +63,7 @@ export interface GameState {
   /** Learned spells, in the order they were learned. */
   spells: string[]
   popup: PopupState | null
+  assistant: AssistantState | null
   /** Spell and lesson cards waiting to be shown, oldest first. */
   cards: Card[]
   screen: ScreenLine[]
@@ -81,6 +88,7 @@ export type GameInput =
   | { type: 'eof' }
   | { type: 'interrupt'; text: string }
   | { type: 'popup'; action: 'fix' | 'close' }
+  | { type: 'assistant'; action: 'run' | 'decline' }
   /** One second passed. `paused` is true while the UI wants time stopped. */
   | { type: 'tick'; paused?: boolean }
   | { type: 'dismissCard' }

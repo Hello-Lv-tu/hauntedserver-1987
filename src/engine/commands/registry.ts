@@ -1,11 +1,14 @@
 import { manPage } from '../man/pages.js'
 import type { Command } from '../shell/types.js'
 import { stderr, stdout } from '../shell/types.js'
+import { chmod, diff, rm } from './files.js'
 import { columns, ls } from './ls.js'
+import { mail } from './mail.js'
 import { clear, date, echo, history, whoami } from './misc.js'
 import { cd, pwd } from './navigation.js'
 import { hintCommand, kill, ps, spellbook, who, write } from './procs.js'
 import { cat, grep, head, more, tail, wc } from './text.js'
+import { exit, finger, last, su } from './users.js'
 
 const man: Command = (args) => {
   const name = args[0]
@@ -30,21 +33,30 @@ const help: Command = () => ({
 export const registry: Readonly<Record<string, Command>> = {
   cat,
   cd,
+  chmod,
   clear,
   date,
+  diff,
   echo,
+  exit,
+  finger,
   grep,
   head,
   help,
   hint: hintCommand,
   history,
   kill,
+  last,
+  logout: exit,
   ls,
+  mail,
   man,
   more,
   ps,
   pwd,
+  rm,
   spellbook,
+  su,
   tail,
   wc,
   who,

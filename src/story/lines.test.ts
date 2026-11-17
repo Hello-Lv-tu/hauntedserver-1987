@@ -16,10 +16,9 @@ describe('pre-written lines', () => {
     }
   })
 
-  it('every Nell beat that varies has at least two variants (AI fallbacks)', () => {
-    const fixed = new Set(['sos', 'toBeContinued'])
+  it('chatter lines (the AI fallbacks) have at least two variants', () => {
     for (const [beat, variants] of Object.entries(NELL)) {
-      if (!fixed.has(beat)) expect(variants.length, beat).toBeGreaterThanOrEqual(2)
+      if (/chatter$/i.test(beat)) expect(variants.length, beat).toBeGreaterThanOrEqual(2)
     }
   })
 

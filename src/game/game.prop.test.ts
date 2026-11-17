@@ -14,6 +14,11 @@ type Item = string | GameInput
 const SOLUTIONS: Record<number, Item[][]> = {
   0: [['write nell', 'hi', 'EOF'], ['ls -a'], ['cat .from_nell']],
   1: [['ps aux'], ['kill 6667']],
+  2: [['finger nell'], ['mail', 'P 2', 'd 2', 'q']],
+  3: [['ls -l'], ['chmod 644 README .login']],
+  4: [['man rm'], [{ type: 'assistant', action: 'decline' }]],
+  5: [['diff /usr/adm/messages.0 /usr/adm/messages']],
+  6: [['su', 'tape3'], ['kill 6666'], ['ls'], ['cat /usr/lib/crontab'], ['rm /usr/lib/jack/jack-o-daemon'], ['kill 6666']],
 }
 
 /**
@@ -41,6 +46,14 @@ const NOISE: Item[][] = [
   ['write nell', 'ls -a', { type: 'eof' }],
   ['write nell', 'hint', { type: 'interrupt', text: 'bye' }],
   [{ type: 'popup', action: 'fix' }],
+  [{ type: 'assistant', action: 'run' }],
+  [{ type: 'assistant', action: 'decline' }],
+  ['mail', 'h', 'q'],
+  ['mail', 'd 2', 'q'],
+  ['mail', 'x'],
+  ['su', 'wrong'],
+  ['finger'],
+  ['last'],
   [{ type: 'popup', action: 'close' }],
   [{ type: 'tick' }],
   [{ type: 'dismissCard' }],

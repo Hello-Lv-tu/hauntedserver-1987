@@ -85,7 +85,8 @@ export function Terminal({ game, input, dispatch, inputRef, onEscape }: Terminal
           id="terminal-input"
           ref={inputRef}
           className={`terminal-input${writing ? ' writing' : ''}`}
-          aria-label={writing ? `Message to ${game.mode.kind === 'write' ? game.mode.to : ''}` : 'Command'}
+          aria-label={writing ? `Message to ${game.mode.kind === 'write' ? game.mode.to : ''}` : game.mode.kind === 'password' ? 'Password' : 'Command'}
+          type={game.mode.kind === 'password' ? 'password' : 'text'}
           value={input}
           onChange={(e) => dispatch({ type: 'input', value: e.target.value })}
           onKeyDown={onKeyDown}

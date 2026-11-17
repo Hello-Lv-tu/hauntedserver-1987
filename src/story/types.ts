@@ -23,6 +23,8 @@ export type StoryInput =
   | { type: 'command'; event: CommandEvent }
   | { type: 'wrote'; to: string; text: string }
   | { type: 'popup'; action: PopupAction }
+  | { type: 'mail'; action: 'print' | 'printAll' | 'delete' | 'undelete' | 'quit'; messageId?: string; kept?: string[] }
+  | { type: 'assistant'; action: 'decline' }
   | { type: 'hint' }
 
 /** Read-only view of the world the story uses to interpret inputs. */
@@ -47,9 +49,12 @@ export type Effect =
   | { type: 'hint'; text: string }
   | { type: 'say'; lines: string[] }
   | { type: 'writeFile'; path: string; node: VNode }
+  /** Change only the permission bits of an existing file. */
+  | { type: 'setMode'; path: string; mode: number }
   | { type: 'startProc'; proc: Proc }
   | { type: 'stopProc'; pid: number }
   | { type: 'popup'; action: 'show' | 'hide' | 'nag' }
+  | { type: 'assistant'; action: 'show' | 'hide' | 'nag' }
   | { type: 'lesson'; card: LessonCard }
   | { type: 'levelStart'; level: number }
   | { type: 'eaten' }

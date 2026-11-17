@@ -1,0 +1,22 @@
+# Tasks: Levels 2-5 and the boss
+
+- [x] 1. Commands: `finger`, `chmod`, `rm`, `diff`, `last`, `exit`/`logout`, with man pages and tests
+  - _Requirements: 1.1, 1.3-1.6, 1.8_
+- [x] 2. `mail` mode (mbox parser, header list, commands, spool write-back) with tests
+  - _Requirements: 1.2_
+- [x] 3. `su` and password mode; root prompt; `exit` back
+  - _Requirements: 1.7_
+- [x] 4. Seed: `jack-o-daemon` process, mail spool, `messages.0`, `/usr/lib/crontab`, `/usr/lib/jack/`, logins
+  - _Requirements: 2.1_
+- [x] 5. Level 2 (phishing) with tests
+  - _Requirements: 2.1, 2.2_
+- [x] 6. Level 3 (ransomware) with tests
+  - _Requirements: 2.1, 2.3_
+- [x] 7. Level 4 (lying assistant) + `Assistant.tsx` with tests
+  - _Requirements: 2.1, 2.4_
+- [x] 8. Level 5 (tampered log) with tests
+  - _Requirements: 2.1, 2.5_
+- [x] 9. Boss with tests
+  - _Requirements: 2.1, 2.6_
+- [x] 10. Property tests extended; `npm run check`; browser play-through of all levels
+  - _Requirements: 3.1-3.3_

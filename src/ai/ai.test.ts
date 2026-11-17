@@ -1,5 +1,6 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
+import { LEVELS } from '../story/engine.js'
 import { beatInfo } from './beats.js'
 import { buildMessages } from './prompt.js'
 import { RateLimiter } from './rateLimit.js'
@@ -84,7 +85,7 @@ describe('beatInfo and buildMessages', () => {
   it('looks up beats from story data and rejects unknown ones', () => {
     expect(beatInfo(0, 'hunt')?.hints[1]).toContain('ls -a')
     expect(beatInfo(0, 'nope')).toBeNull()
-    expect(beatInfo(2, 'end')?.isEnd).toBe(true)
+    expect(beatInfo(LEVELS.length, 'end')?.isEnd).toBe(true)
     expect(beatInfo(99, 'end')).toBeNull()
   })
 

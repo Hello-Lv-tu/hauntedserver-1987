@@ -38,17 +38,20 @@ summary at the end.
 
 ## Status
 
-Playable now: the opening and Level 1.
+Playable now: the opening, five levels and the boss.
 
-- `write nell` to talk to Nell (Ctrl-D or `EOF` to stop), find her hidden note
-  with `ls -a`, then beat Jack-o'-Daemon's fake virus popup with `ps aux` and
-  `kill`, without ever clicking it.
-- Spellbook, three-level `hint`, autosave (continue or new game), a 60 s / 30 s
-  popup timer setting.
-- 22 commands with 4.3BSD output, pipes, quoting, history and Tab completion.
+| Level | Jack's trick | Beaten with | Lesson |
+|---|---|---|---|
+| 0 | (Nell's SOS) | `write`, `ls -a`, `cat` | First steps |
+| 1 | Fake virus popup | `ps aux`, `kill` | Scareware |
+| 2 | Mail "from Nell" asking for your password | `finger`, `mail`, `P` (full headers) | Phishing |
+| 3 | Files "encrypted" for $9.99/month | `ls -l`, `chmod` | Ransomware |
+| 4 | A "Smart Assistant" pushing `rm -rf ~` | `man rm`, saying no | AI can be confidently wrong |
+| 5 | A rewritten system log | `diff` against `messages.0`, `last` | Records can be faked |
+| Boss | A root daemon that restarts itself | `su`, `kill`, `cron`, `rm` | Find the root cause |
 
-Levels 2-5, the boss, the endings, the machine-room scene and Nell's AI voice
-are next. See `.kiro/specs/` for the plan.
+Also: Nell's AI voice, Spellbook, three-level `hint`, autosave, a 60 s / 30 s
+popup timer. Endings, the machine-room scene and sound are next.
 
 ## Run locally
 

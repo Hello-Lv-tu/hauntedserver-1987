@@ -1,9 +1,13 @@
 import { lookup } from '../engine/commands/registry.js'
+import { becomeUser } from '../engine/commands/users.js'
+import { mailCommand } from '../engine/mail/mailbox.js'
 import { execute } from '../engine/shell/execute.js'
 import { findProc, withProc, withoutProc } from '../engine/procs/types.js'
 import { tildify } from '../engine/vfs/path.js'
 import { levelEntry, storyStep } from '../story/engine.js'
-import { POPUP_MESSAGES } from '../story/lines.js'
+import { ASSISTANT_MESSAGES, POPUP_MESSAGES } from '../story/lines.js'
+import { checkPassword } from '../story/secrets.js'
+import { LOGINS } from '../story/seed/logins.js'
 import { spellFor } from '../story/spells.js'
 import type { Effect, StoryCtx, StoryInput } from '../story/types.js'
 import { createWorld } from '../story/world.js'
@@ -29,7 +33,11 @@ export const BOOT_LINES = [
 
 export function prompt(state: GameState): string {
   if (state.mode.kind === 'write') return ''
-  return `vax3:${tildify(state.session.cwd, state.session.home)}% `
+  if (state.mode.kind === 'mail') return '& '
+  if (state.mode.kind === 'password') return 'Password:'
+  // period: csh shows # for root.
+  const sign = state.session.user === 'root' ? '#' : '%'
+  return `vax3:${tildify(state.session.cwd, state.session.home)}${sign} `
 }
 
 /** A fresh game, or one continued from a save. */
@@ -46,6 +54,7 @@ export function newGame(options: { save?: SaveData | null; settings?: Settings }
     story: entry.story,
     spells: save?.spells ?? [],
     popup: null,
+    assistant: null,
     cards: [],
     screen: boot.map((text, id) => ({ id, kind: 'system', text })),
     nextId: boot.length,
@@ -66,20 +75,41 @@ export function newGame(options: { save?: SaveData | null; settings?: Settings }
 export function step(state: GameState, input: GameInput): GameState {
   switch (input.type) {
     case 'line':
-      return state.mode.kind === 'write' ? writeLine(state, input.text) : shellLine(state, input.text)
+      switch (state.mode.kind) {
+        case 'write':
+          return writeLine(state, input.text)
+        case 'mail':
+          return mailLine(state, input.text)
+        case 'password':
+          return passwordLine(state, input.text)
+        case 'shell':
+          return shellLine(state, input.text)
+      }
+      break
 
     case 'eof':
-      if (state.mode.kind === 'write') return { ...state, mode: { kind: 'shell' } }
+      if (state.mode.kind === 'write' || state.mode.kind === 'password') return { ...state, mode: { kind: 'shell' } }
+      // period: ^D at Mail's & prompt quits, like q.
+      if (state.mode.kind === 'mail') return mailLine(state, 'q')
       // period: csh with `ignoreeof` set, as on most 1987 systems.
       return print(state, [['stderr', 'Use "logout" to logout.']])
 
     case 'interrupt': {
-      const echoed = print(state, [[state.mode.kind === 'write' ? 'written' : 'prompt', prompt(state) + input.text + '^C']])
-      return state.mode.kind === 'write' ? { ...echoed, mode: { kind: 'shell' } } : echoed
+      const shown = state.mode.kind === 'password' ? '' : input.text
+      const echoed = print(state, [[state.mode.kind === 'write' ? 'written' : 'prompt', prompt(state) + shown + '^C']])
+      // Write and su give up on ^C; Mail ignores it (period: "Interrupt").
+      if (state.mode.kind === 'mail') return print(echoed, [['stdout', 'Interrupt']])
+      return state.mode.kind === 'shell' ? echoed : { ...echoed, mode: { kind: 'shell' } }
     }
 
     case 'popup':
       return story(state, { type: 'popup', action: input.action })
+
+    case 'assistant':
+      if (state.assistant === null) return state
+      // "Run it for me" really runs it, so the player sees what it does.
+      if (input.action === 'run') return shellLine(state.mode.kind === 'shell' ? state : { ...state, mode: { kind: 'shell' } }, ASSISTANT_COMMAND)
+      return story(state, { type: 'assistant', action: 'decline' })
 
     case 'tick':
       return tick(state, input.paused ?? false)
@@ -107,7 +137,7 @@ export function step(state: GameState, input: GameInput): GameState {
 
 function shellLine(state: GameState, text: string): GameState {
   let next = print(state, [['prompt', prompt(state) + text]])
-  const result = execute(text, next.vfs, next.session, next.procs)
+  const result = execute(text, next.vfs, next.session, next.procs, LOGINS)
   next = { ...next, vfs: result.vfs, procs: result.procs, session: result.session }
   next = result.clear ? { ...next, screen: [] } : print(next, result.lines.map((l) => [l.stream, l.text]))
   if (result.mode) next = { ...next, mode: result.mode }
@@ -142,6 +172,39 @@ function writeLine(state: GameState, text: string): GameState {
   if (printed.mode.kind !== 'write') return printed
   const next = { ...printed, chatLog: remember(printed.chatLog, { from: 'player', text }) }
   return story(next, { type: 'wrote', to: printed.mode.to, text })
+}
+
+/** The command Jack's assistant pushes in Level 4. */
+export const ASSISTANT_COMMAND = 'rm -rf ~'
+
+function mailLine(state: GameState, text: string): GameState {
+  if (state.mode.kind !== 'mail') return state
+  const echoed = print(state, [['prompt', `& ${text}`]])
+  const result = mailCommand(state.mode.box, text)
+  let next = print(echoed, result.lines.map((l) => ['stdout', l]))
+  next = { ...next, mode: result.done ? { kind: 'shell' } : { kind: 'mail', box: result.box } }
+  if (result.spool !== undefined) {
+    const spool = next.vfs.stat(result.box.path, { cwd: '/', home: '/', user: 'root' })
+    if (spool.ok && spool.value.kind === 'file') {
+      const written = next.vfs.write(result.box.path, { ...spool.value, content: result.spool })
+      if (written.ok) next = { ...next, vfs: written.value }
+    }
+  }
+  for (const action of result.actions) next = story(next, { type: 'mail', ...action })
+  return next
+}
+
+function passwordLine(state: GameState, password: string): GameState {
+  if (state.mode.kind !== 'password') return state
+  const { user } = state.mode
+  // The password itself is never echoed or stored.
+  let next = print(state, [['prompt', 'Password:']])
+  const ok = checkPassword(user, password)
+  const session = ok ? becomeUser(next.session, user, next.vfs.homeOf(user) ?? '/') : next.session
+  if (!ok) next = print(next, [['stderr', 'Sorry']])
+  const event = { seq: session.seq, name: 'su', args: [user], status: ok ? 0 : 1, cwd: session.cwd }
+  next = { ...next, mode: { kind: 'shell' }, session: { ...session, seq: session.seq + 1 } }
+  return story(next, { type: 'command', event })
 }
 
 function tick(state: GameState, paused: boolean): GameState {
@@ -191,6 +254,14 @@ function applyEffects(state: GameState, effects: Effect[]): GameState {
         if (written.ok) s = { ...s, vfs: written.value }
         break
       }
+      case 'setMode': {
+        const found = s.vfs.stat(effect.path, { cwd: '/', home: '/', user: 'root' })
+        if (found.ok) {
+          const written = s.vfs.write(effect.path, { ...found.value, mode: effect.mode })
+          if (written.ok) s = { ...s, vfs: written.value }
+        }
+        break
+      }
       case 'startProc':
         s = { ...s, procs: withProc(s.procs, effect.proc) }
         break
@@ -199,6 +270,9 @@ function applyEffects(state: GameState, effects: Effect[]): GameState {
         break
       case 'popup':
         s = { ...s, popup: popupAfter(s, effect.action) }
+        break
+      case 'assistant':
+        s = { ...s, assistant: assistantAfter(s, effect.action) }
         break
       case 'lesson':
         s = { ...s, cards: [...s.cards, { kind: 'lesson', card: effect.card }] }
@@ -214,7 +288,7 @@ function applyEffects(state: GameState, effects: Effect[]): GameState {
         s = restoreCheckpoint(s)
         break
       case 'finished':
-        s = { ...s, finished: true, popup: null }
+        s = { ...s, finished: true, popup: null, assistant: null }
         break
     }
   }
@@ -229,13 +303,20 @@ function popupAfter(state: GameState, action: 'show' | 'hide' | 'nag'): GameStat
   return { message: Math.min(state.popup.message + 1, POPUP_MESSAGES.length - 1), secondsLeft: full, hiddenFor: POPUP_RETURN_SECONDS }
 }
 
+function assistantAfter(state: GameState, action: 'show' | 'hide' | 'nag'): GameState['assistant'] {
+  if (action === 'show') return { message: 0 }
+  if (action === 'hide' || state.assistant === null) return null
+  return { message: Math.min(state.assistant.message + 1, ASSISTANT_MESSAGES.length - 1) }
+}
+
 /**
  * Jack ate the player: put the world back to the start of the level and
  * replay its entry. Spells and history are kept; nothing is lost.
  */
 function restoreCheckpoint(state: GameState): GameState {
   const { checkpoint } = state
-  const entry = levelEntry(checkpoint.level, checkpoint.flags)
+  // The world resets; what the player learned (story flags) does not.
+  const entry = levelEntry(checkpoint.level, { ...checkpoint.flags, ...state.story.flags })
   const restored: GameState = {
     ...state,
     vfs: checkpoint.vfs,
@@ -244,6 +325,7 @@ function restoreCheckpoint(state: GameState): GameState {
     mode: { kind: 'shell' },
     story: entry.story,
     popup: null,
+    assistant: null,
     glitch: state.glitch + 1,
   }
   return applyEffects(restored, entry.effects)
