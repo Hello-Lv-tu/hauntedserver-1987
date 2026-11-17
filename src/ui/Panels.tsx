@@ -99,6 +99,13 @@ export function SettingsPanel({
         <p className="panel-note">{t('Commands and machine output stay in English, like a real 1987 terminal.')}</p>
       </fieldset>
       <fieldset className="setting">
+        <legend>{t('Text speed')}</legend>
+        <label className="setting-option">
+          <input type="checkbox" checked={settings.typewriter} onChange={(e) => onChange({ ...settings, typewriter: e.target.checked })} />{' '}
+          {t('Slow 1987 text (types out letter by letter; any key skips)')}
+        </label>
+      </fieldset>
+      <fieldset className="setting">
         <legend>{t("Jack's popup countdown")}</legend>
         {([60, 30] as const).map((seconds) => (
           <label key={seconds} className="setting-option">

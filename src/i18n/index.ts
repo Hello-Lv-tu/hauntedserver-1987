@@ -28,6 +28,12 @@ export const UI_ZH: Readonly<Record<string, string>> = {
   '30 seconds (tense)': '30 秒（紧张）',
   'Applies from the next countdown. The countdown pauses while panels and cards are open.': '从下一次倒计时开始生效。打开面板或卡片时，倒计时会暂停。',
   Language: '语言',
+  'Text speed': '文字速度',
+  'Slow 1987 text (types out letter by letter; any key skips)': '1987 年的慢速文字（逐字打出；按任意键跳过）',
+  'Step inside': '走进去',
+  'A dark basement machine room. One old terminal still glows green.': '一间漆黑的地下机房。只有一台老终端还亮着绿光。',
+  'Ravenmoor University · B-wing basement · 2026': '乌鸦沼大学 · B 栋地下室 · 2026',
+  'Press Enter (or tap) to step inside': '点击屏幕或按回车，走进去',
   'Commands and machine output stay in English, like a real 1987 terminal.': '命令和机器输出保持英文，就像真正的 1987 年终端。',
   // terminal
   'hint: ': '提示：',

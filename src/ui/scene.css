@@ -1,0 +1,301 @@
+/* ------------------------------------------------------------------ intro */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  overflow: hidden;
+  background: #02040a;
+  cursor: pointer;
+  outline: none;
+}
+
+.intro-art {
+  position: absolute;
+  inset: 0;
+  transform-origin: var(--fx) var(--fy);
+  animation: intro-breathe 8s ease-in-out infinite;
+}
+
+.intro-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--fx) var(--fy);
+  filter: brightness(0.75) saturate(0.9);
+}
+
+/* The terminal's glow, pulsing, at the focus point. */
+.intro-glow {
+  position: absolute;
+  left: var(--fx);
+  top: var(--fy);
+  width: 26vmin;
+  height: 18vmin;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse, rgba(80, 255, 140, 0.45), transparent 70%);
+  mix-blend-mode: screen;
+  animation: intro-flicker 4s steps(1) infinite;
+}
+
+/* A ghost on the screen that is there... and then is not. */
+.intro-ghost {
+  position: absolute;
+  left: var(--fx);
+  top: calc(var(--fy) - 3vmin);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: intro-ghost 7s ease-in-out infinite;
+}
+
+.intro-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at var(--fx) var(--fy), transparent 25%, rgba(0, 0, 0, 0.75) 85%);
+}
+
+.intro-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8vh;
+  text-align: center;
+  color: var(--phosphor);
+  text-shadow: 0 0 8px rgba(51, 255, 102, 0.7);
+}
+
+.intro-place {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.intro-cta {
+  margin: 0;
+  font-size: 1.6rem;
+  animation: blink-cta 1.4s steps(1) infinite;
+}
+
+/* Step inside: push the camera into the terminal, fade to its green. */
+.intro.entering .intro-art {
+  animation: intro-zoom 1.8s cubic-bezier(0.6, 0, 0.8, 0.4) forwards;
+}
+
+.intro.entering .intro-text,
+.intro.entering .intro-ghost {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.intro.entering::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #050805;
+  animation: intro-fade 1.8s ease-in forwards;
+}
+
+@keyframes intro-breathe {
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes intro-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  47% {
+    opacity: 0.6;
+  }
+  49% {
+    opacity: 1;
+  }
+  83% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes intro-ghost {
+  0%,
+  70%,
+  100% {
+    opacity: 0;
+  }
+  76% {
+    opacity: 0.55;
+  }
+  80% {
+    opacity: 0.1;
+  }
+  82% {
+    opacity: 0.5;
+  }
+  88% {
+    opacity: 0;
+  }
+}
+
+@keyframes blink-cta {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes intro-zoom {
+  to {
+    transform: scale(6);
+  }
+}
+
+@keyframes intro-fade {
+  0%,
+  55% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------------- in-game scene */
+/* Its own stacking context, so the room (z-index -2) paints above the page
+   background instead of behind it. */
+.scene {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+}
+
+.scene-backdrop {
+  display: none;
+}
+
+/* Wide screens: the room behind a CRT bezel, as if you sat at the terminal. */
+@media (min-width: 900px) {
+  .scene-backdrop {
+    display: block;
+    position: fixed;
+    inset: -20px;
+    z-index: -2;
+    background: #02040a url('/art/machine-room.webp') center / cover no-repeat;
+    filter: blur(3px) brightness(0.3) saturate(0.8);
+    transition: filter 1.5s ease;
+  }
+
+  .scene-tint {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 45%, transparent 35%, rgba(0, 0, 0, 0.7) 90%);
+    transition: background-color 1.2s ease;
+  }
+
+  .crt {
+    padding: 0;
+    background: transparent !important;
+  }
+
+  .bezel {
+    max-width: 1000px;
+    margin: 2vh auto 0;
+    padding: 22px;
+    border-radius: 26px;
+    background: linear-gradient(160deg, #d9cfb4, #b5aa8c 60%, #9a8f72);
+    box-shadow:
+      0 30px 80px rgba(0, 0, 0, 0.75),
+      inset 0 2px 0 rgba(255, 255, 255, 0.35),
+      inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  /* The page-wide scanlines move into the glass. */
+  .crt::after {
+    display: none;
+  }
+
+  .bezel-screen {
+    position: relative;
+    /* 2vh top margin + 22px padding top and bottom + the label row */
+    height: calc(96vh - 44px - 32px);
+    overflow-y: auto;
+    padding: 1.5rem 1.75rem;
+    border-radius: 18px / 22px;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.25) 2px 3px),
+      radial-gradient(ellipse at 50% 45%, #0b160c, #040804 80%);
+    box-shadow:
+      inset 0 0 40px rgba(0, 0, 0, 0.9),
+      inset 0 0 6px rgba(51, 255, 102, 0.25);
+    scrollbar-color: var(--phosphor-dim) transparent;
+  }
+
+  .bezel-label {
+    margin: 10px 0 -8px;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: #6f6650;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .scene.mood-jack .scene-backdrop {
+    filter: blur(3px) brightness(0.42) saturate(1.4) sepia(0.5) hue-rotate(-20deg);
+  }
+  .scene.mood-jack .scene-tint {
+    background-color: rgba(255, 100, 0, 0.12);
+  }
+  .scene.mood-free .scene-backdrop {
+    filter: blur(3px) brightness(0.5) saturate(0.9);
+  }
+  .scene.mood-amber .scene-backdrop {
+    filter: blur(3px) brightness(0.45) sepia(0.8) saturate(1.3);
+  }
+}
+
+/* Phones: no room, just a hint of a CRT edge. */
+@media (max-width: 899px) {
+  .bezel-label {
+    display: none;
+  }
+  .bezel-screen {
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.85);
+  }
+}
+
+/* Jack's entrance: the whole room flashes orange once. */
+.jack-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 11;
+  pointer-events: none;
+  background: radial-gradient(ellipse, rgba(255, 140, 30, 0.35), rgba(255, 80, 0, 0.15));
+  opacity: 0;
+  animation: jack-flash 0.9s ease-out;
+}
+
+@keyframes jack-flash {
+  0%,
+  30% {
+    opacity: 1;
+  }
+  15%,
+  45% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-art,
+  .intro-glow,
+  .intro-ghost,
+  .intro-cta,
+  .jack-flash {
+    animation: none;
+  }
+}

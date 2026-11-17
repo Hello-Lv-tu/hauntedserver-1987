@@ -15,7 +15,10 @@ import { useNellVoice } from './useNellVoice.js'
 import { LangProvider } from './lang.js'
 import { t } from '../i18n/index.js'
 import { writeStorage } from './storage.js'
+import { JackPresence, NellPresence } from './characters/Presence.js'
+import { lastJackLine } from './characters/screen.js'
 import './game.css'
+import './scene.css'
 
 const cardKey = (card: Card) => (card.kind === 'spell' ? `spell:${card.spell.command}` : `lesson:${card.card.title}`)
 
@@ -68,6 +71,28 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
     else if (game.popup && game.popup.hiddenFor === 0) send({ type: 'popup', action: 'close' })
   }
 
+  // The room reacts: orange while Jack's tricks are on screen, lighter once
+  // he is gone, amber after the Stay ending.
+  const mood =
+    game.save.ending === 'stay'
+      ? 'amber'
+      : game.popup !== null || game.assistant !== null
+        ? 'jack'
+        : game.story.level >= 7
+          ? 'free'
+          : 'dark'
+  const jackLine = lastJackLine(game.screen)
+
+  // Being eaten shakes the monitor.
+  const bezelRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (game.glitch === 0 || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    bezelRef.current?.animate(
+      [{ transform: 'none' }, { transform: 'translate(-8px, 3px) rotate(-0.6deg)' }, { transform: 'translate(7px, -4px) rotate(0.5deg)' }, { transform: 'translate(-4px, 2px)' }, { transform: 'none' }],
+      { duration: 500, easing: 'ease-out' },
+    )
+  }, [game.glitch])
+
   // One bottom overlay at a time: a card first, then the assistant.
   // On phones two overlays covered the terminal input (play-test).
   const showCard = game.cards.length > 0
@@ -76,10 +101,15 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
 
   return (
     <LangProvider lang={game.settings.lang}>
-    <div className={['game', hasOverlay ? 'has-overlay' : '', game.save.ending === 'stay' ? 'amber' : ''].filter(Boolean).join(' ')}>
+    <div className={['game', 'scene', `mood-${mood}`, hasOverlay ? 'has-overlay' : '', game.save.ending === 'stay' ? 'amber' : ''].filter(Boolean).join(' ')}>
+      <div className="scene-backdrop" aria-hidden="true" />
+      <div className="scene-tint" aria-hidden="true" />
       <div className="toolbar">
         <button type="button" className="tool" onClick={() => send({ type: 'panel', panel: 'spellbook' })}>
-          {t(game.settings.lang, 'Spellbook')} ({game.spells.length})
+          {/* Glows once each time a spell is learned. */}
+          <span key={game.spells.length} className={game.spells.length > 0 ? 'glow-once' : undefined}>
+            {t(game.settings.lang, 'Spellbook')} ({game.spells.length})
+          </span>
         </button>
         {endingKind ? (
           <button type="button" className="tool" onClick={() => setReopened(true)}>
@@ -91,7 +121,18 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
         </button>
       </div>
 
-      <Terminal game={game} input={state.input} dispatch={dispatch} inputRef={inputRef} onEscape={onEscape} overlay={hasOverlay} />
+      <div className="bezel" ref={bezelRef}>
+        <div className="bezel-screen">
+          <Terminal game={game} input={state.input} dispatch={dispatch} inputRef={inputRef} onEscape={onEscape} overlay={hasOverlay} />
+        </div>
+        <p className="bezel-label" aria-hidden="true">
+          DIGITAL · VT100
+        </p>
+      </div>
+
+      <NellPresence screen={game.screen} />
+      <JackPresence screen={game.screen} />
+      {jackLine ? <div key={jackLine.id} className="jack-flash" aria-hidden="true" /> : null}
 
       {game.popup ? (
         <JackPopup popup={game.popup} onFix={() => send({ type: 'popup', action: 'fix' })} onClose={() => send({ type: 'popup', action: 'close' })} />
