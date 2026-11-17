@@ -73,6 +73,10 @@ Submission must be in **English**: UI text, README, code comments.
 - The serverless function must validate input, cap message length, and
   rate-limit per client. The live site must survive judging until
   2027-01-29 on a small budget.
+- **Relative imports end in `.js`** (`import { x } from './y.js'`), even for
+  `.ts` files. Vercel runs `api/` as plain Node ES modules, which cannot
+  resolve extensionless paths; this crashed the AI endpoint once
+  (FUNCTION_INVOCATION_FAILED). `npm run check:api` guards it.
 - Prefer small pure functions that return results over throwing. Engine code
   returns `{ ok: true, value } | { ok: false, error }` style results.
 

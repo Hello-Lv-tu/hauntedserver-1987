@@ -1,11 +1,11 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
-import { beatInfo } from './beats'
-import { buildMessages } from './prompt'
-import { RateLimiter } from './rateLimit'
-import { parseVoiceRequest } from './request'
-import type { VoiceRequest } from './request'
-import { MAX_CHARS, sanitizeReply } from './sanitize'
+import { beatInfo } from './beats.js'
+import { buildMessages } from './prompt.js'
+import { RateLimiter } from './rateLimit.js'
+import { parseVoiceRequest } from './request.js'
+import type { VoiceRequest } from './request.js'
+import { MAX_CHARS, sanitizeReply } from './sanitize.js'
 
 const EMOJI = /(?![\u2122\u00a9\u00ae])\p{Extended_Pictographic}/u
 const request = (over: Partial<VoiceRequest> = {}): VoiceRequest => ({

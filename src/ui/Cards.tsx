@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import type { Card } from '../game/types'
+import type { Card } from '../game/types.js'
 
 /** How long a spell card stays before it dismisses itself. */
 const SPELL_CARD_MS = 5000

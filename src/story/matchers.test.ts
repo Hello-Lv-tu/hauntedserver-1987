@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { looksLikeCommand } from './matchers'
+import { looksLikeCommand } from './matchers.js'
 
 describe('looksLikeCommand', () => {
   it('spots commands typed in write mode', () => {

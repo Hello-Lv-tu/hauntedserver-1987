@@ -1,7 +1,7 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
-import { devWorld, run } from '../../test/helpers'
-import { quote } from '../shell/tokenize'
+import { devWorld, run } from '../../test/helpers.js'
+import { quote } from '../shell/tokenize.js'
 
 describe('grep (property tests)', () => {
   const { vfs, session } = devWorld()

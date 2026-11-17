@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { COMMAND_NAMES } from '../commands/registry'
-import { MAN_PAGE_NAMES, manPage } from './pages'
+import { COMMAND_NAMES } from '../commands/registry.js'
+import { MAN_PAGE_NAMES, manPage } from './pages.js'
 
 describe('man pages', () => {
   it('exist for every command on the terminal', () => {

@@ -1,7 +1,7 @@
-import type { Proc } from '../../engine/procs/types'
-import { JACK, NELL, SCAREWARE_LESSON } from '../lines'
-import { commandEvent, killed, pick, ran } from '../matchers'
-import type { Beat, Level, StoryCtx, StoryInput, StoryState, Transition } from '../types'
+import type { Proc } from '../../engine/procs/types.js'
+import { JACK, NELL, SCAREWARE_LESSON } from '../lines.js'
+import { commandEvent, killed, pick, ran } from '../matchers.js'
+import type { Beat, Level, StoryCtx, StoryInput, StoryState, Transition } from '../types.js'
 
 export const POPUP_PID = 6667
 

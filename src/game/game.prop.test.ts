@@ -1,9 +1,9 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
-import { LEVELS } from '../story/engine'
-import { play } from '../test/helpers'
-import { newGame, step } from './game'
-import type { GameInput, GameState } from './types'
+import { LEVELS } from '../story/engine.js'
+import { play } from '../test/helpers.js'
+import { newGame, step } from './game.js'
+import type { GameInput, GameState } from './types.js'
 
 type Item = string | GameInput
 

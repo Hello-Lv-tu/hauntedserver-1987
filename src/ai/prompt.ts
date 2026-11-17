@@ -1,5 +1,5 @@
-import type { BeatInfo } from './beats'
-import type { VoiceRequest } from './request'
+import type { BeatInfo } from './beats.js'
+import type { VoiceRequest } from './request.js'
 
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant'

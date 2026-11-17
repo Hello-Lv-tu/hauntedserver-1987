@@ -1,10 +1,10 @@
-import type { ProcTable } from '../engine/procs/types'
-import { execute } from '../engine/shell/execute'
-import type { ExecResult, Session } from '../engine/shell/types'
-import type { Vfs } from '../engine/vfs/Vfs'
-import { step } from '../game/game'
-import type { GameInput, GameState } from '../game/types'
-import { createWorld } from '../story/world'
+import type { ProcTable } from '../engine/procs/types.js'
+import { execute } from '../engine/shell/execute.js'
+import type { ExecResult, Session } from '../engine/shell/types.js'
+import type { Vfs } from '../engine/vfs/Vfs.js'
+import { step } from '../game/game.js'
+import type { GameInput, GameState } from '../game/types.js'
+import { createWorld } from '../story/world.js'
 
 /** A fresh dev world, logged in as guest in their home directory. */
 export function devWorld() {

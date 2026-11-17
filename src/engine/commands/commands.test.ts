@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { asRoot, devWorld, run, runAll } from '../../test/helpers'
-import { columns, lsDate } from './ls'
-import { compileBre } from './text'
+import { asRoot, devWorld, run, runAll } from '../../test/helpers.js'
+import { columns, lsDate } from './ls.js'
+import { compileBre } from './text.js'
 
 describe('ls', () => {
   it('hides dot-files unless -a, and lists . and .. with -a', () => {

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { sanitizeReply } from '../ai/sanitize'
-import type { GameInput, PendingVoice } from '../game/types'
+import { sanitizeReply } from '../ai/sanitize.js'
+import type { GameInput, PendingVoice } from '../game/types.js'
 
 export const VOICE_ENDPOINT = '/api/ghost'
 /** A little longer than the server's own provider timeout. */

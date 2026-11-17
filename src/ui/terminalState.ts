@@ -1,8 +1,8 @@
-import { COMMAND_NAMES } from '../engine/commands/registry'
-import { columns } from '../engine/commands/ls'
-import { print, prompt, step } from '../game/game'
-import type { GameInput, GameState } from '../game/types'
-import { complete } from './completion'
+import { COMMAND_NAMES } from '../engine/commands/registry.js'
+import { columns } from '../engine/commands/ls.js'
+import { print, prompt, step } from '../game/game.js'
+import type { GameInput, GameState } from '../game/types.js'
+import { complete } from './completion.js'
 
 /** UI-only state around the game: the input line and history browsing. */
 export interface TerminalState {

@@ -1,6 +1,6 @@
-import { POPUP_MESSAGES } from '../story/lines'
-import type { PopupState } from '../game/types'
-import { PumpkinIcon, WarningIcon } from './icons'
+import { POPUP_MESSAGES } from '../story/lines.js'
+import type { PopupState } from '../game/types.js'
+import { PumpkinIcon, WarningIcon } from './icons.js'
 import './jack.css'
 
 interface JackPopupProps {

@@ -1,5 +1,5 @@
-import type { Session } from '../engine/shell/types'
-import type { Vfs } from '../engine/vfs/Vfs'
+import type { Session } from '../engine/shell/types.js'
+import type { Vfs } from '../engine/vfs/Vfs.js'
 
 export interface Completion {
   /** The new input line. */

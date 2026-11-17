@@ -1,7 +1,7 @@
-import type { Proc, ProcTable } from '../engine/procs/types'
-import type { CommandEvent } from '../engine/shell/types'
-import type { Vfs } from '../engine/vfs/Vfs'
-import type { VNode } from '../engine/vfs/types'
+import type { Proc, ProcTable } from '../engine/procs/types.js'
+import type { CommandEvent } from '../engine/shell/types.js'
+import type { Vfs } from '../engine/vfs/Vfs.js'
+import type { VNode } from '../engine/vfs/types.js'
 
 export type Flags = Readonly<Record<string, boolean>>
 

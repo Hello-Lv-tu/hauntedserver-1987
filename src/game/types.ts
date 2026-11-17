@@ -1,11 +1,11 @@
-import type { ChatEntry, VoiceRequest } from '../ai/request'
-import type { ProcTable } from '../engine/procs/types'
-import type { Session, Stream, WriteMode } from '../engine/shell/types'
-import type { Vfs } from '../engine/vfs/Vfs'
-import type { Spell } from '../story/spells'
-import type { Flags, LessonCard, StoryState } from '../story/types'
-import type { SaveData } from './save'
-import type { Settings } from './settings'
+import type { ChatEntry, VoiceRequest } from '../ai/request.js'
+import type { ProcTable } from '../engine/procs/types.js'
+import type { Session, Stream, WriteMode } from '../engine/shell/types.js'
+import type { Vfs } from '../engine/vfs/Vfs.js'
+import type { Spell } from '../story/spells.js'
+import type { Flags, LessonCard, StoryState } from '../story/types.js'
+import type { SaveData } from './save.js'
+import type { Settings } from './settings.js'
 
 /**
  * - prompt: an echoed command line   - written: a line the player wrote to Nell

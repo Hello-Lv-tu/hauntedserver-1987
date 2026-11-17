@@ -6,7 +6,7 @@
  * system has an emoji font. Each beat has at least two variants so
  * these can serve as AI fallbacks later.
  */
-import type { LessonCard } from './types'
+import type { LessonCard } from './types.js'
 
 type Message = readonly string[]
 type Variants = readonly Message[]

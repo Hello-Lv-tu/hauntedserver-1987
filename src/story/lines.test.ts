@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { JACK, NELL, POPUP_MESSAGES, SCAREWARE_LESSON } from './lines'
+import { JACK, NELL, POPUP_MESSAGES, SCAREWARE_LESSON } from './lines.js'
 
 // ™ © ® are technically pictographic in Unicode, but every text font has them.
 const EMOJI = /(?![\u2122\u00a9\u00ae])\p{Extended_Pictographic}/u

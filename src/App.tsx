@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { newGame } from './game/game'
-import type { SaveData } from './game/save'
-import { SAVE_KEY, parseSave } from './game/save'
-import { SETTINGS_KEY, parseSettings } from './game/settings'
-import type { GameState } from './game/types'
-import { Game } from './ui/Game'
-import { readStorage } from './ui/storage'
+import { newGame } from './game/game.js'
+import type { SaveData } from './game/save.js'
+import { SAVE_KEY, parseSave } from './game/save.js'
+import { SETTINGS_KEY, parseSettings } from './game/settings.js'
+import type { GameState } from './game/types.js'
+import { Game } from './ui/Game.js'
+import { readStorage } from './ui/storage.js'
 
 /** A save is worth offering only if the player got past the very start. */
 function savedProgress(): SaveData | null {

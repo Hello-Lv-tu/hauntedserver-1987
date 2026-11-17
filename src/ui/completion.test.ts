@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { COMMAND_NAMES } from '../engine/commands/registry'
-import { devWorld } from '../test/helpers'
-import { commonPrefix, complete } from './completion'
+import { COMMAND_NAMES } from '../engine/commands/registry.js'
+import { devWorld } from '../test/helpers.js'
+import { commonPrefix, complete } from './completion.js'
 
 const { vfs, session } = devWorld()
 const tab = (line: string, cwd = session.cwd) => complete(line, vfs, { ...session, cwd }, COMMAND_NAMES)

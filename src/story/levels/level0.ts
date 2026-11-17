@@ -1,6 +1,6 @@
-import { NELL } from '../lines'
-import { commandEvent, listsAll, pick, readsFile } from '../matchers'
-import type { Beat, Level, StoryCtx, StoryInput, Transition } from '../types'
+import { NELL } from '../lines.js'
+import { commandEvent, listsAll, pick, readsFile } from '../matchers.js'
+import type { Beat, Level, StoryCtx, StoryInput, Transition } from '../types.js'
 
 export const NOTE_PATH = '/usr/users/guest/.from_nell'
 
