@@ -33,7 +33,10 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
 
   // The ending screen shows once per ending; "Back to the terminal" closes it.
   const [endingClosed, setEndingClosed] = useState(false)
-  const showEnding = game.ending !== null && !endingClosed && game.cards.length === 0
+  // After an ending (now or on a past visit) the ending can be reopened.
+  const endingKind = game.ending ?? game.save.ending ?? null
+  const [reopened, setReopened] = useState(false)
+  const showEnding = endingKind !== null && game.cards.length === 0 && (reopened || (game.ending !== null && !endingClosed))
   useEffect(() => {
     if (game.ending === 'move') adoptGhostIcon()
   }, [game.ending])
@@ -75,6 +78,11 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
         <button type="button" className="tool" onClick={() => send({ type: 'panel', panel: 'spellbook' })}>
           Spellbook ({game.spells.length})
         </button>
+        {endingKind ? (
+          <button type="button" className="tool" onClick={() => setReopened(true)}>
+            Ending
+          </button>
+        ) : null}
         <button type="button" className="tool" onClick={() => send({ type: 'panel', panel: 'settings' })} aria-label="Settings">
           <GearIcon size={16} />
         </button>
@@ -102,8 +110,10 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
       {showEnding ? (
         <EndScreen
           game={game}
+          kind={endingKind ?? 'stay'}
           onBack={() => {
             setEndingClosed(true)
+            setReopened(false)
             inputRef.current?.focus()
           }}
           onPlayAgain={() => onPlayAgain(game.legacy)}
