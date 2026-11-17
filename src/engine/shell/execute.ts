@@ -1,10 +1,10 @@
-import { MODERN_HINTS } from '../commands/modern'
-import { lookup } from '../commands/registry'
-import type { ProcTable } from '../procs/types'
-import type { Vfs } from '../vfs/Vfs'
-import { tokenize } from './tokenize'
-import type { CommandCtx, CommandEvent, CommandOutput, ExecResult, OutputLine, Session } from './types'
-import { hint, stderr } from './types'
+import { MODERN_HINTS } from '../commands/modern.js'
+import { lookup } from '../commands/registry.js'
+import type { ProcTable } from '../procs/types.js'
+import type { Vfs } from '../vfs/Vfs.js'
+import { tokenize } from './tokenize.js'
+import type { CommandCtx, CommandEvent, CommandOutput, ExecResult, OutputLine, Session } from './types.js'
+import { hint, stderr } from './types.js'
 
 export const PANIC_LINE = 'panic: internal error'
 

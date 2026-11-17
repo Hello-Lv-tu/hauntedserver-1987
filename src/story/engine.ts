@@ -1,9 +1,9 @@
-import { endLevel } from './levels/end'
-import { level0 } from './levels/level0'
-import { level1 } from './levels/level1'
-import { NELL } from './lines'
-import { looksLikeCommand, pick } from './matchers'
-import type { Effect, Flags, Level, StoryCtx, StoryInput, StoryState } from './types'
+import { endLevel } from './levels/end.js'
+import { level0 } from './levels/level0.js'
+import { level1 } from './levels/level1.js'
+import { NELL } from './lines.js'
+import { looksLikeCommand, pick } from './matchers.js'
+import type { Effect, Flags, Level, StoryCtx, StoryInput, StoryState } from './types.js'
 
 export const LEVELS: readonly Level[] = [level0, level1]
 

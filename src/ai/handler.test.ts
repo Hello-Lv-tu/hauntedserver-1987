@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { DEEPSEEK_URL, createHandler } from './handler'
-import { RateLimiter } from './rateLimit'
+import { DEEPSEEK_URL, createHandler } from './handler.js'
+import { RateLimiter } from './rateLimit.js'
 
 const body = { level: 0, beat: 'hunt', chats: 1, text: 'what now?', history: [] }
 

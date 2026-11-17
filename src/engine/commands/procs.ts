@@ -1,7 +1,7 @@
-import type { Proc } from '../procs/types'
-import { findProc, loggedIn, shortTty, withoutProc } from '../procs/types'
-import type { Command, OutputLine } from '../shell/types'
-import { hint, stderr, stdout } from '../shell/types'
+import type { Proc } from '../procs/types.js'
+import { findProc, loggedIn, shortTty, withoutProc } from '../procs/types.js'
+import type { Command, OutputLine } from '../shell/types.js'
+import { hint, stderr, stdout } from '../shell/types.js'
 
 /**
  * BSD ps: options are letters with or without a dash ("aux", "-aux").

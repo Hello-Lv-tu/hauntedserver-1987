@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { newGame, prompt } from '../game/game'
-import type { TerminalAction, TerminalState } from './terminalState'
-import { initialTerminal, terminalReducer } from './terminalState'
+import { newGame, prompt } from '../game/game.js'
+import type { TerminalAction, TerminalState } from './terminalState.js'
+import { initialTerminal, terminalReducer } from './terminalState.js'
 
 const start = (): TerminalState => initialTerminal(newGame())
 const apply = (state: TerminalState, ...actions: TerminalAction[]) => actions.reduce(terminalReducer, state)

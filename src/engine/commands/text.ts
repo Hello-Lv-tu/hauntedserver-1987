@@ -1,7 +1,7 @@
-import { parseFlags } from '../shell/flags'
-import type { Command, OutputLine } from '../shell/types'
-import { stderr, stdout } from '../shell/types'
-import { readInputs } from './common'
+import { parseFlags } from '../shell/flags.js'
+import type { Command, OutputLine } from '../shell/types.js'
+import { stderr, stdout } from '../shell/types.js'
+import { readInputs } from './common.js'
 
 /** Print files (or stdin) in order, with errors where they happen. */
 function concatenate(cmd: string): Command {

@@ -1,6 +1,6 @@
-import { basename, dirname, normalizePath, splitPath } from './path'
-import type { DirNode, PathCtx, Result, VNode } from './types'
-import { fail, ok } from './types'
+import { basename, dirname, normalizePath, splitPath } from './path.js'
+import type { DirNode, PathCtx, Result, VNode } from './types.js'
+import { fail, ok } from './types.js'
 
 export interface PasswdEntry {
   user: string

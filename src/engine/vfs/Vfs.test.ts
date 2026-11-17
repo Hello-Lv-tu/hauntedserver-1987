@@ -1,7 +1,7 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
-import { devWorld } from '../../test/helpers'
-import type { PathCtx } from './types'
+import { devWorld } from '../../test/helpers.js'
+import type { PathCtx } from './types.js'
 
 const guest: PathCtx = { cwd: '/usr/users/guest', home: '/usr/users/guest', user: 'guest' }
 const root: PathCtx = { ...guest, user: 'root' }

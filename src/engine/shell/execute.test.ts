@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { run, runAll } from '../../test/helpers'
+import { run, runAll } from '../../test/helpers.js'
 
 describe('execute', () => {
   it('does nothing for blank lines', () => {

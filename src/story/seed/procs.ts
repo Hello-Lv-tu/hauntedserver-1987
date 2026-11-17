@@ -1,4 +1,4 @@
-import type { Proc, ProcTable } from '../../engine/procs/types'
+import type { Proc, ProcTable } from '../../engine/procs/types.js'
 
 const sys = (pid: number, command: string, extra: Partial<Proc> = {}): Proc => ({
   pid,

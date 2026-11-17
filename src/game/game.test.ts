@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { POPUP_PID } from '../story/levels/level1'
-import { JACK } from '../story/lines'
-import { play, screenText } from '../test/helpers'
-import { newGame, popupRunning, step } from './game'
-import type { GameState } from './types'
+import { POPUP_PID } from '../story/levels/level1.js'
+import { JACK } from '../story/lines.js'
+import { play, screenText } from '../test/helpers.js'
+import { newGame, popupRunning, step } from './game.js'
+import type { GameState } from './types.js'
 
 const LEVEL0 = ['write nell', 'hi nell', 'EOF', 'ls -a', 'cat .from_nell']
 const LEVEL1 = ['ps aux', 'kill 6667']

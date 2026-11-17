@@ -1,9 +1,9 @@
-import { parseFlags } from '../shell/flags'
-import type { Command, CommandCtx, OutputLine } from '../shell/types'
-import { stderr, stdout } from '../shell/types'
-import { DIR_SIZE } from '../vfs/Vfs'
-import type { DirNode, VNode } from '../vfs/types'
-import { FROZEN_NOW, MONTHS, fileError, parseMtime, pathCtx } from './common'
+import { parseFlags } from '../shell/flags.js'
+import type { Command, CommandCtx, OutputLine } from '../shell/types.js'
+import { stderr, stdout } from '../shell/types.js'
+import { DIR_SIZE } from '../vfs/Vfs.js'
+import type { DirNode, VNode } from '../vfs/types.js'
+import { FROZEN_NOW, MONTHS, fileError, parseMtime, pathCtx } from './common.js'
 
 const USAGE = 'usage: ls [-agl] [file ...]'
 const TERMINAL_WIDTH = 80

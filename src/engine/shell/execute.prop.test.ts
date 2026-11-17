@@ -1,9 +1,9 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
-import { asRoot, devWorld, run } from '../../test/helpers'
-import { COMMAND_NAMES } from '../commands/registry'
-import { normalizePath } from '../vfs/path'
-import { PANIC_LINE, execute } from './execute'
+import { asRoot, devWorld, run } from '../../test/helpers.js'
+import { COMMAND_NAMES } from '../commands/registry.js'
+import { normalizePath } from '../vfs/path.js'
+import { PANIC_LINE, execute } from './execute.js'
 
 const { vfs, session } = devWorld()
 

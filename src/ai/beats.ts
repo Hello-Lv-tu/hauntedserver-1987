@@ -1,4 +1,4 @@
-import { LEVELS, levelAt } from '../story/engine'
+import { LEVELS, levelAt } from '../story/engine.js'
 
 export interface BeatInfo {
   levelTitle: string

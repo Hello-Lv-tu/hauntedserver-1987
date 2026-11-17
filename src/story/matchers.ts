@@ -1,6 +1,6 @@
-import { findProc } from '../engine/procs/types'
-import type { CommandEvent } from '../engine/shell/types'
-import type { StoryCtx, StoryInput } from './types'
+import { findProc } from '../engine/procs/types.js'
+import type { CommandEvent } from '../engine/shell/types.js'
+import type { StoryCtx, StoryInput } from './types.js'
 
 /**
  * Story beats match on command events (name, args, status), never on the raw

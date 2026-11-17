@@ -1,6 +1,6 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
-import { normalizePath } from './path'
+import { normalizePath } from './path.js'
 
 // Paths built from realistic pieces, including the tricky ones.
 const segment = fc.oneof(

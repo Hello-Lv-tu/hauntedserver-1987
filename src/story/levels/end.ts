@@ -1,6 +1,6 @@
-import { DEMO_END_LINE, NELL } from '../lines'
-import { pick } from '../matchers'
-import type { Beat, Level } from '../types'
+import { DEMO_END_LINE, NELL } from '../lines.js'
+import { pick } from '../matchers.js'
+import type { Beat, Level } from '../types.js'
 
 /** Placeholder after the last built level: ends the current slice cleanly. */
 const end: Beat = {

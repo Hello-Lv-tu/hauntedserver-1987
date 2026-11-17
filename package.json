@@ -11,7 +11,8 @@
     "test": "vitest --run",
     "test:watch": "vitest",
     "test:seed": "vitest --run src/story",
-    "check": "npm run lint && npm run test && npm run build"
+    "check:api": "tsc -p tsconfig.api.json && node scripts/smoke-api.mjs",
+    "check": "npm run lint && npm run test && npm run build && npm run check:api"
   },
   "engines": {
     "node": ">=22.12"

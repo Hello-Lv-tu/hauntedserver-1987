@@ -1,8 +1,8 @@
-import { beatInfo } from './beats'
-import { buildMessages } from './prompt'
-import { RateLimiter } from './rateLimit'
-import { parseVoiceRequest } from './request'
-import { sanitizeReply } from './sanitize'
+import { beatInfo } from './beats.js'
+import { buildMessages } from './prompt.js'
+import { RateLimiter } from './rateLimit.js'
+import { parseVoiceRequest } from './request.js'
+import { sanitizeReply } from './sanitize.js'
 
 export const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions'
 export const DEFAULT_MODEL = 'deepseek-flash'

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { loadSeed } from './seed'
+import { loadSeed } from './seed.js'
 
 describe('loadSeed', () => {
   it('applies defaults and inherits owner, group and mtime', () => {

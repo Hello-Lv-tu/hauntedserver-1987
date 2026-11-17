@@ -1,9 +1,9 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
-import { SPELLS } from '../story/spells'
-import type { SaveData } from './save'
-import { parseSave, serializeSave } from './save'
-import { DEFAULT_SETTINGS, parseSettings } from './settings'
+import { SPELLS } from '../story/spells.js'
+import type { SaveData } from './save.js'
+import { parseSave, serializeSave } from './save.js'
+import { DEFAULT_SETTINGS, parseSettings } from './settings.js'
 
 describe('save data', () => {
   it('round-trips valid saves (property test)', () => {

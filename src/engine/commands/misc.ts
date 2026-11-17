@@ -1,6 +1,6 @@
-import type { Command } from '../shell/types'
-import { stdout } from '../shell/types'
-import { FROZEN_DATE_STRING } from './common'
+import type { Command } from '../shell/types.js'
+import { stdout } from '../shell/types.js'
+import { FROZEN_DATE_STRING } from './common.js'
 
 export const echo: Command = (args) => {
   const noNewline = args[0] === '-n'

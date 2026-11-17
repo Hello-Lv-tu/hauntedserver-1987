@@ -1,7 +1,7 @@
-import type { Command } from '../shell/types'
-import { stderr, stdout } from '../shell/types'
-import { canAccess } from '../vfs/Vfs'
-import { errnoText, pathCtx } from './common'
+import type { Command } from '../shell/types.js'
+import { stderr, stdout } from '../shell/types.js'
+import { canAccess } from '../vfs/Vfs.js'
+import { errnoText, pathCtx } from './common.js'
 
 /** csh builtin. With no argument, go home. */
 export const cd: Command = (args, ctx) => {

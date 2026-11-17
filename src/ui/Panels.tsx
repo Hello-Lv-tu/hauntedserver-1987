@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
-import type { Settings } from '../game/settings'
-import { SPELLS } from '../story/spells'
+import type { Settings } from '../game/settings.js'
+import { SPELLS } from '../story/spells.js'
 
 interface PanelProps {
   title: string

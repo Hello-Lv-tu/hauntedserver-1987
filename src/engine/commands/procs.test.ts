@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { asRoot, devWorld, run } from '../../test/helpers'
-import { withProc } from '../procs/types'
-import { POPUP_PROC } from '../../story/levels/level1'
+import { asRoot, devWorld, run } from '../../test/helpers.js'
+import { withProc } from '../procs/types.js'
+import { POPUP_PROC } from '../../story/levels/level1.js'
 
 describe('ps', () => {
   it('lists only your processes on a terminal by default', () => {

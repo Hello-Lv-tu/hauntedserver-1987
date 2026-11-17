@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
 import type { KeyboardEvent, RefObject } from 'react'
-import { prompt } from '../game/game'
-import type { GameState } from '../game/types'
-import type { TerminalAction } from './terminalState'
-import { PumpkinIcon } from './icons'
+import { prompt } from '../game/game.js'
+import type { GameState } from '../game/types.js'
+import type { TerminalAction } from './terminalState.js'
+import { PumpkinIcon } from './icons.js'
 import './terminal.css'
 
 interface TerminalProps {

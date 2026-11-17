@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { loadSeed } from '../engine/vfs/seed'
+import { loadSeed } from '../engine/vfs/seed.js'
 import devSeed from './seed/dev.json'
-import { PLAYER, createWorld } from './world'
+import { PLAYER, createWorld } from './world.js'
 
 /** Catches broken seed files before they reach players (run by the seed hook). */
 describe('story seeds', () => {

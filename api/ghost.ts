@@ -4,10 +4,10 @@
  * Needs the DEEPSEEK_API_KEY environment variable; without it the game falls
  * back to pre-written lines.
  */
-import { createHandler } from '../src/ai/handler'
+import { createHandler } from '../src/ai/handler.js'
 
 const handle = createHandler({
-  fetch: (input, init) => fetch(input, init),
+  fetch: (input: RequestInfo | URL, init?: RequestInit) => fetch(input, init),
   env: process.env,
   now: () => Date.now(),
 })

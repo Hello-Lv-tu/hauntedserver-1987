@@ -1,4 +1,4 @@
-import { SPELLS } from '../story/spells'
+import { SPELLS } from '../story/spells.js'
 
 /**
  * What is stored between visits. No filesystem snapshot and no player-typed

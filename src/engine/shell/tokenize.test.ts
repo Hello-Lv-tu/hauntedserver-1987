@@ -1,6 +1,6 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
-import { quote, tokenize } from './tokenize'
+import { quote, tokenize } from './tokenize.js'
 
 const words = (line: string) => {
   const result = tokenize(line)

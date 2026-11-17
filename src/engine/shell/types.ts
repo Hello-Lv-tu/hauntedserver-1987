@@ -1,5 +1,5 @@
-import type { ProcTable } from '../procs/types'
-import type { Vfs } from '../vfs/Vfs'
+import type { ProcTable } from '../procs/types.js'
+import type { Vfs } from '../vfs/Vfs.js'
 
 export interface Session {
   user: string

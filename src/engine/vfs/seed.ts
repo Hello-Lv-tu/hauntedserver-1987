@@ -1,5 +1,5 @@
-import type { DirNode, Result, VNode } from './types'
-import { fail, ok } from './types'
+import type { DirNode, Result, VNode } from './types.js'
+import { fail, ok } from './types.js'
 
 /**
  * Authoring format for the server's contents (see src/story/seed/).

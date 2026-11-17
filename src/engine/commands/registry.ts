@@ -1,11 +1,11 @@
-import { manPage } from '../man/pages'
-import type { Command } from '../shell/types'
-import { stderr, stdout } from '../shell/types'
-import { columns, ls } from './ls'
-import { clear, date, echo, history, whoami } from './misc'
-import { cd, pwd } from './navigation'
-import { hintCommand, kill, ps, spellbook, who, write } from './procs'
-import { cat, grep, head, more, tail, wc } from './text'
+import { manPage } from '../man/pages.js'
+import type { Command } from '../shell/types.js'
+import { stderr, stdout } from '../shell/types.js'
+import { columns, ls } from './ls.js'
+import { clear, date, echo, history, whoami } from './misc.js'
+import { cd, pwd } from './navigation.js'
+import { hintCommand, kill, ps, spellbook, who, write } from './procs.js'
+import { cat, grep, head, more, tail, wc } from './text.js'
 
 const man: Command = (args) => {
   const name = args[0]

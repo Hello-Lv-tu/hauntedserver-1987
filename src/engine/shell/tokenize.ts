@@ -1,5 +1,5 @@
-import type { Result } from '../vfs/types'
-import { fail, ok } from '../vfs/types'
+import type { Result } from '../vfs/types.js'
+import { fail, ok } from '../vfs/types.js'
 
 export type Token = { type: 'word'; value: string } | { type: 'pipe' }
 

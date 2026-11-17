@@ -1,6 +1,6 @@
-import type { CommandCtx, OutputLine } from '../shell/types'
-import { stderr } from '../shell/types'
-import type { PathCtx, VfsError } from '../vfs/types'
+import type { CommandCtx, OutputLine } from '../shell/types.js'
+import { stderr } from '../shell/types.js'
+import type { PathCtx, VfsError } from '../vfs/types.js'
 
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
