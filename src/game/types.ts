@@ -1,3 +1,4 @@
+import type { ChatEntry, VoiceRequest } from '../ai/request'
 import type { ProcTable } from '../engine/procs/types'
 import type { Session, Stream, WriteMode } from '../engine/shell/types'
 import type { Vfs } from '../engine/vfs/Vfs'
@@ -36,6 +37,13 @@ export interface Checkpoint {
   flags: Flags
 }
 
+/** A reply from Nell waiting for her AI voice (or for the fallback). */
+export interface PendingVoice {
+  id: number
+  request: VoiceRequest
+  fallback: string[]
+}
+
 export type Mode = { kind: 'shell' } | WriteMode
 
 export type Panel = 'spellbook' | 'settings' | null
@@ -61,6 +69,11 @@ export interface GameState {
   glitch: number
   finished: boolean
   panel: Panel
+  /** Replies waiting for the AI, oldest first. The UI resolves them one at a time. */
+  pendingVoices: PendingVoice[]
+  nextVoiceId: number
+  /** Recent conversation with Nell (last 8 messages), sent as AI context. */
+  chatLog: ChatEntry[]
 }
 
 export type GameInput =
@@ -74,3 +87,5 @@ export type GameInput =
   | { type: 'settings'; settings: Settings }
   | { type: 'panel'; panel: Panel }
   | { type: 'clearScreen' }
+  /** The AI answered (`lines`) or failed (`null`: use the fallback). */
+  | { type: 'voice'; id: number; lines: string[] | null }

@@ -55,6 +55,9 @@ export function newGame(options: { save?: SaveData | null; settings?: Settings }
     glitch: 0,
     finished: false,
     panel: null,
+    pendingVoices: [],
+    nextVoiceId: 1,
+    chatLog: [],
   }
   return applyEffects(base, entry.effects)
 }
@@ -92,6 +95,13 @@ export function step(state: GameState, input: GameInput): GameState {
 
     case 'clearScreen':
       return { ...state, screen: [] }
+
+    case 'voice': {
+      const pending = state.pendingVoices.find((p) => p.id === input.id)
+      if (pending === undefined) return state
+      const rest = { ...state, pendingVoices: state.pendingVoices.filter((p) => p.id !== input.id) }
+      return nellMessage(rest, input.lines ?? pending.fallback)
+    }
   }
 }
 
@@ -128,9 +138,10 @@ function writeLine(state: GameState, text: string): GameState {
   // A line with only EOF ends write mode (for keyboards without Ctrl-D).
   // Like Ctrl-D in real write, it is not echoed.
   if (text.trim() === 'EOF') return { ...state, mode: { kind: 'shell' } }
-  const next = print(state, [['written', text]])
-  if (next.mode.kind !== 'write') return next
-  return story(next, { type: 'wrote', to: next.mode.to, text })
+  const printed = print(state, [['written', text]])
+  if (printed.mode.kind !== 'write') return printed
+  const next = { ...printed, chatLog: remember(printed.chatLog, { from: 'player', text }) }
+  return story(next, { type: 'wrote', to: printed.mode.to, text })
 }
 
 function tick(state: GameState, paused: boolean): GameState {
@@ -153,9 +164,19 @@ function applyEffects(state: GameState, effects: Effect[]): GameState {
   for (const effect of effects) {
     switch (effect.type) {
       case 'nell':
-        // period: the banner BSD write prints on the recipient's terminal.
-        s = print(s, [['nell', ''], ['nell', 'Message from nell@vax3 on ttyp0 at 23:59 ...'], ...effect.lines.map((t) => ['nell', t] as const), ['nell', 'EOF']])
+        s = nellMessage(s, effect.lines)
         break
+      case 'nellVoice': {
+        // History excludes the message being answered (the last chat entry).
+        const history = s.chatLog.slice(0, -1)
+        const request = { level: s.story.level, beat: s.story.beat, chats: s.story.chats, text: effect.text, history }
+        s = {
+          ...s,
+          pendingVoices: [...s.pendingVoices, { id: s.nextVoiceId, request, fallback: effect.fallback }],
+          nextVoiceId: s.nextVoiceId + 1,
+        }
+        break
+      }
       case 'jack':
         s = print(s, effect.lines.map((t) => ['jack', t]))
         break
@@ -226,6 +247,19 @@ function restoreCheckpoint(state: GameState): GameState {
     glitch: state.glitch + 1,
   }
   return applyEffects(restored, entry.effects)
+}
+
+const CHAT_LOG_SIZE = 8
+
+function remember(log: GameState['chatLog'], entry: GameState['chatLog'][number]): GameState['chatLog'] {
+  return [...log, { ...entry, text: entry.text.slice(0, 300) }].slice(-CHAT_LOG_SIZE)
+}
+
+/** Print a message from Nell in BSD write format and remember it as context. */
+function nellMessage(state: GameState, lines: string[]): GameState {
+  // period: the banner BSD write prints on the recipient's terminal.
+  const printed = print(state, [['nell', ''], ['nell', 'Message from nell@vax3 on ttyp0 at 23:59 ...'], ...lines.map((t) => ['nell', t] as const), ['nell', 'EOF']])
+  return { ...printed, chatLog: remember(printed.chatLog, { from: 'nell', text: lines.join(' ') }) }
 }
 
 export function print(state: GameState, lines: readonly (readonly [LineKind, string])[]): GameState {

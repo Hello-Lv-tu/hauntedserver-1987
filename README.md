@@ -59,6 +59,15 @@ npm install
 npm run dev
 ```
 
+### Nell's AI voice (optional)
+
+Nell's replies to whatever you write her come from DeepSeek through the
+Vercel function `api/ghost.ts`. Set `DEEPSEEK_API_KEY` in the Vercel project's
+environment variables (optionally `DEEPSEEK_MODEL`, default `deepseek-flash`).
+The key stays on the server. Without it, or when the AI is slow or fails, Nell
+uses her pre-written lines and the game plays exactly the same. The AI only
+words her small talk; the story, clues and level logic are deterministic.
+
 Other scripts: `npm test` (unit and property-based tests), `npm run check`
 (lint + test + build), `npm run build`, `npm run preview`.
 

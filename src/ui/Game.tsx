@@ -8,6 +8,7 @@ import { JackPopup } from './JackPopup'
 import { SettingsPanel, SpellbookPanel } from './Panels'
 import { Terminal } from './Terminal'
 import { initialTerminal, terminalReducer } from './terminalState'
+import { useNellVoice } from './useNellVoice'
 import { writeStorage } from './storage'
 import './game.css'
 
@@ -26,6 +27,9 @@ export function Game({ initial }: { initial: GameState }) {
     const timer = window.setInterval(() => send({ type: 'tick' }), 1000)
     return () => window.clearInterval(timer)
   }, [hasPopup, send])
+
+  // Nell's AI voice: resolves pending replies one at a time.
+  useNellVoice(game.pendingVoices[0], send)
 
   // Persist progress and settings.
   useEffect(() => {
