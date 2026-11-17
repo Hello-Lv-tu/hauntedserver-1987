@@ -6,7 +6,9 @@ import { Assistant } from './Assistant.js'
 import { CardView } from './Cards.js'
 import { EndScreen } from './EndScreen.js'
 import { adoptGhostIcon } from './favicon.js'
-import { GearIcon } from './icons.js'
+import { GearIcon, SpeakerIcon } from './icons.js'
+import { sound } from './sound.js'
+import { useSound } from './useSound.js'
 import { JackPopup } from './JackPopup.js'
 import { SettingsPanel, SpellbookPanel } from './Panels.js'
 import { Terminal } from './Terminal.js'
@@ -45,6 +47,13 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
   useEffect(() => {
     if (game.ending === 'move') adoptGhostIcon()
   }, [game.ending])
+
+  useSound(game)
+  const toggleSound = () => {
+    sound.unlock() // inside the click: browsers allow audio only after a gesture
+    send({ type: 'settings', settings: { ...game.settings, sound: !game.settings.sound } })
+    inputRef.current?.focus()
+  }
 
   // Nell's AI voice: resolves pending replies one at a time.
   useNellVoice(game.pendingVoices[0], send)
@@ -116,6 +125,15 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
             {t(game.settings.lang, 'Ending')}
           </button>
         ) : null}
+        <button
+          type="button"
+          className="tool"
+          onClick={toggleSound}
+          aria-pressed={game.settings.sound}
+          aria-label={t(game.settings.lang, game.settings.sound ? 'Sound on' : 'Sound off')}
+        >
+          <SpeakerIcon size={16} on={game.settings.sound} />
+        </button>
         <button type="button" className="tool" onClick={() => send({ type: 'panel', panel: 'settings' })} aria-label={t(game.settings.lang, 'Settings')}>
           <GearIcon size={16} />
         </button>

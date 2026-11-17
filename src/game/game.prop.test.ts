@@ -127,7 +127,7 @@ describe('story (property tests)', () => {
         { type: 'panel', panel: 'spellbook' },
         { type: 'panel', panel: null },
         { type: 'clearScreen' },
-        { type: 'settings', settings: { version: 1, popupSeconds: 30, lang: 'en', typewriter: false } },
+        { type: 'settings', settings: { version: 1, popupSeconds: 30, lang: 'en', typewriter: false, sound: false } },
       ),
     )
     fc.assert(

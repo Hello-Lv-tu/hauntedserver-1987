@@ -28,3 +28,11 @@ describe('typewriter setting', () => {
     expect(parseSettings('{"typewriter":"yes"}').typewriter).toBe(true)
   })
 })
+
+describe('sound setting', () => {
+  it('is off by default and only true when stored as true', () => {
+    expect(parseSettings(null).sound).toBe(false)
+    expect(parseSettings('{"sound":true}').sound).toBe(true)
+    expect(parseSettings('{"sound":"yes"}').sound).toBe(false)
+  })
+})

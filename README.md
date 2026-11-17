@@ -65,7 +65,10 @@ camera into the glowing terminal. On wide screens you play inside a VT100
 bezel with the room behind it, which turns orange when Jack attacks and amber
 if Nell stays. Nell is pixel art drawn in code with moods from her smileys;
 Jack is a glossy, app-mascot pumpkin on purpose, and shatters when beaten.
-Sound is next.
+
+**Sound** (off until you press the speaker button): CRT hum, key clicks, the
+three-ring `write` bell, Jack's chirpy notification sting, a static burst when
+you are eaten, a chime for new spells. All synthesized with Web Audio.
 
 ## Run locally
 
@@ -109,6 +112,7 @@ A full write-up will be added before submission.
 - Machine-room artwork: generated with ChatGPT (OpenAI) for this project.
 - Fonts: VT323 and Fusion Pixel 12px SC, both SIL Open Font License 1.1.
 - Nell and Jack: drawn in code (SVG) in `src/ui/characters/`.
+- Sounds: synthesized in code (`src/ui/sound.ts`), no recordings.
 
 ## License
 

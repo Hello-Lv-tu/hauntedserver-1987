@@ -4,6 +4,7 @@ import type { Settings } from '../game/settings.js'
 import { SPELLS } from '../story/spells.js'
 import { LANGS } from '../i18n/index.js'
 import { useT } from './useT.js'
+import { sound } from './sound.js'
 import { LineText } from './LineText.js'
 
 interface PanelProps {
@@ -97,6 +98,20 @@ export function SettingsPanel({
           </label>
         ))}
         <p className="panel-note">{t('Commands and machine output stay in English, like a real 1987 terminal.')}</p>
+      </fieldset>
+      <fieldset className="setting">
+        <legend>{t('Sound')}</legend>
+        <label className="setting-option">
+          <input
+            type="checkbox"
+            checked={settings.sound}
+            onChange={(e) => {
+              if (e.target.checked) sound.unlock()
+              onChange({ ...settings, sound: e.target.checked })
+            }}
+          />{' '}
+          {t('CRT hum, key clicks, the write bell and Jack (synthesized, no recordings)')}
+        </label>
       </fieldset>
       <fieldset className="setting">
         <legend>{t('Text speed')}</legend>
