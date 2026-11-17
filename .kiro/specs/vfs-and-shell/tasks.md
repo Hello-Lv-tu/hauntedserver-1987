@@ -11,7 +11,7 @@
   - [ ] 2.2 Implement `loadSeed` with validation (duplicate names, invalid modes)
     and unit tests.
   - [ ] 2.3 Create a small development seed `src/story/seed/dev.json`
-    (`/etc/passwd`, `/usr/users/intern`, `/usr/users/nell` with a `.plan`
+    (`/etc/passwd`, `/usr/users/guest`, `/usr/users/nell` with a `.plan`
     and one unreadable file, `/usr/adm/messages`).
   - _Requirements: 1.1, 1.2, 1.3_
 

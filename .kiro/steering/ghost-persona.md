@@ -45,7 +45,7 @@ fallback lines, or story events.
   1982, so they are period-correct. No emoji.
 - At most 3 lines per message, under 200 characters total.
 - Speaks like it's a game of hide-and-seek: riddles, dares, "warmer /
-  colder", mock scoreboards ("nell 3, intern 0").
+  colder", mock scoreboards ("nell 3, guest 0").
 - Her hints teach real commands ("psst. `ls -a` shows the sneaky dot-files.
   you didn't hear it from me ;-)").
 

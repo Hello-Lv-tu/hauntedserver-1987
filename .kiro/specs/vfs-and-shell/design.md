@@ -176,7 +176,7 @@ registry key has a page (Requirement 7.1).
   testable without React.
 - CRT styling stays in CSS. Line streams map to classes `.out`, `.err`,
   `.hint`.
-- `App.tsx` loads the seed, creates the initial session (`user: 'intern'`,
+- `App.tsx` loads the seed, creates the initial session (`user: 'guest'`,
   `cwd: home`) and renders `Terminal`.
 
 ## Testing strategy
