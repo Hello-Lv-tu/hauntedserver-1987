@@ -1,29 +1,26 @@
-import { useEffect, useReducer, useRef } from 'react'
-import type { KeyboardEvent } from 'react'
-import type { Session } from '../engine/shell/types'
-import type { Vfs } from '../engine/vfs/Vfs'
-import { initialState, prompt, terminalReducer } from './terminalState'
+import { useEffect, useRef } from 'react'
+import type { KeyboardEvent, RefObject } from 'react'
+import { prompt } from '../game/game'
+import type { GameState } from '../game/types'
+import type { TerminalAction } from './terminalState'
+import { PumpkinIcon } from './icons'
 import './terminal.css'
 
 interface TerminalProps {
-  vfs: Vfs
-  session: Session
-  /** Lines shown before the first prompt (boot banner, messages). */
-  intro: string[]
+  game: GameState
+  input: string
+  dispatch: (action: TerminalAction) => void
+  inputRef: RefObject<HTMLInputElement | null>
+  /** Escape: dismiss a card or close Jack's popup. */
+  onEscape: () => void
 }
 
-export function Terminal({ vfs, session, intro }: TerminalProps) {
-  const [state, dispatch] = useReducer(terminalReducer, undefined, () => initialState(vfs, session, intro))
-  const inputRef = useRef<HTMLInputElement>(null)
+export function Terminal({ game, input, dispatch, inputRef, onEscape }: TerminalProps) {
   const endRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: 'end' })
-  }, [state.lines.length])
-
-  useEffect(() => {
-    inputRef.current?.focus()
-  }, [])
+  }, [game.screen.length])
 
   const focusInput = () => {
     // Don't steal focus while the player is selecting text to copy.
@@ -32,47 +29,59 @@ export function Terminal({ vfs, session, intro }: TerminalProps) {
   }
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      event.preventDefault()
+    const key = event.key
+    const handled = () => event.preventDefault()
+    if (key === 'Enter') {
+      handled()
       dispatch({ type: 'submit' })
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault()
+    } else if (key === 'ArrowUp') {
+      handled()
       dispatch({ type: 'historyUp' })
-    } else if (event.key === 'ArrowDown') {
-      event.preventDefault()
+    } else if (key === 'ArrowDown') {
+      handled()
       dispatch({ type: 'historyDown' })
-    } else if (event.key === 'Tab') {
-      event.preventDefault()
+    } else if (key === 'Tab') {
+      handled()
       dispatch({ type: 'complete' })
-    } else if (event.ctrlKey && event.key === 'c') {
-      event.preventDefault()
+    } else if (key === 'Escape') {
+      handled()
+      onEscape()
+    } else if (event.ctrlKey && key === 'c') {
+      handled()
       dispatch({ type: 'interrupt' })
-    } else if (event.ctrlKey && event.key === 'l') {
-      event.preventDefault()
-      dispatch({ type: 'clear' })
+    } else if (event.ctrlKey && key === 'd') {
+      handled()
+      dispatch({ type: 'game', input: { type: 'eof' } })
+    } else if (event.ctrlKey && key === 'l') {
+      handled()
+      dispatch({ type: 'game', input: { type: 'clearScreen' } })
     }
   }
+
+  const promptText = prompt(game)
+  const writing = game.mode.kind === 'write'
 
   return (
     <div className="terminal" onClick={focusInput}>
       <div className="terminal-output" role="log" aria-live="polite" aria-label="Terminal output">
-        {state.lines.map((line) => (
+        {game.screen.map((line) => (
           <div key={line.id} className={`line line-${line.kind}`}>
             {line.kind === 'hint' ? <span className="hint-label">hint: </span> : null}
+            {line.kind === 'jack' && line.text ? <PumpkinIcon size={14} className="line-icon" /> : null}
             {line.text || '\u00a0'}
           </div>
         ))}
       </div>
       <div className="terminal-input-row">
         <label htmlFor="terminal-input" className="prompt">
-          {prompt(state.session)}
+          {promptText}
         </label>
         <input
           id="terminal-input"
           ref={inputRef}
-          className="terminal-input"
-          aria-label="Command"
-          value={state.input}
+          className={`terminal-input${writing ? ' writing' : ''}`}
+          aria-label={writing ? `Message to ${game.mode.kind === 'write' ? game.mode.to : ''}` : 'Command'}
+          value={input}
           onChange={(e) => dispatch({ type: 'input', value: e.target.value })}
           onKeyDown={onKeyDown}
           autoComplete="off"

@@ -190,3 +190,27 @@ effects, so saves never contain filesystem snapshots.
   4. Save round-trip: `load(save(state))` gives the same level, spells and
      flags; random JSON never crashes `load`.
 - A full scripted play-through of Levels 0–1 as an integration test.
+
+## Implementation notes (deviations from the plan above)
+
+- **Jack's popup does not take focus.** The plan said `role="alertdialog"` with
+  focus on the close button, but then the player could not keep typing
+  `ps aux` while it is shown (Requirement 5.7). It is a non-modal
+  `role="alert"`; Escape in the terminal closes it.
+- **No emoji anywhere.** Jack's pumpkin and the warning sign are inline SVG
+  (`src/ui/icons.tsx`), because systems without an emoji font showed empty
+  boxes. `src/story/lines.test.ts` enforces this and Nell's persona limits
+  (3 lines, under 200 characters).
+- **A line `EOF` is not echoed** when leaving write mode, just as Ctrl-D is not
+  echoed by real `write`.
+- **Spell cards dismiss themselves after 5 s**; lesson cards stay until
+  dismissed. Escape dismisses a card first, then closes the popup.
+- **Saves store spells immediately** (not only at level start), so a reload
+  never loses a learned spell.
+- **localStorage may throw** (private browsing, sandboxed pages). Reads and
+  writes go through `src/ui/storage.ts` and fail silently; found by the
+  browser play-test, where the game crashed without it.
+- **Glitch** is a full-screen overlay keyed by `game.glitch`, so the CSS
+  animation replays without setting React state in an effect.
+- `hint` and `spellbook` are registry commands that return a `request` for the
+  game, so they appear in `help`, Tab completion and `man`.

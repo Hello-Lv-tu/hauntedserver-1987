@@ -9,11 +9,11 @@ const tab = (line: string, cwd = session.cwd) => complete(line, vfs, { ...sessio
 describe('tab completion', () => {
   it('completes unique command names with a trailing space', () => {
     expect(tab('gr')).toEqual({ line: 'grep ', options: [] })
-    expect(tab('ls | wh')).toEqual({ line: 'ls | whoami ', options: [] })
+    expect(tab('ls | gr')).toEqual({ line: 'ls | grep ', options: [] })
   })
 
   it('lists ambiguous commands', () => {
-    expect(tab('h').options).toEqual(['head', 'help', 'history'])
+    expect(tab('h').options).toEqual(['head', 'help', 'hint', 'history'])
   })
 
   it('completes paths, adding / for directories', () => {

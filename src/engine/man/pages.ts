@@ -174,6 +174,78 @@ const PAGES: Record<string, Page> = {
       'examples, and `command --help` often works too.',
     ],
   },
+  ps: {
+    section: 1,
+    name: 'ps - process status',
+    synopsis: 'ps [ aux ]',
+    description: [
+      'Show the programs (processes) that are running. Each has a number,',
+      'its PID. Options can be given with or without a dash.',
+      '',
+      'a    Show processes of all users, not just yours.',
+      'u    User-oriented output: owner, CPU and memory use.',
+      'x    Also show processes that have no terminal (daemons).',
+      '',
+      'TT is the terminal (h3 means ttyh3). STAT is the state: R running,',
+      'S sleeping, I idle, W swapped out.',
+    ],
+    modern: [
+      '`ps aux` still works on Linux and macOS. `top` and `htop` show the',
+      'same list live; on Windows, Task Manager does the same job.',
+    ],
+  },
+  kill: {
+    section: 1,
+    name: 'kill - terminate a process (csh builtin)',
+    synopsis: 'kill [ -sig ] pid ...',
+    description: [
+      'Send a signal to the processes with the given PIDs (see ps). The',
+      'default signal, TERM, asks a program to stop; -9 (KILL) cannot be',
+      'ignored. You can only kill your own processes.',
+    ],
+    modern: [
+      'Unchanged. `pkill name` and `killall name` stop programs by name;',
+      'on Windows, "End task" in Task Manager does the same.',
+    ],
+  },
+  who: {
+    section: 1,
+    name: 'who - who is on the system',
+    synopsis: 'who',
+    description: ['List the users logged in: name, terminal, and login time.'],
+    modern: ['Unchanged, though on a laptop the answer is usually just you.'],
+  },
+  write: {
+    section: 1,
+    name: 'write - write to another user',
+    synopsis: 'write user [ ttyname ]',
+    description: [
+      'Copy lines from your terminal to another logged-in user\'s terminal.',
+      'Each line appears on their screen as you press Return. End with an',
+      'end-of-file (Ctrl-D). On this terminal, a line with only EOF works too.',
+    ],
+    modern: [
+      'Still exists on Linux servers, but chat apps replaced it. `write`',
+      'was one of the first ways people "messaged" each other.',
+    ],
+  },
+  hint: {
+    section: 1,
+    name: 'hint - ask for a nudge',
+    synopsis: 'hint',
+    description: [
+      'Give a hint for what to do next. Ask again for a stronger hint; the',
+      'third one is the full answer.',
+    ],
+    modern: ['Not a real Unix command. Real admins asked a colleague, or Usenet.'],
+  },
+  spellbook: {
+    section: 1,
+    name: 'spellbook - show the commands you have learned',
+    synopsis: 'spellbook',
+    description: ['Open your Spellbook: every command you have used, and the ones', 'still to find.'],
+    modern: ['Not a real Unix command. Your shell history is the closest thing.'],
+  },
   help: {
     section: 1,
     name: 'help - list the commands on this terminal',

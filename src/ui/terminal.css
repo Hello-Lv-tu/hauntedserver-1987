@@ -24,6 +24,30 @@
   font-weight: bold;
 }
 
+/* Nell's write messages: brighter, almost white phosphor. */
+.line-nell {
+  color: #d8ffe0;
+  text-shadow: 0 0 6px rgba(160, 255, 190, 0.8);
+}
+
+/* What the player writes to Nell. */
+.line-written {
+  color: #8fd9a0;
+}
+
+/* Jack-o'-Daemon: modern font and colors on purpose; it does not belong here. */
+.line-jack {
+  color: #ff8a1f;
+  text-shadow: 0 0 6px rgba(255, 120, 0, 0.6);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.terminal-input.writing {
+  color: #8fd9a0;
+}
+
 .terminal-input-row {
   display: flex;
   white-space: pre;
@@ -46,4 +70,9 @@
 
 .terminal-input:focus-visible {
   box-shadow: 0 1px 0 var(--phosphor-dim);
+}
+
+.line-icon {
+  margin-right: 0.35em;
+  vertical-align: -2px;
 }

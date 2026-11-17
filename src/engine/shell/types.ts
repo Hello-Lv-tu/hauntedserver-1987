@@ -1,9 +1,12 @@
+import type { ProcTable } from '../procs/types'
 import type { Vfs } from '../vfs/Vfs'
 
 export interface Session {
   user: string
   home: string
   cwd: string
+  /** The player's terminal, e.g. "ttyh3". */
+  tty: string
   /** Every non-empty line the player entered, oldest first. */
   history: string[]
   /** Next command-event sequence number. */
@@ -29,18 +32,32 @@ export interface CommandEvent {
   cwd: string
 }
 
+/** Things a command asks the game (not the shell) to do. */
+export type GameRequest = 'hint' | 'spellbook'
+
+/** Entering write mode: following lines go to `to`, not to the shell. */
+export interface WriteMode {
+  kind: 'write'
+  to: string
+}
+
 export interface ExecResult {
   lines: OutputLine[]
   session: Session
   events: CommandEvent[]
   /** The vfs after the line ran. Same instance when nothing was written. */
   vfs: Vfs
+  /** The process table after the line ran. */
+  procs: ProcTable
   /** Set by `clear`: the UI should wipe the scrollback. */
   clear?: boolean
+  mode?: WriteMode
+  request?: GameRequest
 }
 
 export interface CommandCtx {
   vfs: Vfs
+  procs: ProcTable
   session: Session
   /** Lines from the previous pipeline stage, or null when not piped. */
   stdin: string[] | null
@@ -54,7 +71,10 @@ export interface CommandOutput {
   status: number
   session?: Session
   vfs?: Vfs
+  procs?: ProcTable
   clear?: boolean
+  mode?: WriteMode
+  request?: GameRequest
 }
 
 export type Command = (args: string[], ctx: CommandCtx) => CommandOutput
@@ -63,6 +83,6 @@ export const stdout = (text: string): OutputLine => ({ stream: 'stdout', text })
 export const stderr = (text: string): OutputLine => ({ stream: 'stderr', text })
 export const hint = (text: string): OutputLine => ({ stream: 'hint', text })
 
-export function newSession(user: string, home: string): Session {
-  return { user, home, cwd: home, history: [], seq: 1 }
+export function newSession(user: string, home: string, tty = 'ttyh3'): Session {
+  return { user, home, cwd: home, tty, history: [], seq: 1 }
 }
