@@ -1,13 +1,20 @@
 import { banner, parseMbox } from '../mail/mailbox.js'
 import type { Command } from '../shell/types.js'
-import { stderr, stdout } from '../shell/types.js'
+import { hint, stderr, stdout } from '../shell/types.js'
 
 export const spoolPath = (user: string) => `/usr/spool/mail/${user}`
 
 /** `mail`: open the user's spool in Berkeley Mail (the game runs the & prompt). */
 export const mail: Command = (args, ctx) => {
   if (args.some((a) => !a.startsWith('-'))) {
-    return { lines: [stderr('Sorry, sending mail is disabled for the guest account.')], status: 1 }
+    // `mail user` would send mail. Players often try `mail P2` or `mail 2`.
+    return {
+      lines: [
+        stderr('Sorry, sending mail is disabled for the guest account.'),
+        hint('To read your mail, type `mail` on its own. Then, at the & prompt, type commands like `P 2`.'),
+      ],
+      status: 1,
+    }
   }
   const { user } = ctx.session
   const path = spoolPath(user)

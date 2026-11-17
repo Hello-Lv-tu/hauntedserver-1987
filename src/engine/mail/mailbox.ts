@@ -143,7 +143,8 @@ function printMessage(box: Mailbox, n: number, all: boolean): { lines: string[];
 
 /** Run one command typed at the `&` prompt. */
 export function mailCommand(box: Mailbox, input: string): MailResult {
-  const line = input.trim()
+  // period: Mail accepts "P2" as well as "P 2".
+  const line = input.trim().replace(/^([a-zA-Z]+)(\d+)$/, '$1 $2')
   const [cmd = '', ...rest] = line.split(/\s+/)
   const arg = rest[0]
   const valid = (n: number) => Number.isInteger(n) && n >= 1 && n <= box.messages.length

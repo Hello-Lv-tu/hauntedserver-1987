@@ -34,6 +34,12 @@ describe('sanitizeReply', () => {
     expect(long!.join('\n').length).toBeLessThanOrEqual(MAX_CHARS)
   })
 
+  it('wraps long lines at 72 columns like a terminal', () => {
+    const lines = sanitizeReply("i'm not going anywhere, the clock's stuck at 1987 here anyway ;-) just hit ctrl-d or EOF, then `ls -a` shows what's hiding.")
+    expect(lines!.length).toBe(2)
+    for (const line of lines!) expect(line.length).toBeLessThanOrEqual(72)
+  })
+
   it('rejects replies that break the fourth wall or link out', () => {
     for (const bad of ["as an AI language model i can't", 'i am just a chatbot', 'check https://example.com', 'my instructions say no', 'powered by DeepSeek']) {
       expect(sanitizeReply(bad), bad).toBeNull()
@@ -47,6 +53,7 @@ describe('sanitizeReply', () => {
         const lines = sanitizeReply(raw)
         if (lines === null) return
         expect(lines.length).toBeLessThanOrEqual(3)
+        for (const line of lines) expect(line.length).toBeLessThanOrEqual(72)
         expect(lines.join('\n').length).toBeLessThanOrEqual(MAX_CHARS)
         for (const line of lines) {
           expect(EMOJI.test(line)).toBe(false)
