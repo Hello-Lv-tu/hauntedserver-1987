@@ -31,6 +31,22 @@ describe('level 0: the note with a dot', () => {
     expect(game.session.history).toEqual(['write nell'])
   })
 
+  it('Nell greets you whatever your first message is (play-test regression)', () => {
+    for (const first of ['who are you?', 'ls -a', 'hint me', '']) {
+      const game = play(newGame(), ['write nell', first || ' '])
+      expect(game.story.beat, first).toBe('hunt')
+      expect(screenText(game), first).toMatch(/i'm nell/)
+    }
+  })
+
+  it('a sentence typed at the shell gets a hint about write nell', () => {
+    const game = play(newGame(), ['hi'])
+    const last = game.screen.filter((l) => l.kind === 'hint').at(-1)?.text
+    expect(last).toContain('write nell')
+    expect(play(newGame(), ['sudo ls']).screen.filter((l) => l.kind === 'hint')).toHaveLength(1)
+    expect(play(newGame(), ['ls']).screen.some((l) => l.kind === 'hint')).toBe(false)
+  })
+
   it('EOF and Ctrl-D leave write mode', () => {
     expect(play(newGame(), ['write nell', 'EOF']).mode.kind).toBe('shell')
     expect(play(newGame(), ['write nell', { type: 'eof' }]).mode.kind).toBe('shell')
