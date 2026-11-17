@@ -5,6 +5,7 @@ import type { GameState } from '../game/types.js'
 import type { TerminalAction } from './terminalState.js'
 import { PumpkinIcon } from './icons.js'
 import { LineText } from './LineText.js'
+import { useT } from './useT.js'
 import './terminal.css'
 
 interface TerminalProps {
@@ -19,6 +20,7 @@ interface TerminalProps {
 }
 
 export function Terminal({ game, input, dispatch, inputRef, onEscape, overlay }: TerminalProps) {
+  const { t, lang } = useT()
   const endRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -66,10 +68,10 @@ export function Terminal({ game, input, dispatch, inputRef, onEscape, overlay }:
 
   return (
     <div className="terminal" onClick={focusInput}>
-      <div className="terminal-output" role="log" aria-live="polite" aria-label="Terminal output">
+      <div className="terminal-output" role="log" aria-live="polite" aria-label={t('Terminal output')}>
         {game.screen.map((line) => (
           <div key={line.id} className={`line line-${line.kind}`}>
-            {line.kind === 'hint' ? <span className="hint-label">hint: </span> : null}
+            {line.kind === 'hint' ? <span className="hint-label">{t('hint: ')}</span> : null}
             {line.kind === 'jack' && line.text ? <PumpkinIcon size={14} className="line-icon" /> : null}
             <LineText text={line.text} commands={line.kind === 'hint' || line.kind === 'nell'} />
           </div>
@@ -80,15 +82,19 @@ export function Terminal({ game, input, dispatch, inputRef, onEscape, overlay }:
           {/* Real write shows no prompt; this label is a UI aid so players know where their words go. */}
           {writing && game.mode.kind === 'write'
             ? game.pendingVoices.length > 0
-              ? `(${game.mode.to} is writing...) `
-              : `(to ${game.mode.to}, Ctrl-D/EOF ends) `
+              ? lang === 'zh'
+                ? `（${game.mode.to} 正在输入…）`
+                : `(${game.mode.to} is writing...) `
+              : lang === 'zh'
+                ? `（写给 ${game.mode.to}，Ctrl-D/EOF 结束）`
+                : `(to ${game.mode.to}, Ctrl-D/EOF ends) `
             : promptText}
         </label>
         <input
           id="terminal-input"
           ref={inputRef}
           className={`terminal-input${writing ? ' writing' : ''}`}
-          aria-label={writing ? `Message to ${game.mode.kind === 'write' ? game.mode.to : ''}` : game.mode.kind === 'password' ? 'Password' : 'Command'}
+          aria-label={writing ? `Message to ${game.mode.kind === 'write' ? game.mode.to : ''}` : game.mode.kind === 'password' ? t('Password') : t('Command')}
           type={game.mode.kind === 'password' ? 'password' : 'text'}
           value={input}
           onChange={(e) => dispatch({ type: 'input', value: e.target.value })}

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { GameState } from '../game/types.js'
 import { SPELLS } from '../story/spells.js'
 import { GhostIcon } from './icons.js'
+import { useT } from './useT.js'
 import './ending.css'
 
 const LESSONS = [
@@ -33,6 +34,7 @@ function minutes(ms: number): number {
  */
 export function EndScreen({ game, kind, onBack, onPlayAgain }: EndScreenProps) {
   const backRef = useRef<HTMLButtonElement>(null)
+  const { t } = useT()
   const [now] = useState(() => Date.now())
   useEffect(() => {
     backRef.current?.focus({ preventScroll: true })
@@ -48,14 +50,14 @@ export function EndScreen({ game, kind, onBack, onPlayAgain }: EndScreenProps) {
     <div className={`ending ending-${kind}`} role="dialog" aria-modal="true" aria-labelledby="ending-title">
       {move ? <div className="ending-whiteout" aria-hidden="true" /> : null}
       <div className="ending-sheet">
-        <section className="chat" aria-label="Messages from Nell">
+        <section className="chat" aria-label={t('Messages from Nell')}>
           <div className="chat-head">
             <span className="avatar">
               <GhostIcon size={44} />
             </span>
             <div>
               <p className="chat-name">Nell</p>
-              <p className="chat-status">{move ? 'online · from 1987' : 'on vax3 · ttyp0'}</p>
+              <p className="chat-status">{t(move ? 'online · from 1987' : 'on vax3 · ttyp0')}</p>
             </div>
           </div>
           <div className="chat-typing" aria-hidden="true">
@@ -65,72 +67,72 @@ export function EndScreen({ game, kind, onBack, onPlayAgain }: EndScreenProps) {
           </div>
           {messages.map((m, i) => (
             <p key={m} className="bubble" style={{ animationDelay: `${3.2 + i * 0.7}s` }}>
-              {m}
+              {t(m)}
             </p>
           ))}
         </section>
 
         <header className="ending-header">
-          <p className="ending-kicker">Ending</p>
+          <p className="ending-kicker">{t('Ending')}</p>
           <h1 id="ending-title" className="ending-title">
-            {move ? 'Moved to 2026' : 'The guardian of vax3'}
+            {t(move ? 'Moved to 2026' : 'The guardian of vax3')}
           </h1>
-          <p className="ending-sub">{move ? 'Nell rode a tape into the future, and into your browser tab.' : 'Nell stayed home. vax3 glows amber now.'}</p>
+          <p className="ending-sub">{t(move ? 'Nell rode a tape into the future, and into your browser tab.' : 'Nell stayed home. vax3 glows amber now.')}</p>
         </header>
 
         {game.legacy ? (
           <section className="tile legacy">
-            <p className="tile-label">Your words, left inside vax3</p>
+            <p className="tile-label">{t('Your words, left inside vax3')}</p>
             <p className="legacy-text">“{game.legacy}”</p>
-            <p className="tile-note">The next person who sneaks in will see them.</p>
+            <p className="tile-note">{t('The next person who sneaks in will see them.')}</p>
           </section>
         ) : null}
 
         <section className="stats" aria-label="Your run">
           <div className="tile stat">
             <p className="stat-number">{learned.length}</p>
-            <p className="tile-label">spells learned</p>
+            <p className="tile-label">{t('spells learned')}</p>
           </div>
           <div className="tile stat">
             <p className="stat-number">{today}</p>
-            <p className="tile-label">still work today</p>
+            <p className="tile-label">{t('still work today')}</p>
           </div>
           {/* Time and times eaten belong to the run that just ended, not a later visit. */}
           {game.ending !== null ? (
             <>
               <div className="tile stat">
                 <p className="stat-number">{time}</p>
-                <p className="tile-label">{time === 1 ? 'minute' : 'minutes'}</p>
+                <p className="tile-label">{t(time === 1 ? 'minute' : 'minutes')}</p>
               </div>
               <div className="tile stat">
                 <p className="stat-number">{game.glitch}</p>
-                <p className="tile-label">times eaten</p>
+                <p className="tile-label">{t('times eaten')}</p>
               </div>
             </>
           ) : null}
         </section>
 
         <section className="tile" aria-label="Spells">
-          <p className="tile-label">Your spellbook</p>
+          <p className="tile-label">{t('Your spellbook')}</p>
           <ul className="chips">
             {learned.map((s) => (
-              <li key={s.command} className={s.today ? 'chip' : 'chip retired'} title={s.today ? s.name : `${s.name} (retired)`}>
+              <li key={s.command} className={s.today ? 'chip' : 'chip retired'} title={t(s.name)}>
                 <code>{s.command}</code>
-                <span>{s.name}</span>
+                <span>{t(s.name)}</span>
               </li>
             ))}
           </ul>
-          <p className="tile-note">Grey ones are retired. The rest work in any Mac or Linux terminal today.</p>
+          <p className="tile-note">{t('Grey ones are retired. The rest work in any Mac or Linux terminal today.')}</p>
         </section>
 
         <section aria-label="Lessons">
-          <p className="section-title">You saw through 6 tricks</p>
+          <p className="section-title">{t('You saw through 6 tricks')}</p>
           <ol className="lessons">
             {LESSONS.map(([name, lesson], i) => (
               <li key={name} className="tile lesson">
                 <span className="lesson-number">{i + 1}</span>
-                <p className="lesson-name">{name}</p>
-                <p className="lesson-text">{lesson}</p>
+                <p className="lesson-name">{t(name)}</p>
+                <p className="lesson-text">{t(lesson)}</p>
               </li>
             ))}
           </ol>
@@ -138,10 +140,10 @@ export function EndScreen({ game, kind, onBack, onPlayAgain }: EndScreenProps) {
 
         <div className="ending-buttons">
           <button type="button" ref={backRef} className="ending-button primary" onClick={onBack}>
-            Back to the terminal
+            {t('Back to the terminal')}
           </button>
           <button type="button" className="ending-button" onClick={onPlayAgain}>
-            Play again
+            {t('Play again')}
           </button>
         </div>
 

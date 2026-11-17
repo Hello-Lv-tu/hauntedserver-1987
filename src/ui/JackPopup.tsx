@@ -1,6 +1,7 @@
 import { POPUP_MESSAGES } from '../story/lines.js'
 import type { PopupState } from '../game/types.js'
 import { PumpkinIcon, WarningIcon } from './icons.js'
+import { useT } from './useT.js'
 import './jack.css'
 
 interface JackPopupProps {
@@ -15,6 +16,7 @@ interface JackPopupProps {
  * shown; Escape in the terminal closes it (and it comes back).
  */
 export function JackPopup({ popup, onFix, onClose }: JackPopupProps) {
+  const { t, tr } = useT()
   if (popup.hiddenFor > 0) return null
   const message = POPUP_MESSAGES[popup.message] ?? POPUP_MESSAGES[0]
   const minutes = Math.floor(popup.secondsLeft / 60)
@@ -25,26 +27,26 @@ export function JackPopup({ popup, onFix, onClose }: JackPopupProps) {
     <div className="jack-popup" role="alert" aria-labelledby="jack-title" aria-describedby="jack-body">
       <div className="jack-header">
         <span className="jack-brand">
-          <PumpkinIcon size={16} /> Jack-o'-Daemon Security Center™
+          <PumpkinIcon size={16} /> {t("Jack-o'-Daemon Security Center™")}
         </span>
-        <button type="button" className="jack-close" onClick={onClose} aria-label="Close popup">
+        <button type="button" className="jack-close" onClick={onClose} aria-label={t('Close popup')}>
           ×
         </button>
       </div>
       <h2 id="jack-title" className="jack-title">
         {popup.message === 0 ? <WarningIcon size={20} className="jack-warn" /> : null}
-        {message.title}
+        {tr(message.title)}
       </h2>
       <p id="jack-body" className="jack-body">
-        {message.body}
+        {tr(message.body)}
       </p>
       <p className={`jack-countdown${urgent ? ' urgent' : ''}`} aria-live="off">
-        Automatic fix in {minutes}:{seconds}
+        {t('Automatic fix in')} {minutes}:{seconds}
       </p>
       <button type="button" className="jack-fix" onClick={onFix}>
-        FIX NOW
+        {t('FIX NOW')}
       </button>
-      <p className="jack-fineprint">Recommended by 9 out of 10 pumpkins.</p>
+      <p className="jack-fineprint">{t('Recommended by 9 out of 10 pumpkins.')}</p>
     </div>
   )
 }

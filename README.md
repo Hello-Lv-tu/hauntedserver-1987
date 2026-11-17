@@ -55,7 +55,8 @@ After the boss, Nell asks: come with you, or stay? Write her your answer.
 icon). **Stay**: vax3 turns amber and she is there on your next visit. There
 is also a hidden ending, and something odd in `ps` after the credits.
 
-Also: Nell's AI voice, Spellbook, three-level `hint`, autosave, a 60 s / 30 s
+Also: English and 简体中文 (characters, hints and UI; the 1987 machine itself
+always answers in English), Nell's AI voice, Spellbook, three-level `hint`, autosave, a 60 s / 30 s
 popup timer. The machine-room scene and sound are next.
 
 ## Run locally

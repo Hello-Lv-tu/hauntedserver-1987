@@ -1,0 +1,38 @@
+/**
+ * Chinese MODERN NOTE for each man page. The rest of the page stays in 1987
+ * English, as on a real system. Keep lines at about 36 Chinese characters.
+ */
+export const MODERN_ZH: Readonly<Record<string, readonly string[]>> = {
+  ls: ['今天依然到处都在用。现代的 `ls -l` 默认显示用户组，', '很多系统还会加颜色。`ls -la` 是最常敲的命令之一。'],
+  cd: ['在 bash 和 zsh 里用法一样。很多 shell 还支持 `cd -` 返回上一个目录。'],
+  pwd: ['没有变化。大多数现代提示符本来就会显示当前目录。'],
+  cat: ['没有变化。`bat` 之类的工具加了颜色，但 `cat` 仍是默认选择。'],
+  more: ['今天大多数人用 `less`（"less is more"），它 1984 年就写出来了，', '只是这台系统上没装。`more` 到今天仍然到处都有。'],
+  head: ['今天常见写法是 `head -n 5 file`；`head -5` 也还能用。'],
+  tail: ['`tail -f 日志文件`（持续跟踪一个不断增长的文件），', '是今天所有管服务器的人每天都在用的工具。'],
+  wc: ['没有变化。`某命令 | wc -l` 是统计结果数量的经典写法。'],
+  grep: ['依然必不可少。现代 grep 加了 `-r`（搜索整个目录）和颜色；', '`rg`（ripgrep）这类工具是同一个思路的更快版本。'],
+  echo: ['没有变化。脚本里到处都在用。'],
+  date: ['没有变化。现代系统会通过网络（NTP）自动校准时钟。'],
+  whoami: ['没有变化。现代系统上也可以试试 `id`。'],
+  history: ['命令历史是 C shell 在 1978 年的发明。bash 和 zsh 都保留了它；', '按上箭头调出上一条命令，按 Ctrl-R 搜索。'],
+  clear: ['没有变化。在大多数现代 shell 里，Ctrl-L 也能清屏。'],
+  man: ['Linux 和 macOS 至今仍自带 `man`。`tldr` 提供简短示例，', '很多命令也支持 `命令 --help`。'],
+  ps: ['`ps aux` 在 Linux 和 macOS 上依然能用。`top` 和 `htop` 能实时显示', '同样的列表；Windows 上的任务管理器做的是同一件事。'],
+  kill: ['没有变化。`pkill 名字` 和 `killall 名字` 可以按名字关掉程序；', 'Windows 任务管理器里的"结束任务"是同一件事。'],
+  who: ['没有变化，不过在笔记本电脑上，答案通常只有你自己。'],
+  write: ['Linux 服务器上至今仍有它，但已被聊天软件取代。', '`write` 是人类最早的"发消息"方式之一。'],
+  finger: ['早期的社交网络：人们在 .plan 里写状态。出于隐私和安全，', '大多数服务器在 1990 年代关掉了 finger。'],
+  mail: ['邮件 App 至今仍保留这些信头。找"显示原文"或"查看源代码"，', '就能看出一封可疑邮件真正是从哪里来的。'],
+  chmod: ['在 Linux 和 macOS 上没有变化。`chmod +x script.sh` 每天都能见到。'],
+  rm: ['命令行上至今也没有撤销。"rm -rf" 是人们最常被骗去', '运行的命令。运行之前，先读懂。'],
+  diff: ['git 就是用 diff 来显示改动的；在线文档里的"版本历史"，', '背后也是同样的原理。'],
+  last: ['在 Linux 和 macOS 上依然存在：`last` 读取 /var/log/wtmp。'],
+  su: ['今天大多已经被 `sudo`（以 root 身份运行单条命令）取代。'],
+  exit: ['没有变化。在大多数 shell 里，Ctrl-D 也有同样效果。'],
+  logout: ['没有变化，不过大多数人直接关掉窗口。'],
+  tar: ['今天依然到处都是：`tar czf backup.tar.gz 文件夹` 把文件夹打成', '一个文件。Linux 网站上下载的软件大多是 tar 包。'],
+  hint: ['这不是真的 Unix 命令。真正的管理员会去问同事，或者上 Usenet。'],
+  spellbook: ['这不是真的 Unix 命令。最接近的东西是你的 shell 历史记录。'],
+  help: ['真正的 4.3BSD 没有 `help`；这是专门为访客加到这台终端上的。'],
+}

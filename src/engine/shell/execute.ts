@@ -1,5 +1,6 @@
 import { MODERN_HINTS } from '../commands/modern.js'
 import { lookup } from '../commands/registry.js'
+import type { Lang } from '../../i18n/index.js'
 import type { LoginHistory } from '../logins.js'
 import type { ProcTable } from '../procs/types.js'
 import type { Vfs } from '../vfs/Vfs.js'
@@ -15,16 +16,16 @@ export const PANIC_LINE = 'panic: internal error'
  */
 const NO_LOGINS: LoginHistory = { records: [], begins: 'Mon Oct  5 08:02' }
 
-export function execute(line: string, vfs: Vfs, session: Session, procs: ProcTable = [], logins: LoginHistory = NO_LOGINS): ExecResult {
+export function execute(line: string, vfs: Vfs, session: Session, procs: ProcTable = [], logins: LoginHistory = NO_LOGINS, lang: Lang = 'en'): ExecResult {
   try {
-    return run(line, vfs, session, procs, logins)
+    return run(line, vfs, session, procs, logins, lang)
   } catch (error) {
     console.error('execute panicked on', JSON.stringify(line), error)
     return { lines: [stderr(PANIC_LINE)], session, events: [], vfs, procs }
   }
 }
 
-function run(line: string, vfs: Vfs, session: Session, procs: ProcTable, logins: LoginHistory): ExecResult {
+function run(line: string, vfs: Vfs, session: Session, procs: ProcTable, logins: LoginHistory, lang: Lang): ExecResult {
   if (line.trim() === '') return { lines: [], session, events: [], vfs, procs }
 
   // csh records the line in history even when it fails to parse.
@@ -68,7 +69,7 @@ function run(line: string, vfs: Vfs, session: Session, procs: ProcTable, logins:
   for (const [index, [name, ...args]] of stages.entries()) {
     const isLast = index === stages.length - 1
     const cwd = current.cwd
-    const output = runStage(name, args, { vfs: currentVfs, procs: currentProcs, logins, session: current, stdin, isTty: isLast })
+    const output = runStage(name, args, { vfs: currentVfs, procs: currentProcs, logins, lang, session: current, stdin, isTty: isLast })
 
     // Like a subshell: only a lone command may change the session (e.g. cd)
     // or switch the terminal into write mode.

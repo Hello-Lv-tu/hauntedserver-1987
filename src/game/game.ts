@@ -13,6 +13,7 @@ import type { Effect, StoryCtx, StoryInput } from '../story/types.js'
 import { createWorld } from '../story/world.js'
 import type { SaveData } from './save.js'
 import type { Settings } from './settings.js'
+import { translate } from '../i18n/index.js'
 import { normalizeInput } from './normalize.js'
 import { suggestFix } from './suggest.js'
 import { DEFAULT_SETTINGS } from './settings.js'
@@ -168,7 +169,7 @@ export function step(state: GameState, input: GameInput): GameState {
 
 function shellLine(state: GameState, text: string): GameState {
   let next = print(state, [['prompt', prompt(state) + text]])
-  const result = execute(text, next.vfs, next.session, next.procs, LOGINS)
+  const result = execute(text, next.vfs, next.session, next.procs, LOGINS, next.settings.lang)
   next = { ...next, vfs: result.vfs, procs: result.procs, session: result.session }
   next = result.clear ? { ...next, screen: [] } : print(next, result.lines.map((l) => [l.stream, l.text]))
   if (result.mode) next = { ...next, mode: result.mode }
@@ -290,7 +291,7 @@ function applyEffects(state: GameState, effects: Effect[]): GameState {
       case 'nellVoice': {
         // History excludes the message being answered (the last chat entry).
         const history = s.chatLog.slice(0, -1)
-        const request = { level: s.story.level, beat: s.story.beat, chats: s.story.chats, text: effect.text, history }
+        const request = { ...(s.settings.lang === 'zh' ? { lang: 'zh' as const } : {}), level: s.story.level, beat: s.story.beat, chats: s.story.chats, text: effect.text, history }
         s = {
           ...s,
           pendingVoices: [...s.pendingVoices, { id: s.nextVoiceId, request, fallback: effect.fallback }],
@@ -412,12 +413,17 @@ function nellLike(state: GameState, user: string, tty: string, lines: string[]):
 /** Print a message from Nell and remember it as AI context. */
 function nellMessage(state: GameState, lines: string[]): GameState {
   const printed = nellLike(state, 'nell', 'ttyp0', lines)
-  return { ...printed, chatLog: remember(printed.chatLog, { from: 'nell', text: lines.join(' ') }) }
+  const shown = lines.map((l) => translate(l, state.settings.lang))
+  return { ...printed, chatLog: remember(printed.chatLog, { from: 'nell', text: shown.join(' ') }) }
 }
+
+/** Characters and hints follow the player's language; the machine stays English. */
+const TRANSLATED: ReadonlySet<LineKind> = new Set(['nell', 'jack', 'hint', 'system'])
 
 export function print(state: GameState, lines: readonly (readonly [LineKind, string])[]): GameState {
   if (lines.length === 0) return state
-  const added = lines.map(([kind, text], i) => ({ id: state.nextId + i, kind, text }))
+  const lang = state.settings.lang
+  const added = lines.map(([kind, text], i) => ({ id: state.nextId + i, kind, text: TRANSLATED.has(kind) ? translate(text, lang) : text }))
   const screen = [...state.screen, ...added]
   return {
     ...state,

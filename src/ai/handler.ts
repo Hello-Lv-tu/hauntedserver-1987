@@ -3,6 +3,7 @@ import { buildMessages } from './prompt.js'
 import { RateLimiter } from './rateLimit.js'
 import { parseVoiceRequest } from './request.js'
 import { sanitizeReply } from './sanitize.js'
+import { hasCjk } from '../i18n/index.js'
 
 export const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions'
 export const DEFAULT_MODEL = 'deepseek-flash'
@@ -79,7 +80,10 @@ export function createHandler(deps: HandlerDeps) {
       const data = (await response.json()) as { choices?: { message?: { content?: unknown } }[] }
       const content = data.choices?.[0]?.message?.content
       if (typeof content !== 'string') return noReply()
-      return json({ lines: sanitizeReply(content) })
+      const lines = sanitizeReply(content)
+      // English mode stays English: a Chinese reply (e.g. to a Chinese message) falls back.
+      if (lines && voice.lang !== 'zh' && hasCjk(lines.join(' '))) return noReply()
+      return json({ lines })
     } catch (error) {
       log(`ghost: provider call failed (${error instanceof Error ? error.name : 'unknown'})`)
       return noReply()

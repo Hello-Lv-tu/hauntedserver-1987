@@ -1,10 +1,23 @@
+/*
+ * Fusion Pixel 12px SC (SIL OFL 1.1, public/fonts/fusion-pixel-OFL.txt) for
+ * Chinese text. The unicode-range means English-only players never download it.
+ */
+@font-face {
+  font-family: 'Fusion Pixel SC';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/fusion-pixel-12px-sc.woff2') format('woff2');
+  unicode-range: U+2E80-2FDF, U+3000-303F, U+3040-30FF, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF;
+}
+
 :root {
   --phosphor: #33ff66;
   --phosphor-dim: #1a8033;
   --background: #050805;
   color-scheme: dark;
   /* VT323 recreates the DEC VT320 terminal font (SIL OFL 1.1). */
-  font-family: 'VT323', 'Courier New', ui-monospace, monospace;
+  font-family: 'VT323', 'Fusion Pixel SC', 'PingFang SC', 'Microsoft YaHei', 'Courier New', ui-monospace, monospace;
 }
 
 * {

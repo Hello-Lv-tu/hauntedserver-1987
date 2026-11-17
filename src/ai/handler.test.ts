@@ -73,3 +73,14 @@ describe('/api/ghost handler', () => {
     expect((await handle(post(body, { 'x-forwarded-for': '5.6.7.8' }))).status).toBe(200)
   })
 })
+
+describe('/api/ghost language', () => {
+  it('drops a Chinese reply in English mode (the game shows the English fallback)', async () => {
+    const { handle } = setup(providerReply('你好呀 :-)'))
+    expect(await (await handle(post(body))).json()).toEqual({ lines: null })
+  })
+  it('keeps a Chinese reply in Chinese mode', async () => {
+    const { handle } = setup(providerReply('你好呀 :-)'))
+    expect(await (await handle(post({ ...body, lang: 'zh' }))).json()).toEqual({ lines: ['你好呀 :-)'] })
+  })
+})

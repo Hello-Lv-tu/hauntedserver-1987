@@ -44,7 +44,20 @@ Every feature should make that learning value visible: the Spellbook
    apart from generic "haunted terminal" projects.
 5. Presentation: a 3-minute demo video must show a full play-through.
 
-Submission must be in **English**: UI text, README, code comments.
+Submission must be in **English**: README, code comments, the default UI.
+
+## Languages (English default, Simplified Chinese option)
+
+- **The machine always speaks 1987 English**: command output, errors, mail,
+  logs, file contents, man page bodies, and the commands themselves.
+- **People and help follow the player's language**: Nell, Jack, hints, lesson
+  and spell cards, the UI, the ending, man page MODERN NOTE, Nell's AI voice.
+- Every new player-facing English string needs a Chinese entry in
+  `src/i18n/` (story lines: `zh-lines.ts`; UI labels: `UI_ZH`; dynamic hints:
+  `ZH_PATTERNS`). `src/i18n/i18n.test.ts` fails otherwise, including a full
+  Chinese play-through.
+- Chinese Nell keeps her persona (playful, ASCII smileys, at most 3 lines) and
+  every `backtick command` exactly.
 
 ## Tech stack
 
