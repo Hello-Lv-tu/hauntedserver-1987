@@ -24,8 +24,8 @@
   - [x] 4.2 "(nell is writing...)" label.
   - _Requirements: 3.2, 4.1, 4.3_
 
-- [ ] 5. Docs and checkpoint
+- [x] 5. Docs and checkpoint
   - [x] 5.1 README: configuring `DEEPSEEK_API_KEY`; works without it.
-  - [ ] 5.2 `npm run check` passes; after deploy, verify a real reply on the
-    preview URL.
+  - [x] 5.2 `npm run check` passes; after deploy, verify a real reply on the
+    preview URL. (Verified on production, 2026-11-18.)
   - _Requirements: 5.3_
