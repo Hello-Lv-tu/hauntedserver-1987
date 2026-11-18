@@ -12,7 +12,7 @@ Everything Kiro used lives in [`.kiro/`](../.kiro) at the repository root.
 | Kiro feature | Where | What it did for this project |
 |---|---|---|
 | Steering | `.kiro/steering/` (4 files) | Kept the story, the ghost's personality and 1987 accuracy consistent across dozens of sessions |
-| Specs | `.kiro/specs/` (4 specs) | Planned each large feature as requirements, design and tasks before any code |
+| Specs | `.kiro/specs/` (5 specs) | Planned each large feature as requirements, design and tasks before any code |
 | Hooks | `.kiro/hooks/` (4 hooks) | Ran tests and reviews automatically, so no change was handed back broken |
 | Property-based tests | `*.prop.test.ts` (fast-check) | Proved that every level stays solvable and the shell never crashes, for any input |
 | Vibe sessions | play-test fixes | Short conversational sessions turned each play-test report into a tested fix |
@@ -63,6 +63,7 @@ list linked back to the requirements.
 | `story-levels-0-1` | The story state machine, `ps`/`kill`/`write`, Levels 0 and 1, Spellbook, saves, settings |
 | `levels-2-5` | `finger`, `mail`, `chmod`, `rm`, `diff`, `last`, `su`, Levels 2 to 5 and the boss |
 | `nell-ai-voice` | The AI voice: what the AI may and may not do, request limits, the server, fallbacks |
+| `postgame-nell` | Talking to Nell after the ending: terminal for Stay, a chat window for Move, server-owned ending contexts, local chat history |
 
 Examples of requirements that shaped the code:
 
@@ -90,7 +91,7 @@ non-programmer: each pull request named the spec and the tasks it finished.
 **Benefit:** a broken command, a malformed seed, or a line of in-world text
 that mentions the web shows up the moment it is written, not when a player
 finds it. `check-before-stop` means every result handed back to the human
-had passed lint, 227 tests and a production build.
+had passed lint, all tests and a production build.
 
 ## Property-based testing: "every level is always solvable"
 
@@ -112,7 +113,7 @@ guarantees are property tests with fast-check:
 
 **Benefit:** "no dead ends" is a design promise in `story.md`. The property
 tests turn it into something checked on every save. The suite grew from 74
-tests (first spec) to 168 (story levels) to 227 today.
+tests (first spec) to 168 (story levels) to 227 (AI voice) to 272 today.
 
 ## AI voice design: the AI writes words, the script decides
 

@@ -1,4 +1,5 @@
 import { NELL } from '../lines.js'
+import { postgameEffects } from './end.js'
 import { absoluteArg, commandEvent, operands, pick, readsFile } from '../matchers.js'
 import type { Beat, Effect, Level, StoryCtx, StoryInput, StoryState, Transition } from '../types.js'
 
@@ -57,7 +58,7 @@ function secrets(input: StoryInput, ctx: StoryCtx, state: StoryState): Transitio
 function decide(text: string, state: StoryState): Transition | null {
   const choice = choiceOf(text)
   if (choice === 'move') return { next: 'pack', effects: [nell(NELL.pack, state)] }
-  if (choice === 'stay') return { complete: true, effects: [nell(NELL.stayed, state), { type: 'ending', kind: 'stay' }] }
+  if (choice === 'stay') return { complete: true, effects: [nell(NELL.stayed, state), ...postgameEffects('stay'), { type: 'ending', kind: 'stay' }] }
   return null
 }
 
@@ -110,7 +111,7 @@ const pack: Beat = {
     'Press Ctrl-D (or type `EOF`), then type `tar cvf /dev/rmt0 ~nell`.',
   ],
   on(input, ctx, state) {
-    if (packsNell(input, ctx)) return { complete: true, effects: [nell(NELL.packed, state), { type: 'ending', kind: 'move' }] }
+    if (packsNell(input, ctx)) return { complete: true, effects: [nell(NELL.packed, state), ...postgameEffects('move'), { type: 'ending', kind: 'move' }] }
     const found = secrets(input, ctx, state)
     if (found) return found
     const text = wrote(input)

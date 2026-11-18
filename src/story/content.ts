@@ -78,6 +78,20 @@ lines say where a letter REALLY came from.
 -- n.
 `
 
+/** Nell's .plan after the Stay ending: still 1987, still on duty. */
+export const NELL_PLAN_STAY = `on duty: night operator, vax3. forever, apparently ;-)
+pumpkins sighted: 0. (ok. maybe one tiny seed.)
+visitors welcome. \`write nell\` and i'll answer.
+-- n.
+`
+
+/** Nell's .plan after the Move ending: she left on tape. */
+export const NELL_PLAN_MOVE = `gone traveling. rode out on tape 3 with a friend from the future.
+vax3 is all yours. no pumpkins left (i checked twice).
+be nice to the tape drives.
+-- n.
+`
+
 export const RANSOM_NOTE = `*** YOUR FILES HAVE BEEN ENCRYPTED ***
 
 Your legacy files (README, .login) are now protected in the

@@ -91,6 +91,22 @@ export const UI_ZH: Readonly<Record<string, string>> = {
   "i'll keep vax3 company.": '我会陪着 vax3。',
   'no pumpkins on my watch ;-)': '有我在，南瓜别想回来 ;-)',
   'come back anytime: write nell': '随时回来：write nell',
+  // postgame chat (Move ending)
+  Chat: '聊天',
+  'Chat with Nell': '和内尔聊天',
+  'Chat with Nell (new message)': '和内尔聊天（有新消息）',
+  'Reply to Nell': '回复内尔',
+  'Close chat': '关闭聊天',
+  'Conversation with Nell': '和内尔的对话',
+  'Message to Nell': '写给内尔的消息',
+  'Write a message...': '写点什么……',
+  Send: '发送',
+  'online · new to 2026': '在线 · 刚来到 2026',
+  'typing...': '正在输入……',
+  'Nell is typing...': '内尔正在输入……',
+  You: '你',
+  '{n} characters left': '还能输入 {n} 个字',
+  'Only in this browser. Nell answers one message at a time.': '只保存在这个浏览器里。内尔一次回复一条消息。',
   Scareware: '恐吓弹窗',
   Phishing: '钓鱼邮件',
   Ransomware: '勒索软件',
@@ -133,6 +149,8 @@ const ZH_HINTS: Readonly<Record<string, string>> = {
   'Example: `tar cvf /dev/rmt0 ~nell`: four parts with spaces between them; rmt0 ends in the digit zero.': '示例：`tar cvf /dev/rmt0 ~nell`：四段，中间用空格隔开；rmt0 最后是数字零。',
   'You are in Mail now (the & prompt). Type a number to read a letter, `P 2` for letter 2 with ALL headers, `d 2` to delete it, `q` to quit. `?` lists everything.': '你现在在邮箱里（& 提示符）。输入数字读信，`P 2` 看第 2 封信的全部信头，`d 2` 删除它，`q` 退出。`?` 列出所有命令。',
   'Chat with Nell: `write nell`. Something odd is still in `ps aux`... To start over, reload and choose New game.': '想和内尔聊天：`write nell`。`ps aux` 里好像还藏着点什么……想重新开始，刷新网页选"新游戏"。',
+  'Nell lives in your browser now: press "Chat" at the top to talk to her (on vax3, `write nell` only finds her note). Something odd is still in `ps aux`... To start over, reload and choose New game.':
+    '内尔现在住在你的浏览器里了：点顶部的"聊天"按钮和她说话（在 vax3 上，`write nell` 只能找到她留下的字条）。`ps aux` 里好像还藏着点什么……想重新开始，刷新网页选"新游戏"。',
 }
 
 /**
@@ -144,7 +162,9 @@ export function translate(text: string, lang: Lang): string {
   const exact = ZH_LINES[text] ?? ZH_HINTS[text] ?? UI_ZH[text]
   if (exact !== undefined) return exact
   for (const [pattern, zh] of ZH_PATTERNS) {
-    if (pattern.test(text)) return translate(text.replace(pattern, zh), lang).replace(/`, then `/g, '`，然后 `').replace(/ and /g, ' 和 ')
+    const match = pattern.exec(text)
+    // Captured parts are translated too (e.g. the tail of the revisit hint).
+    if (match) return zh.replace(/\$(\d)/g, (_, i: string) => translate(match[Number(i)] ?? '', lang)).replace(/`, then `/g, '`，然后 `').replace(/ and /g, ' 和 ')
   }
   return text
 }

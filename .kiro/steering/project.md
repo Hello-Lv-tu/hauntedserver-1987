@@ -75,9 +75,9 @@ Submission must be in **English**: README, code comments, the default UI.
   Never execute user input anywhere.
 - **The game engine is pure TypeScript with no React imports.** Put it under
   `src/engine/` (vfs, shell, commands). React lives only in `src/ui/`.
-- **Persistence is local only.** Endings, Spellbook progress and the
-  player's `.plan` are stored in `localStorage`. Never send player-written
-  text to other players.
+- **Persistence is local only.** Endings, Spellbook progress, the
+  player's `.plan` and the short postgame chat with Nell are stored in
+  `localStorage`. Never send player-written text to other players.
 - **Story is deterministic.** Clues, file changes and ghost events are driven
   by a scripted state machine (`src/story/`). The AI only writes the ghost's
   *wording*. It never decides game state, never reveals clues the script has

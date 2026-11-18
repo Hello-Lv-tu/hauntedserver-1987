@@ -1,13 +1,12 @@
 import { beatInfo } from './beats.js'
 import { buildMessages } from './prompt.js'
 import { RateLimiter } from './rateLimit.js'
-import { parseVoiceRequest } from './request.js'
+import { MAX_BODY_BYTES, parseVoiceRequest } from './request.js'
 import { sanitizeReply } from './sanitize.js'
 import { hasCjk } from '../i18n/index.js'
 
 export const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions'
 export const DEFAULT_MODEL = 'deepseek-flash'
-const MAX_BODY_BYTES = 4096
 const PROVIDER_TIMEOUT_MS = 6000
 
 export interface HandlerDeps {
@@ -28,7 +27,8 @@ const json = (body: unknown, status = 200) =>
 const noReply = () => json({ lines: null })
 
 /**
- * POST /api/ghost: write Nell's reply to one player message.
+ * POST /api/ghost: write Nell's reply to one player message (during the
+ * story, or after an ending in the terminal or the chat window).
  * Pure apart from the injected fetch, so it is unit-tested without network.
  */
 export function createHandler(deps: HandlerDeps) {
@@ -51,6 +51,8 @@ export function createHandler(deps: HandlerDeps) {
     if (voice === null) return json({ error: 'bad request' }, 400)
     const beat = beatInfo(voice.level, voice.beat)
     if (beat === null) return json({ error: 'unknown beat' }, 400)
+    // Postgame contexts exist only for the epilogue, after an ending.
+    if (voice.ending !== undefined && !beat.isEnd) return json({ error: 'bad request' }, 400)
 
     const client = (request.headers.get('x-forwarded-for') ?? 'unknown').split(',')[0].trim()
     if (!limiter.allow(client, deps.now())) return json({ lines: null, limited: true }, 429)

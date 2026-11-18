@@ -17,3 +17,11 @@ export function writeStorage(key: string, value: string): void {
     // Progress just won't persist; the game itself is unaffected.
   }
 }
+
+export function removeStorage(key: string): void {
+  try {
+    window.localStorage.removeItem(key)
+  } catch {
+    // Nothing stored, nothing to remove.
+  }
+}
