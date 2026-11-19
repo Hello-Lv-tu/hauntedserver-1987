@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import type { GameState } from '../game/types.js'
 import { SPELLS } from '../story/spells.js'
+import { endingMessages } from './endingView.js'
 import { GhostIcon } from './icons.js'
+import { LineText } from './LineText.js'
 import { useT } from './useT.js'
 import './ending.css'
 
@@ -13,9 +15,6 @@ const LESSONS = [
   ['Faked records', 'Compare with an independent copy before you believe it.'],
   ['Persistence', 'If it keeps coming back, find what restarts it.'],
 ] as const
-
-const MOVE_MESSAGES = ['whoa. am i in 2026??', 'why are all the buttons ROUND??', 'and this font is so... soft :-P', 'thank you, partner.']
-const STAY_MESSAGES = ["i'll keep vax3 company.", 'no pumpkins on my watch ;-)', 'come back anytime: write nell']
 
 interface EndScreenProps {
   game: GameState
@@ -32,12 +31,13 @@ function minutes(ms: number): number {
 
 /**
  * The ending. Move: the CRT fades to white and Nell, now a little ghost in a
- * 2026 chat app, types her first messages. Stay: the same layout in amber.
+ * 2026 chat app, repeats her farewell from the tape and types her first 2026
+ * messages. Stay: her farewell from the terminal, same layout in amber.
  */
 export function EndScreen({ game, kind, onBack, onPlayAgain, onChat }: EndScreenProps) {
   const backRef = useRef<HTMLButtonElement>(null)
   const chatRef = useRef<HTMLButtonElement>(null)
-  const { t } = useT()
+  const { t, tr } = useT()
   const [now] = useState(() => Date.now())
   useEffect(() => {
     // Move: replying to Nell is the natural next step.
@@ -46,7 +46,7 @@ export function EndScreen({ game, kind, onBack, onPlayAgain, onChat }: EndScreen
   }, [])
 
   const move = kind === 'move'
-  const messages = move ? MOVE_MESSAGES : STAY_MESSAGES
+  const messages = endingMessages(kind)
   const learned = SPELLS.filter((s) => game.spells.includes(s.command))
   const today = learned.filter((s) => s.today).length
   const time = minutes(now - game.startedAt)
@@ -72,7 +72,7 @@ export function EndScreen({ game, kind, onBack, onPlayAgain, onChat }: EndScreen
           </div>
           {messages.map((m, i) => (
             <p key={m} className="bubble" style={{ animationDelay: `${3.2 + i * 0.7}s` }}>
-              {t(m)}
+              <LineText text={tr(m)} commands />
             </p>
           ))}
         </section>

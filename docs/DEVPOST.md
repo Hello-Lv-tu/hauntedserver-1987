@@ -53,7 +53,18 @@ you can tell that Jack's offers are scams. Nell never makes that call for you.
   with `su`, find the `cron` entry, remove the program, then `kill` him.
 
 Then Nell asks whether she should come with you (`tar` her onto tape) or
-stay. There is a hidden ending and a post-credits secret. Every command
+stay: two endings, decided by a keyword match, not by the AI. An optional
+keepsake secret (her diary and a riddle) lets you leave one line for the next
+visitor, and `ps` after the credits shows a small surprise.
+
+After the ending you can keep talking to her. If she stayed, you use
+`write nell` on the old terminal and she is still a 1987 operator. If she
+moved, she lives in a 2026-style chat window in your browser and learns about
+the modern world only from you. The chat never changes the story, its last
+30 messages stay in your browser's `localStorage`, and she falls back to
+pre-written lines when the AI is unavailable.
+
+Every command
 becomes a spell in your Spellbook with an in-game `man` page and a note on
 how it works on Linux and macOS today, and the summary shows which of your
 spells still work in a modern terminal.
@@ -80,18 +91,20 @@ change. Everything is in `.kiro/` in the repo; details in
   group column), and project rules. The ghost persona loads only when story,
   mail or AI files are open. Steering kept Nell's voice and the 1987 details
   consistent across many separate sessions.
-- **Specs** (4): the filesystem and shell, the story engine with Levels 0-1,
-  Levels 2-5 with the boss, and the AI voice. Each has EARS requirements, a
-  design and tasks, written and reviewed before code.
+- **Specs** (5): the filesystem and shell, the story engine with Levels 0-1,
+  Levels 2-5 with the boss, the AI voice, and the postgame chat with Nell.
+  Each has EARS requirements, a design and tasks, written and reviewed before
+  code.
 - **Hooks** (4): run tests when engine or UI code is saved; validate story
   seed files on save; ask the agent to review in-world text for
   anachronisms, 4.3BSD output formats and 80-column lines; and run the full
-  check (lint, 227 tests, build, API smoke test) before the agent hands work
+  check (lint, all tests, build, API smoke test) before the agent hands work
   back.
-- **Property-based tests** (fast-check): every level completes even with
-  random commands mixed in; from every story beat the level can still be
-  finished; the shell never crashes; no command leaks a file you cannot read;
-  AI replies are always at most 3 lines with no emoji.
+- **Property-based tests** (fast-check, 100 to 500 random cases each): every
+  level completes with random commands mixed into its solution; the shell
+  never crashes; no command leaks a file you cannot read; cleaned AI replies
+  are at most 3 lines with no emoji. A separate test replays each level's
+  solution from every story beat, so no beat is a dead end.
 - **AI voice design**, from the spec: the server builds the prompt from its
   own copy of the story, so the browser cannot inject facts; full answers
   only after the player asks three times; replies are cleaned and anything
@@ -101,7 +114,7 @@ change. Everything is in `.kiro/` in the repo; details in
 ## Improving the hints from real beginner play-tests
 
 A beginner who had never used a terminal played each build on a phone and
-sent screenshots. Each problem became a fix plus a regression test (22 in
+sent screenshots. Each problem became a fix plus a regression test (in
 `src/game/playtest.test.ts`):
 
 - **Full-width characters.** A Chinese input method typed `？` and full-width
@@ -134,10 +147,12 @@ sent screenshots. Each problem became a fix plus a regression test (22 in
 
 ## Accomplishments that we're proud of
 
-- A complete story: six levels, a boss, three endings and a secret.
+- A complete story: six levels, a boss, two endings, an optional keepsake
+  secret, and a postgame chat that follows the ending.
 - The knowledge split: Nell knows 1987, the player knows 2026. It makes the
   player the expert on scams instead of reading a lecture.
-- 227 tests, including property tests that prove every level stays solvable.
+- 284 tests, including property tests that run each level against 150
+  random command mixes and check it still completes.
 
 ## What we learned
 
@@ -154,3 +169,30 @@ and new levels for newer scams (fake QR codes, deepfake voice calls).
 
 typescript, react, vite, vitest, fast-check, vercel, deepseek, web-audio,
 kiro
+
+---
+
+## YouTube video (ready to paste)
+
+Upload as **Public**. Add the YouTube link to the Devpost form only after the
+upload is live.
+
+**Title:** hauntedserver-1987: rescue a ghost from a 1987 Unix server (Kiroween 2026)
+
+**Description:**
+
+```
+A haunted 4.3BSD server, frozen at 23:59:59 on Halloween 1987. Use real Unix
+commands to rescue Nell, a little ghost, from Jack-o'-Daemon, a "modern" AI
+agent, and learn to spot scareware, phishing, ransomware, confidently wrong
+AI advice and faked records on the way.
+
+This video is a play-through of the game's main story.
+
+Play (free, no sign-up): https://hauntedserver-1987.vercel.app
+Code (MIT): https://github.com/Hello-Lv-tu/hauntedserver-1987
+
+Made for Kiroween 2026, Resurrection category. Built with Kiro: steering
+files, specs, hooks and property-based tests. Kiro wrote all of the code;
+the author does not write code.
+```

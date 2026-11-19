@@ -88,9 +88,6 @@ export const UI_ZH: Readonly<Record<string, string>> = {
   'why are all the buttons ROUND??': '为什么所有按钮都是圆的？？',
   'and this font is so... soft :-P': '还有这个字体，好……软 :-P',
   'thank you, partner.': '谢谢你，搭档。',
-  "i'll keep vax3 company.": '我会陪着 vax3。',
-  'no pumpkins on my watch ;-)': '有我在，南瓜别想回来 ;-)',
-  'come back anytime: write nell': '随时回来：write nell',
   // postgame chat (Move ending)
   Chat: '聊天',
   'Chat with Nell': '和内尔聊天',
