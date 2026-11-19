@@ -2,7 +2,7 @@ import type { FileNode } from '../../engine/vfs/types.js'
 import { BOTH_MAILS, FAKE_MAIL_ID, NELL_PLAN_L2, PATHS } from '../content.js'
 import { JACK_MORE, NELL, PHISHING_LESSON } from '../lines.js'
 import { commandEvent, pick, ran } from '../matchers.js'
-import type { Beat, Effect, Level, StoryInput, StoryState, Transition } from '../types.js'
+import type { Beat, Effect, Level, StoryCtx, StoryInput, StoryState, Transition } from '../types.js'
 
 const spool: FileNode = { kind: 'file', name: 'guest', owner: 'guest', group: 'guest', mode: 0o600, mtime: '1987-10-31 23:59', content: BOTH_MAILS }
 const plan: FileNode = { kind: 'file', name: '.plan', owner: 'nell', group: 'staff', mode: 0o644, mtime: '1987-10-31 23:59', content: NELL_PLAN_L2 }
@@ -12,8 +12,15 @@ const deliver: Effect[] = [{ type: 'writeFile', path: PATHS.spool, node: spool }
 const nell = (variants: readonly (readonly string[])[], state: StoryState): Effect => ({ type: 'nell', lines: [...pick(variants, state.turn)] })
 const isFake = (input: StoryInput) => input.type === 'mail' && input.messageId === FAKE_MAIL_ID
 
+/** After `su`, `mail` correctly reads root's (empty) mailbox; the letters are guest's. */
+export const ROOT_MAIL_HINT = "You are root now, and root's mailbox is empty. The letters are in guest's: type `exit` to be guest again, then `mail`."
+
 /** Things that work in every beat of this level. */
-function common(input: StoryInput, state: StoryState): Transition | null {
+function common(input: StoryInput, ctx: StoryCtx, state: StoryState): Transition | null {
+  const event = commandEvent(input)
+  if (event && event.name === 'mail' && event.status !== 0 && event.args.length === 0 && ctx.user === 'root') {
+    return { effects: [{ type: 'hint', text: ROOT_MAIL_HINT }] }
+  }
   if (input.type === 'mail' && input.action === 'printAll' && isFake(input)) {
     return { next: 'judge', flags: { sawHeaders: true }, effects: [nell(NELL.l2SawHeaders, state)] }
   }
@@ -37,11 +44,11 @@ const plan_: Beat = {
     '`finger nell` shows a user\'s .plan.',
     'Type `finger nell`, then `mail`.',
   ],
-  on(input, _ctx, state) {
+  on(input, ctx, state) {
     const event = commandEvent(input)
     if (event && ran(event, 'finger') && event.args.includes('nell')) return { next: 'mail' }
     if (input.type === 'wrote' && input.to === 'nell') return { effects: [nell(NELL.l2Chatter, state)] }
-    return common(input, state)
+    return common(input, ctx, state)
   },
 }
 
@@ -52,7 +59,7 @@ const mail: Beat = {
     'Type `mail`. At the & prompt, `P 2` prints message 2 with ALL its headers.',
     'Type `mail`, then `P 2`. If the headers show it came from somewhere strange, `d 2` deletes it, then `q`.',
   ],
-  on: (input, _ctx, state) => common(input, state),
+  on: (input, ctx, state) => common(input, ctx, state),
 }
 
 const judge: Beat = {
@@ -62,7 +69,7 @@ const judge: Beat = {
     'If it is fake, delete it: `d 2` at the & prompt.',
     'Type `d 2`, then `q`.',
   ],
-  on: (input, _ctx, state) => common(input, state),
+  on: (input, ctx, state) => common(input, ctx, state),
 }
 
 export const level2: Level = {

@@ -145,6 +145,7 @@ const ZH_HINTS: Readonly<Record<string, string>> = {
   'No file has exactly that name. `ls -a` lists the names here; separate several files with spaces.': '没有叫这个名字的文件。`ls -a` 会列出这里的文件名；多个文件之间用空格隔开。',
   'diff compares TWO files, separated by a space: `diff oldfile newfile`': 'diff 比较的是两个文件，用空格隔开：`diff 旧文件 新文件`',
   'You are already root (that is what the # prompt means).': '你已经是 root 了（# 号提示符就是这个意思）。',
+  "You are root now, and root's mailbox is empty. The letters are in guest's: type `exit` to be guest again, then `mail`.": '你现在是 root，root 的邮箱是空的。那些信在 guest 的邮箱里：输入 `exit` 变回 guest，再输入 `mail`。',
   "The door has locked behind you. You can't leave until Nell is free.": '门在你身后锁上了。救出内尔之前，你出不去。',
   'Example: `tar cvf /dev/rmt0 ~nell`: four parts with spaces between them; rmt0 ends in the digit zero.': '示例：`tar cvf /dev/rmt0 ~nell`：四段，中间用空格隔开；rmt0 最后是数字零。',
   'You are in Mail now (the & prompt). Type a number to read a letter, `P 2` for letter 2 with ALL headers, `d 2` to delete it, `q` to quit. `?` lists everything.': '你现在在邮箱里（& 提示符）。输入数字读信，`P 2` 看第 2 封信的全部信头，`d 2` 删除它，`q` 退出。`?` 列出所有命令。',

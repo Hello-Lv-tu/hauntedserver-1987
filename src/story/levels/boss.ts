@@ -97,7 +97,16 @@ export const boss: Level = {
   start: 'root',
   beats: { root, strike, respawn, cron, final },
   enter: [
+    // Killed before the boss while his program still exists: cron has
+    // started him again by now. (No-op when he is still running.)
+    { type: 'startProc', proc: JACK_PROC },
     { type: 'jack', lines: [...JACK_MORE.boss[0]] },
     { type: 'nell', lines: [...NELL.bossStart[0]] },
   ],
+  // A replay may kill him and remove his program before the boss: then he is
+  // already gone for good, so the fight is not replayed.
+  alreadyDone(ctx) {
+    if (findProc(ctx.procs, JACK_PID) !== undefined || binaryExists(ctx)) return null
+    return [{ type: 'nell', lines: [...NELL.bossAlreadyGone[0]] }, { type: 'lesson', card: PERSISTENCE_LESSON }]
+  },
 }

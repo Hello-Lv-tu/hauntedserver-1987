@@ -89,6 +89,12 @@ export interface Level {
   beats: Readonly<Record<string, Beat>>
   /** Effects when the level starts (also replayed after being eaten). */
   enter: Effect[]
+  /**
+   * The level's goal is already met in the world when the level would start
+   * (e.g. the boss was beaten early on a replay). Returns the effects that
+   * close it instead of `enter`; the next level then starts right away.
+   */
+  alreadyDone?(ctx: StoryCtx): Effect[] | null
   /** Inputs any beat of this level reacts to (e.g. Jack's popup). */
   on?(input: StoryInput, ctx: StoryCtx, state: StoryState): Transition | null
 }
