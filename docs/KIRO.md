@@ -14,7 +14,7 @@ Everything Kiro used lives in [`.kiro/`](../.kiro) at the repository root.
 | Steering | `.kiro/steering/` (4 files) | Kept the story, the ghost's personality and 1987 accuracy consistent across dozens of sessions |
 | Specs | `.kiro/specs/` (5 specs) | Planned each large feature as requirements, design and tasks before any code |
 | Hooks | `.kiro/hooks/` (4 hooks) | Ran tests and reviews automatically, so no change was handed back broken |
-| Property-based tests | `*.prop.test.ts` (fast-check) | Proved that every level stays solvable and the shell never crashes, for any input |
+| Property-based tests | `*.prop.test.ts` and a few `*.test.ts` (fast-check) | Checked on hundreds of random inputs that every level stays solvable and the shell never crashes |
 | Vibe sessions | play-test fixes | Short conversational sessions turned each play-test report into a tested fix |
 
 ## Steering: one source of truth for the story and the rules
@@ -97,7 +97,10 @@ had passed lint, all tests and a production build.
 
 A text adventure with a real shell has a huge input space. Players type
 anything, in any order. Example-based tests cannot cover that, so the key
-guarantees are property tests with fast-check:
+guarantees are property tests with fast-check. Each property runs on 100 to
+500 random cases per test run (150 random scripts per level for
+solvability). A pass means no counterexample was found in those cases; it
+is strong evidence, not a mathematical proof.
 
 | Property | File |
 |---|---|
@@ -110,10 +113,12 @@ guarantees are property tests with fast-check:
 | From every story beat, the level can still be completed (no dead ends) | `src/game/game.prop.test.ts` |
 | The game step function never throws, whatever the inputs and their order | `src/game/game.prop.test.ts` |
 | AI replies after cleaning are always at most 3 lines, under 200 characters, with no emoji | `src/ai/ai.test.ts` |
+| Loading a save or a stored postgame chat never throws on random input, and an accepted chat stays within its size limits | `src/game/save.test.ts`, `src/game/postgame.test.ts` |
 
 **Benefit:** "no dead ends" is a design promise in `story.md`. The property
 tests turn it into something checked on every save. The suite grew from 74
-tests (first spec) to 168 (story levels) to 227 (AI voice) to 272 today.
+tests (first spec) to 168 (story levels), 227 (AI voice) and 272 (first
+submission draft), and is 284 today (31 test files).
 
 ## AI voice design: the AI writes words, the script decides
 
@@ -143,6 +148,15 @@ function). The design came from the `nell-ai-voice` spec and the
    without the AI.
 6. **Bilingual.** In Chinese mode Nell answers in Chinese, keeps her ASCII
    smileys, and keeps every command exactly as typed.
+7. **Postgame, from the `postgame-nell` spec.** After Stay, Nell answers
+   `write nell` on the terminal and stays a 1987 operator. After Move, she
+   answers in a 2026-style chat window and knows only what the player tells
+   her. Along with the usual fields (level, beat, the player's message and
+   recent chat history), the browser sends the ending (`stay` or `move`) and
+   whether a keepsake exists, never the keepsake text; the server picks the
+   context for that ending. The chat cannot change story state. Its last 30
+   messages live only in the browser's `localStorage`, and if the AI is
+   unavailable Nell uses pre-written lines.
 
 Play-testing changed the design too. In Level 4, the AI told the player to
 run Level 0 steps, so the chat context now resets each level and the current

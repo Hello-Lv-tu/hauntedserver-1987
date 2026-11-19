@@ -65,19 +65,29 @@ makes that call for you.
 | ![Level 4: the Smart Assistant suggests rm -rf ~](docs/screenshots/ai-assistant.jpg) | ![Boss: cron restarts Jack every minute](docs/screenshots/boss-cron.jpg) |
 
 After the boss, Nell asks: come with you, or stay? You write her your answer.
+A keyword match decides; the AI never does. There are two endings:
 
 - **Move:** pack her onto tape with `tar`. She wakes up in 2026, in a chat app
   with round buttons she finds hilarious, and in your browser tab icon.
 - **Stay:** vax3 turns amber, and she is still there on your next visit.
-- **Hidden ending:** read her diary as root and solve her riddle.
+
+Two optional extras sit on top of either ending:
+
+- **A keepsake secret:** before you choose, read her diary as root and solve
+  her riddle. She asks for one line for the next visitor, who sees it when
+  they start a new game in the same browser.
 - After the credits, try `ps` one more time.
 
 **After the ending, Nell is still there.** If she stayed, you talk to her on
-the old terminal with `write nell` (and `finger nell` shows her guardian
-`.plan`); she is still a 1987 night operator. If she moved, she lives in a
-2026-style chat window in your browser (the "Chat" button), where she learns
-about the modern world only from what you tell her. Both know Jack is gone
-for good. The short chat is kept only in your browser.
+the old terminal with `write nell`, and `finger nell` shows her guardian
+`.plan`; she is still a 1987 night operator. If she moved, `write nell` on
+vax3 only finds her "i moved out" note: she lives in a 2026-style chat window
+in your browser (the "Chat" button, or "Reply to Nell" on the ending screen),
+where she learns about the modern world only from what you tell her. Both
+know Jack is gone for good. The postgame chat never changes the story. The
+last 30 messages are stored only in this browser's `localStorage` and are
+cleared when you start a new game. Without the AI, Nell answers with
+pre-written lines.
 
 The summary screen lists the spells (commands) you learned, which ones you
 can use in a modern terminal today, and the six scams you saw through.
@@ -112,7 +122,7 @@ can use in a modern terminal today, and the six scams you saw through.
 
 The hint system was rebuilt around what went wrong when a real beginner, who
 had never used a terminal, played the game on a phone. Each problem became a
-fix and a regression test (`src/game/playtest.test.ts`, 22 tests).
+fix and a regression test (in `src/game/playtest.test.ts`).
 
 | What happened | What we changed |
 |---|---|
@@ -138,7 +148,7 @@ Other scripts:
 
 | Script | What it does |
 |---|---|
-| `npm test` | 272 unit and property-based tests (Vitest + fast-check) |
+| `npm test` | 284 unit and property-based tests (Vitest + fast-check) |
 | `npm run check` | lint (oxlint), tests, type-checked build, and an API smoke test |
 | `npm run build` / `npm run preview` | production build and local preview |
 
@@ -159,7 +169,7 @@ before display: at most 3 lines, no emoji, no links, no mention of AI.
 After an ending the browser also sends the ending (`stay` or `move`) and
 whether a visitor line was left. The server picks its own context for that
 ending; the visitor line itself is never sent. The postgame chat uses the
-same endpoint, limits and fallbacks.
+same endpoint, limits and fallbacks, and sends one message at a time.
 
 ## Architecture
 
@@ -178,8 +188,9 @@ api/          Vercel serverless function for Nell's AI voice
 
 The short version: four **steering** files hold the rules (story, persona,
 1987 accuracy), five **specs** planned each big feature, four **hooks** ran
-tests and reviews automatically, and **property-based tests** prove that every
-level stays solvable. The full write-up, with examples, is in
+tests and reviews automatically, and **property-based tests** mix random
+commands into each level's solution (150 random scripts per level) and check
+that the level still completes. The full write-up, with examples, is in
 [docs/KIRO.md](docs/KIRO.md).
 
 ## Credits
