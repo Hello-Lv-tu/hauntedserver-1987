@@ -101,6 +101,8 @@ export const NELL = {
   bossBinGone: [['his program is gone! now finish it: `kill 6666`']],
   bossCronChatter: [['cron runs his program from /usr/lib/jack. remove it.'], ['`rm /usr/lib/jack/jack-o-daemon` then kill him again!']],
   bossDone: [["HE'S GONE!!! for real this time!!", "i'm... free? i think? :-O"]],
+  /** The boss was already beaten before his level (a replay). */
+  bossAlreadyGone: [['wait... no pumpkin in `ps aux`, and his program is gone too?!', 'you got him before i even asked :-O', "i'm... free? i think?"]],
 
   // The choice. Nell gives both of her own wishes; the player decides.
   choose: [

@@ -17,9 +17,17 @@ export function levelAt(id: number): Level {
   return LEVELS[id] ?? endLevel(id)
 }
 
-/** Story state and effects for the start of a level. */
-export function levelEntry(level: number, flags: Flags = {}): { story: StoryState; effects: Effect[] } {
+/**
+ * Story state and effects for the start of a level. With `ctx` (the world as
+ * the previous level ends), a level whose goal is already met closes at once.
+ */
+export function levelEntry(level: number, flags: Flags = {}, ctx?: StoryCtx): { story: StoryState; effects: Effect[] } {
   const def = levelAt(level)
+  const done = ctx ? (def.alreadyDone?.(ctx) ?? null) : null
+  if (done !== null) {
+    const next = levelEntry(level + 1, flags, ctx)
+    return { story: next.story, effects: [...done, ...next.effects] }
+  }
   return {
     story: { level, beat: def.start, flags, hintIndex: 0, turn: 0, chats: 0 },
     effects: [{ type: 'levelStart', level }, ...def.enter],
@@ -69,7 +77,9 @@ export function storyStep(state: StoryState, input: StoryInput, ctx: StoryCtx): 
   const effects = transition.effects ?? []
 
   if (transition.complete) {
-    const next = levelEntry(now.level + 1, flags)
+    // Completing transitions never change processes or files, so ctx still
+    // describes the world the next level starts in.
+    const next = levelEntry(now.level + 1, flags, ctx)
     return { story: next.story, effects: [...effects, ...next.effects] }
   }
   if (transition.next && transition.next !== now.beat) {
