@@ -22,6 +22,8 @@ interface EndScreenProps {
   kind: 'move' | 'stay'
   onBack: () => void
   onPlayAgain: () => void
+  /** Move ending: open Nell's chat window. */
+  onChat?: () => void
 }
 
 function minutes(ms: number): number {
@@ -32,12 +34,15 @@ function minutes(ms: number): number {
  * The ending. Move: the CRT fades to white and Nell, now a little ghost in a
  * 2026 chat app, types her first messages. Stay: the same layout in amber.
  */
-export function EndScreen({ game, kind, onBack, onPlayAgain }: EndScreenProps) {
+export function EndScreen({ game, kind, onBack, onPlayAgain, onChat }: EndScreenProps) {
   const backRef = useRef<HTMLButtonElement>(null)
+  const chatRef = useRef<HTMLButtonElement>(null)
   const { t } = useT()
   const [now] = useState(() => Date.now())
   useEffect(() => {
-    backRef.current?.focus({ preventScroll: true })
+    // Move: replying to Nell is the natural next step.
+    const first = chatRef.current ?? backRef.current
+    first?.focus({ preventScroll: true })
   }, [])
 
   const move = kind === 'move'
@@ -139,7 +144,12 @@ export function EndScreen({ game, kind, onBack, onPlayAgain }: EndScreenProps) {
         </section>
 
         <div className="ending-buttons">
-          <button type="button" ref={backRef} className="ending-button primary" onClick={onBack}>
+          {move && onChat ? (
+            <button type="button" ref={chatRef} className="ending-button primary" onClick={onChat}>
+              {t('Reply to Nell')}
+            </button>
+          ) : null}
+          <button type="button" ref={backRef} className={move && onChat ? 'ending-button' : 'ending-button primary'} onClick={onBack}>
             {t('Back to the terminal')}
           </button>
           <button type="button" className="ending-button" onClick={onPlayAgain}>

@@ -122,6 +122,28 @@ export const NELL = {
   reunionMove: [['hi from 2026!! i still cannot get over the round buttons :-P', 'thanks for bringing me, partner.']],
   reunionStay: [["you're back!! i knew it :-)", 'vax3 and i are fine. no pumpkins. well. one tiny seed, maybe.']],
   endChatter: [['rest a bit, partner :-)'], ["i'll be here. i'm always here. ;-)"]],
+
+  // Postgame (see "Postgame" in story.md). Stay talks through the terminal,
+  // Move through the chat window.
+  /** Stay: added to the reunion when the player left a line for the next visitor. */
+  keepsakeStay: [['your line for the next visitor is safe with me ;-)']],
+  /** Move, in the terminal: she does not live on vax3 any more. Never AI-worded. */
+  movedAway: [
+    ["psst! i don't live on vax3 anymore, remember? :-P", 'i\'m in your 2026 screen now. press "Chat" up top!'],
+    ['knock knock... nobody home on vax3! ;-)', 'i moved out on tape 3. find me behind the "Chat" button.'],
+  ],
+  /** Move: her first messages in the chat window, one bubble per line. */
+  moveOpen: [["it's me!! i figured out this typing box. mostly :-P", 'what are all these round buttons FOR?', 'ok. teach me one 2026 thing. just one!']],
+  /** Move: she left the visitor line behind on vax3. */
+  keepsakeMove: [["oh! i left your line for the next visitor on vax3. it's waiting for them ;-)"]],
+  /** Move: the chat on a later visit. */
+  moveWelcomeBack: [["you're back!! i kept our whole chat. look, it's all still here :-)"], ['hi again! i pressed a round button while you were gone. just one. :-P']],
+  /** Move: chat replies when the AI voice is not available. */
+  moveChatter: [
+    ["is that a 2026 thing?! i'm writing it down. on paper. :-P"],
+    ['ooh. tell me more! in 1987 we had green text and tape drives.'],
+    ["hmm! i'll pretend i understood that ;-) say it slower?"],
+  ],
 } satisfies Record<string, Variants>
 
 export const JACK = {

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { newGame } from './game/game.js'
+import { POSTGAME_KEY, parsePostgame } from './game/postgame.js'
 import type { SaveData } from './game/save.js'
 import { SAVE_KEY, parseSave } from './game/save.js'
 import { SETTINGS_KEY, parseSettings } from './game/settings.js'
@@ -35,7 +36,9 @@ function App() {
   const [entered, setEntered] = useState(false)
 
   const start = (fromSave: SaveData | null) => {
-    setGame(newGame({ save: fromSave, settings: settings(), legacy: fromSave ? null : (save?.legacy ?? null), now: Date.now() }))
+    // Only a visit after an ending resumes the chat; a new game starts without one.
+    const postgame = fromSave?.ending ? parsePostgame(readStorage(POSTGAME_KEY)) : null
+    setGame(newGame({ save: fromSave, settings: settings(), legacy: fromSave ? null : (save?.legacy ?? null), now: Date.now(), postgame }))
     setRound((r) => r + 1)
   }
   const playAgain = (legacy: string | null) => {

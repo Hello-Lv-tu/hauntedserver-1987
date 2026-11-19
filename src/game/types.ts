@@ -4,6 +4,7 @@ import type { Session, Stream, TerminalMode } from '../engine/shell/types.js'
 import type { Vfs } from '../engine/vfs/Vfs.js'
 import type { Spell } from '../story/spells.js'
 import type { EndingKind, Flags, LessonCard, StoryState } from '../story/types.js'
+import type { PostgameChat } from './postgame.js'
 import type { SaveData } from './save.js'
 import type { Settings } from './settings.js'
 
@@ -42,6 +43,8 @@ export interface PendingVoice {
   id: number
   request: VoiceRequest
   fallback: string[]
+  /** Where the reply goes: the terminal (default) or the postgame chat window. */
+  target?: 'chat'
 }
 
 export type Mode = { kind: 'shell' } | TerminalMode
@@ -85,6 +88,8 @@ export interface GameState {
   ending: EndingKind | null
   /** The visitor line from the hidden ending, kept across games. */
   legacy: string | null
+  /** The conversation with Nell after an ending (stored in this browser). */
+  postgame: PostgameChat | null
   /** When this session started (ms), for the summary. */
   startedAt: number
 }
@@ -103,3 +108,5 @@ export type GameInput =
   | { type: 'clearScreen' }
   /** The AI answered (`lines`) or failed (`null`: use the fallback). */
   | { type: 'voice'; id: number; lines: string[] | null }
+  /** The player sent a message in the postgame chat window (Move ending). */
+  | { type: 'chat'; text: string }

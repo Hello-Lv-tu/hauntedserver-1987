@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import { POSTGAME_KEY, serializePostgame } from '../game/postgame.js'
 import { SAVE_KEY, serializeSave } from '../game/save.js'
 import { SETTINGS_KEY } from '../game/settings.js'
 import type { Card, GameInput, GameState } from '../game/types.js'
@@ -6,7 +7,9 @@ import { Assistant } from './Assistant.js'
 import { CardView } from './Cards.js'
 import { EndScreen } from './EndScreen.js'
 import { adoptGhostIcon } from './favicon.js'
-import { GearIcon, SpeakerIcon } from './icons.js'
+import { GearIcon, GhostIcon, SpeakerIcon } from './icons.js'
+import { NellChat } from './NellChat.js'
+import { chatPending, hasUnread, lastNellId } from './chatView.js'
 import { sound } from './sound.js'
 import { useSound } from './useSound.js'
 import { JackPopup } from './JackPopup.js'
@@ -16,7 +19,7 @@ import { initialTerminal, terminalReducer } from './terminalState.js'
 import { useNellVoice } from './useNellVoice.js'
 import { LangProvider } from './lang.js'
 import { t } from '../i18n/index.js'
-import { writeStorage } from './storage.js'
+import { removeStorage, writeStorage } from './storage.js'
 import { JackPresence, NellPresence } from './characters/Presence.js'
 import { lastJackLine } from './characters/screen.js'
 import './game.css'
@@ -65,6 +68,46 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
   useEffect(() => {
     writeStorage(SETTINGS_KEY, JSON.stringify(game.settings))
   }, [game.settings])
+  // The postgame chat; a new game has none, which clears the old one.
+  useEffect(() => {
+    if (game.postgame) writeStorage(POSTGAME_KEY, serializePostgame(game.postgame))
+    else removeStorage(POSTGAME_KEY)
+  }, [game.postgame])
+
+  // Move ending: Nell's chat window. The draft survives closing the window.
+  const moveChat = game.postgame?.ending === 'move' ? game.postgame : null
+  const [chatOpen, setChatOpen] = useState(false)
+  const [chatDraft, setChatDraft] = useState('')
+  const [seenNellId, setSeenNellId] = useState(-1)
+  /** What had focus when the chat opened; it gets focus back on close. */
+  const chatOpener = useRef<HTMLElement | null>(null)
+  const openChat = () => {
+    chatOpener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    setEndingClosed(true)
+    setReopened(false)
+    setSeenNellId(lastNellId(moveChat))
+    setChatOpen(true)
+  }
+  const closeChat = () => {
+    setChatOpen(false)
+    setSeenNellId(lastNellId(moveChat))
+  }
+  // Return focus after the close has rendered: until then the game is inert
+  // and cannot take focus. An opener that is gone (the ending screen's
+  // button) falls back to the terminal input.
+  const chatWasOpen = useRef(false)
+  useEffect(() => {
+    if (chatOpen) {
+      chatWasOpen.current = true
+      return
+    }
+    if (!chatWasOpen.current) return
+    chatWasOpen.current = false
+    const opener = chatOpener.current
+    if (opener?.isConnected) opener.focus()
+    else inputRef.current?.focus()
+  }, [chatOpen])
+  const unread = moveChat !== null && !chatOpen && hasUnread(moveChat, seenNellId)
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -110,7 +153,8 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
 
   return (
     <LangProvider lang={game.settings.lang}>
-    <div className={['game', 'scene', `mood-${mood}`, hasOverlay ? 'has-overlay' : '', game.save.ending === 'stay' ? 'amber' : ''].filter(Boolean).join(' ')}>
+    {/* inert while the chat window is open (aria-modal): no focus, clicks or keys reach the terminal or toolbar. */}
+    <div className={['game', 'scene', `mood-${mood}`, hasOverlay ? 'has-overlay' : '', game.save.ending === 'stay' ? 'amber' : ''].filter(Boolean).join(' ')} inert={chatOpen}>
       <div className="scene-backdrop" aria-hidden="true" />
       <div className="scene-tint" aria-hidden="true" />
       <div className="toolbar">
@@ -120,6 +164,18 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
             {t(game.settings.lang, 'Spellbook')} ({game.spells.length})
           </span>
         </button>
+        {moveChat ? (
+          <button
+            type="button"
+            className="tool tool-chat"
+            onClick={openChat}
+            aria-label={t(game.settings.lang, unread ? 'Chat with Nell (new message)' : 'Chat with Nell')}
+          >
+            <GhostIcon size={16} />
+            <span className="tool-chat-label">{t(game.settings.lang, 'Chat')}</span>
+            {unread ? <span className="chat-dot" aria-hidden="true" /> : null}
+          </button>
+        ) : null}
         {endingKind ? (
           <button type="button" className="tool" onClick={() => setReopened(true)}>
             {t(game.settings.lang, 'Ending')}
@@ -169,16 +225,31 @@ export function Game({ initial, onPlayAgain }: { initial: GameState; onPlayAgain
       {/* Being eaten: a new key remounts the overlay, which replays its CSS animation once. */}
       {game.glitch > 0 ? <div key={game.glitch} className="glitch-overlay" aria-hidden="true" /> : null}
 
-      {showEnding ? (
+      {showEnding && !chatOpen ? (
         <EndScreen
           game={game}
           kind={endingKind ?? 'stay'}
+          onChat={moveChat ? openChat : undefined}
           onBack={() => {
             setEndingClosed(true)
             setReopened(false)
             inputRef.current?.focus()
           }}
           onPlayAgain={() => onPlayAgain(game.legacy)}
+        />
+      ) : null}
+
+      {chatOpen && moveChat ? (
+        <NellChat
+          chat={moveChat}
+          pending={chatPending(game)}
+          draft={chatDraft}
+          onDraft={setChatDraft}
+          onSend={(text) => {
+            send({ type: 'chat', text })
+            setChatDraft('')
+          }}
+          onClose={closeChat}
         />
       ) : null}
 

@@ -1,0 +1,285 @@
+/*
+ * Nell's 2026 chat window (Move ending). Deliberately modern, like the Move
+ * ending screen: soft gradients, round bubbles, a round send button. Original
+ * styling; not modeled on any one app.
+ */
+.nell-chat-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(10, 8, 30, 0.55);
+  animation: nell-chat-fade 0.2s ease-out both;
+}
+
+.nell-chat {
+  display: flex;
+  flex-direction: column;
+  width: min(26rem, 100%);
+  height: min(40rem, calc(100dvh - 2rem));
+  overflow: hidden;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 0% 0%, #ffe3f1 0%, transparent 40%),
+    radial-gradient(circle at 100% 100%, #dfe9ff 0%, transparent 45%),
+    #fbf8ff;
+  color: #1d1d2b;
+  box-shadow: 0 24px 60px rgba(20, 10, 60, 0.35);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', 'Fusion Pixel SC', sans-serif;
+  font-size: 1rem;
+  text-shadow: none;
+  animation: nell-chat-pop 0.25s ease-out both;
+}
+
+.nell-chat p,
+.nell-chat h2 {
+  margin: 0;
+}
+
+/* Header */
+.nell-chat-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  background: rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid rgba(60, 40, 140, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.nell-chat-close {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #5b3fd9;
+  cursor: pointer;
+}
+
+.nell-chat-close:hover,
+.nell-chat-close:focus-visible {
+  background: #f0ecff;
+  outline: none;
+}
+
+.nell-chat-avatar {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffffff, #ece6ff);
+  box-shadow: 0 4px 12px rgba(120, 90, 200, 0.25);
+}
+
+.nell-chat-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.nell-chat-status {
+  font-size: 0.8rem;
+  color: #6b6890;
+}
+
+.nell-chat-status.typing {
+  color: #7b5cff;
+}
+
+/* Messages: the only part that scrolls. */
+.nell-chat-log {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-height: 0;
+  margin: 0;
+  padding: 1rem 0.9rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+}
+
+.nell-chat-log:focus-visible {
+  outline: 2px solid #7b5cff;
+  outline-offset: -2px;
+}
+
+.nell-msg {
+  max-width: 80%;
+  padding: 0.55rem 0.9rem;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+  animation: nell-chat-pop 0.25s ease-out both;
+}
+
+.nell-msg-nell {
+  align-self: flex-start;
+  border-radius: 20px 20px 20px 6px;
+  background: #ffffff;
+  box-shadow: 0 3px 10px rgba(40, 30, 90, 0.08);
+}
+
+.nell-msg-player {
+  align-self: flex-end;
+  border-radius: 20px 20px 6px 20px;
+  background: linear-gradient(135deg, #7b5cff, #ff6fb1);
+  color: #ffffff;
+}
+
+.nell-typing {
+  display: flex;
+  gap: 4px;
+  padding: 0.75rem 0.9rem;
+}
+
+.nell-typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7b5cff;
+  opacity: 0.35;
+  animation: nell-chat-dot 1s infinite;
+}
+
+.nell-typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.nell-typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Composer */
+.nell-chat-compose {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem 0.3rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-top: 1px solid rgba(60, 40, 140, 0.08);
+}
+
+.nell-chat-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.65rem 1rem;
+  border: 1px solid #ddd6ff;
+  border-radius: 999px;
+  background: #ffffff;
+  color: inherit;
+  /* 16px or more: phones do not zoom into the field. */
+  font: inherit;
+  font-size: max(1rem, 16px);
+}
+
+.nell-chat-input:focus-visible {
+  border-color: #7b5cff;
+  outline: 2px solid rgba(123, 92, 255, 0.35);
+}
+
+.nell-chat-send {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7b5cff, #ff6fb1);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.nell-chat-send:disabled {
+  background: #d9d4ef;
+  cursor: default;
+}
+
+.nell-chat-send:focus-visible {
+  outline: 2px solid #3a2b80;
+  outline-offset: 2px;
+}
+
+.nell-chat-note {
+  padding: 0 1rem calc(0.5rem + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+  color: #6b6890;
+  text-align: center;
+}
+
+/* Toolbar button: a dot when Nell wrote something new. */
+.tool-chat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.chat-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #ff6fb1;
+  box-shadow: 0 0 6px #ff6fb1;
+}
+
+/* Very narrow phones: the toolbar button shows only the ghost. */
+@media (max-width: 400px) {
+  .tool-chat-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+}
+
+/* Phones: full screen, sized to the visible viewport (keyboard included). */
+@media (max-width: 700px) {
+  .nell-chat-backdrop {
+    padding: 0;
+  }
+
+  .nell-chat {
+    position: fixed;
+    top: var(--chat-top, 0);
+    left: 0;
+    width: 100%;
+    height: var(--chat-height, 100dvh);
+    border-radius: 0;
+  }
+}
+
+@keyframes nell-chat-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes nell-chat-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+
+@keyframes nell-chat-dot {
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nell-chat-backdrop,
+  .nell-chat,
+  .nell-msg,
+  .nell-typing span {
+    animation: none;
+  }
+}

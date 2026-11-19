@@ -72,6 +72,13 @@ After the boss, Nell asks: come with you, or stay? You write her your answer.
 - **Hidden ending:** read her diary as root and solve her riddle.
 - After the credits, try `ps` one more time.
 
+**After the ending, Nell is still there.** If she stayed, you talk to her on
+the old terminal with `write nell` (and `finger nell` shows her guardian
+`.plan`); she is still a 1987 night operator. If she moved, she lives in a
+2026-style chat window in your browser (the "Chat" button), where she learns
+about the modern world only from what you tell her. Both know Jack is gone
+for good. The short chat is kept only in your browser.
+
 The summary screen lists the spells (commands) you learned, which ones you
 can use in a modern terminal today, and the six scams you saw through.
 
@@ -131,7 +138,7 @@ Other scripts:
 
 | Script | What it does |
 |---|---|
-| `npm test` | 227 unit and property-based tests (Vitest + fast-check) |
+| `npm test` | 272 unit and property-based tests (Vitest + fast-check) |
 | `npm run check` | lint (oxlint), tests, type-checked build, and an API smoke test |
 | `npm run build` / `npm run preview` | production build and local preview |
 
@@ -149,6 +156,11 @@ max) and recent chat. Requests are validated, rate-limited per client (12 per
 minute, 200 per day) and time out after 6 seconds. Replies are cleaned
 before display: at most 3 lines, no emoji, no links, no mention of AI.
 
+After an ending the browser also sends the ending (`stay` or `move`) and
+whether a visitor line was left. The server picks its own context for that
+ending; the visitor line itself is never sent. The postgame chat uses the
+same endpoint, limits and fallbacks.
+
 ## Architecture
 
 ```
@@ -165,7 +177,7 @@ api/          Vercel serverless function for Nell's AI voice
 ## How this project uses Kiro
 
 The short version: four **steering** files hold the rules (story, persona,
-1987 accuracy), four **specs** planned each big feature, four **hooks** ran
+1987 accuracy), five **specs** planned each big feature, four **hooks** ran
 tests and reviews automatically, and **property-based tests** prove that every
 level stays solvable. The full write-up, with examples, is in
 [docs/KIRO.md](docs/KIRO.md).

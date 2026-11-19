@@ -1,8 +1,10 @@
 import { findProc } from '../../engine/procs/types.js'
 import type { Proc } from '../../engine/procs/types.js'
+import type { FileNode } from '../../engine/vfs/types.js'
+import { NELL_PLAN_MOVE, NELL_PLAN_STAY, PATHS } from '../content.js'
 import { NELL } from '../lines.js'
 import { commandEvent, pick, ran } from '../matchers.js'
-import type { Beat, Level } from '../types.js'
+import type { Beat, Effect, EndingKind, Level } from '../types.js'
 
 export const SEED_PID = 6669
 
@@ -44,4 +46,22 @@ export function endLevel(id: number): Level {
     beats: { end },
     enter: [{ type: 'startProc', proc: SEED_PROC }, { type: 'finished' }],
   }
+}
+
+/**
+ * What an ending leaves behind on vax3: Nell's ending-specific `.plan`
+ * (`finger nell`). Applied when the ending happens and again on every later
+ * visit, because the world is rebuilt from the seed.
+ */
+export function postgameEffects(kind: EndingKind): Effect[] {
+  const plan: FileNode = {
+    kind: 'file',
+    name: '.plan',
+    owner: 'nell',
+    group: 'staff',
+    mode: 0o644,
+    mtime: '1987-10-31 23:59',
+    content: kind === 'stay' ? NELL_PLAN_STAY : NELL_PLAN_MOVE,
+  }
+  return [{ type: 'writeFile', path: PATHS.nellPlan, node: plan }]
 }

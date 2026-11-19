@@ -4,12 +4,17 @@ import { mailCommand } from '../engine/mail/mailbox.js'
 import { execute } from '../engine/shell/execute.js'
 import { findProc, withProc, withoutProc } from '../engine/procs/types.js'
 import { tildify } from '../engine/vfs/path.js'
-import { levelEntry, storyStep } from '../story/engine.js'
+import { LEVELS, levelEntry, storyStep } from '../story/engine.js'
+import { postgameEffects } from '../story/levels/end.js'
 import { ASSISTANT_MESSAGES, NELL, POPUP_MESSAGES } from '../story/lines.js'
+import { pick } from '../story/matchers.js'
 import { checkPassword } from '../story/secrets.js'
 import { LOGINS } from '../story/seed/logins.js'
 import { spellFor } from '../story/spells.js'
-import type { Effect, StoryCtx, StoryInput } from '../story/types.js'
+import type { Effect, EndingKind, StoryCtx, StoryInput } from '../story/types.js'
+import type { VoiceRequest } from '../ai/request.js'
+import { LIMITS, fitVoiceRequest } from '../ai/request.js'
+import type { Lang } from '../i18n/index.js'
 import { createWorld } from '../story/world.js'
 import type { SaveData } from './save.js'
 import type { Settings } from './settings.js'
@@ -17,6 +22,8 @@ import { translate } from '../i18n/index.js'
 import { normalizeInput } from './normalize.js'
 import { suggestFix } from './suggest.js'
 import { DEFAULT_SETTINGS } from './settings.js'
+import type { PostgameChat } from './postgame.js'
+import { addMessage, chatHistory, cleanChatText, emptyChat, joinLines, playerMessages } from './postgame.js'
 import type { GameInput, GameState, LineKind } from './types.js'
 
 /** Scrollback kept on screen; older lines are dropped. */
@@ -49,6 +56,8 @@ export interface NewGameOptions {
   /** A line left by a previous visitor (hidden ending), shown before the SOS. */
   legacy?: string | null
   now?: number
+  /** Stored postgame chat (only used when the save has the same ending). */
+  postgame?: PostgameChat | null
 }
 
 /** A fresh game, or one continued from a save. */
@@ -81,6 +90,7 @@ export function newGame(options: NewGameOptions = {}): GameState {
     chatLog: [],
     ending: null,
     legacy,
+    postgame: null,
     startedAt: options.now ?? 0,
   }
   base.save = withKeepsakes(base.save, save?.ending ?? null, legacy)
@@ -89,11 +99,82 @@ export function newGame(options: NewGameOptions = {}): GameState {
   const started = applyEffects(opened, entry.effects)
   // Later visits after an ending: Nell remembers you.
   if (save?.ending) {
-    const greeted = nellMessage(started, [...(save.ending === 'move' ? NELL.reunionMove : NELL.reunionStay)[0]])
-    const name = save.ending === 'move' ? 'Moved to 2026' : 'The guardian of vax3'
-    return print(greeted, [['hint', `You finished the game (ending: ${name}). Chat with Nell: \`write nell\`. Something odd is still in \`ps aux\`... To start over, reload and choose New game.`]])
+    const kind = save.ending
+    const planned = applyEffects(started, postgameEffects(kind))
+    const keepsake = kind === 'stay' && legacy ? NELL.keepsakeStay[0] : []
+    const greeted = nellMessage(planned, [...(kind === 'move' ? NELL.reunionMove : NELL.reunionStay)[0], ...keepsake])
+    const name = kind === 'move' ? 'Moved to 2026' : 'The guardian of vax3'
+    const resumed = { ...greeted, postgame: resumeChat(kind, options.postgame ?? null, legacy, greeted.settings.lang) }
+    return print(resumed, [['hint', `You finished the game (ending: ${name}). ${REVISIT_HINT[kind]}`]])
   }
   return started
+}
+
+/** What to do on a later visit, per ending. */
+export const REVISIT_HINT: Readonly<Record<EndingKind, string>> = {
+  stay: 'Chat with Nell: `write nell`. Something odd is still in `ps aux`... To start over, reload and choose New game.',
+  move: 'Nell lives in your browser now: press "Chat" at the top to talk to her (on vax3, `write nell` only finds her note). Something odd is still in `ps aux`... To start over, reload and choose New game.',
+}
+
+/** A new chat for an ending. Move Nell writes first, in the chat window. */
+function freshChat(kind: EndingKind, legacy: string | null, lang: Lang): PostgameChat {
+  if (kind === 'stay') return emptyChat(kind)
+  const lines = [...NELL.moveOpen[0], ...(legacy ? NELL.keepsakeMove[0] : [])]
+  return lines.reduce((chat, line) => addMessage(chat, 'nell', translate(line, lang)), emptyChat(kind))
+}
+
+/**
+ * The page closed while Nell was answering: the chat ends with the player's
+ * message. Answer it with the pre-written line that ending would have used
+ * (no request is re-sent), so the chat never strands a message.
+ */
+function resolveInterrupted(chat: PostgameChat, lang: Lang): PostgameChat {
+  if (chat.messages.at(-1)?.from !== 'player') return chat
+  // Same variants as a live fallback: Move chat, and the Stay epilogue beat.
+  const variants = chat.ending === 'move' ? NELL.moveChatter : NELL.endChatter
+  return addMessage(chat, 'nell', joinLines(pick(variants, playerMessages(chat) - 1).map((l) => translate(l, lang))))
+}
+
+/** The stored chat if it belongs to this ending; otherwise a fresh one. */
+function resumeChat(kind: EndingKind, stored: PostgameChat | null, legacy: string | null, lang: Lang): PostgameChat {
+  if (stored === null || stored.ending !== kind) return freshChat(kind, legacy, lang)
+  const resolved = resolveInterrupted(stored, lang)
+  if (kind === 'move' && playerMessages(resolved) > 0) {
+    return addMessage(resolved, 'nell', joinLines(pick(NELL.moveWelcomeBack, resolved.nextId).map((l) => translate(l, lang))))
+  }
+  return resolved
+}
+
+/** A postgame voice request: the server picks the context from `ending`. */
+function postgameRequest(state: GameState, ending: EndingKind, text: string, chat: PostgameChat): VoiceRequest {
+  return fitVoiceRequest({
+    ...(state.settings.lang === 'zh' ? { lang: 'zh' as const } : {}),
+    level: LEVELS.length,
+    beat: 'end',
+    chats: Math.min(playerMessages(chat) + 1, LIMITS.chats),
+    text,
+    history: chatHistory(chat),
+    ending,
+    ...(state.legacy ? { keepsake: true } : {}),
+  })
+}
+
+/** The player sent a message in the Move chat window. One reply at a time. */
+function chatLine(state: GameState, raw: string): GameState {
+  const chat = state.postgame
+  if (chat === null || chat.ending !== 'move') return state
+  // Rapid sends: ignored until Nell has answered (the UI keeps the draft).
+  if (state.pendingVoices.some((p) => p.target === 'chat')) return state
+  const text = cleanChatText(raw)
+  if (text === '') return state
+  const request = postgameRequest(state, 'move', text, chat)
+  const fallback = [...pick(NELL.moveChatter, playerMessages(chat))]
+  return {
+    ...state,
+    postgame: addMessage(chat, 'player', text),
+    pendingVoices: [...state.pendingVoices, { id: state.nextVoiceId, request, fallback, target: 'chat' }],
+    nextVoiceId: state.nextVoiceId + 1,
+  }
 }
 
 /** Ending and visitor line survive level saves and new games. */
@@ -159,11 +240,26 @@ export function step(state: GameState, input: GameInput): GameState {
       return { ...state, screen: [] }
 
     case 'voice': {
+      // Unknown ids (already answered, or from an older game) change nothing.
       const pending = state.pendingVoices.find((p) => p.id === input.id)
       if (pending === undefined) return state
       const rest = { ...state, pendingVoices: state.pendingVoices.filter((p) => p.id !== input.id) }
-      return nellMessage(rest, input.lines ?? pending.fallback)
+      const lines = input.lines ?? pending.fallback
+      const shown = joinLines(lines.map((l) => translate(l, rest.settings.lang)))
+      if (pending.target === 'chat') {
+        // A reply for a chat that is gone, or belongs to another ending, is dropped.
+        if (rest.postgame === null || rest.postgame.ending !== pending.request.ending) return rest
+        return { ...rest, postgame: addMessage(rest.postgame, 'nell', shown) }
+      }
+      const printed = nellMessage(rest, lines)
+      if (pending.request.ending === 'stay' && printed.postgame?.ending === 'stay') {
+        return { ...printed, postgame: addMessage(printed.postgame, 'nell', shown) }
+      }
+      return printed
     }
+
+    case 'chat':
+      return chatLine(state, input.text)
   }
 }
 
@@ -289,9 +385,30 @@ function applyEffects(state: GameState, effects: Effect[]): GameState {
         s = nellMessage(s, effect.lines)
         break
       case 'nellVoice': {
+        const chat = s.story.level >= LEVELS.length ? s.postgame : null
+        if (chat?.ending === 'move') {
+          // She moved out: the old terminal only gets her note (never AI-worded).
+          s = nellMessage(s, [...pick(NELL.movedAway, s.story.turn)])
+          break
+        }
+        if (chat?.ending === 'stay') {
+          const text = cleanChatText(effect.text)
+          if (text === '') {
+            s = nellMessage(s, effect.fallback)
+            break
+          }
+          const request = postgameRequest(s, 'stay', text, chat)
+          s = {
+            ...s,
+            postgame: addMessage(chat, 'player', text),
+            pendingVoices: [...s.pendingVoices, { id: s.nextVoiceId, request, fallback: effect.fallback }],
+            nextVoiceId: s.nextVoiceId + 1,
+          }
+          break
+        }
         // History excludes the message being answered (the last chat entry).
         const history = s.chatLog.slice(0, -1)
-        const request = { ...(s.settings.lang === 'zh' ? { lang: 'zh' as const } : {}), level: s.story.level, beat: s.story.beat, chats: s.story.chats, text: effect.text, history }
+        const request = fitVoiceRequest({ ...(s.settings.lang === 'zh' ? { lang: 'zh' as const } : {}), level: s.story.level, beat: s.story.beat, chats: s.story.chats, text: effect.text, history })
         s = {
           ...s,
           pendingVoices: [...s.pendingVoices, { id: s.nextVoiceId, request, fallback: effect.fallback }],
@@ -346,7 +463,7 @@ function applyEffects(state: GameState, effects: Effect[]): GameState {
         }
         break
       case 'ending':
-        s = { ...s, ending: effect.kind, save: withKeepsakes(s.save, effect.kind, s.legacy) }
+        s = { ...s, ending: effect.kind, save: withKeepsakes(s.save, effect.kind, s.legacy), postgame: freshChat(effect.kind, s.legacy, s.settings.lang) }
         break
       case 'legacy':
         s = { ...s, legacy: effect.text, save: withKeepsakes(s.save, s.save.ending ?? null, effect.text) }

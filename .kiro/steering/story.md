@@ -114,6 +114,24 @@ her own opinion, then asks. The player answers in write mode with words like
 
 No "it was all a lie" twist in the main story.
 
+## Postgame: talking to Nell after the ending
+
+After an ending (in the same session and on every later visit) the player can
+keep chatting with Nell. Where she lives decides the channel. Both Nells know
+Jack-o'-Daemon is defeated for good and remember which ending happened.
+
+| Ending | Channel | Nell |
+|---|---|---|
+| **Stay** | The old terminal: `write nell`. `finger nell` shows her guardian `.plan`. | Still a 1987 guardian of vax3. Clock still frozen, knows only 1987, amazed by any 2026 thing the player mentions. |
+| **Move** | A modern messenger-style chat window in the browser (the "Chat" button; also "Reply to Nell" on the ending screen). Original styling, no real messenger brand. `write nell` on vax3 only gets her short "i moved out" note; `finger nell` shows her "gone traveling" `.plan`. | A newcomer to 2026. She learns about the modern world only from the player's messages and never pretends to already know modern facts. |
+
+- The hidden visitor line is a keepsake, not a third place: Nell may mention
+  that it is kept safe on vax3, but never quotes it.
+- Postgame chat never changes story state, never adds clues, puzzles or
+  secrets, and works with pre-written lines when the AI is unavailable.
+- The short chat history (last 30 messages) is stored only in the player's
+  browser and is cleared when a new game starts.
+
 ## Final presentation (what judges see)
 
 1. **Start**: the machine-room pixel art fills the screen (door ajar, VAX
